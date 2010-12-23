@@ -1,14 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actions>
-        <action>
-            <actionName>run</actionName>
-            <preAction>build-with-dependencies</preAction>
-            <goals>
-                <goal>package</goal>
-            </goals>
-            <properties>
-                <maven.test.skip>true</maven.test.skip>
-                <netbeans.deploy>true</netbeans.deploy>
-            </properties>
-        </action>
+        
     </actions>
