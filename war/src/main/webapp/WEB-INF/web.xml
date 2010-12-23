@@ -1,20 +1,22 @@
-<web-app version="2.5"
-	xmlns="http://java.sun.com/xml/ns/javaee"
+
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
 
-	<display-name>GWT-Maven-Archetype</display-name>	
-	<servlet>
-    <servlet-name>emp</servlet-name>
-    <servlet-class>com.javacodegeeks.war.server.services.EmployeeServiceGWTImpl</servlet-class>
-  </servlet>
+   <display-name>GWT APP</display-name>
+   
+   <servlet>
+      <servlet-name>emp</servlet-name>
+      <servlet-class>com.javacodegeeks.war.server.services.EmployeeServiceGWTImpl</servlet-class>
+   </servlet>
   
-  <servlet-mapping>
-    <servlet-name>emp</servlet-name>
-    <url-pattern>/com.javacodegeeks.war.Application/emp</url-pattern>
-  </servlet-mapping>
-	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
-	</welcome-file-list>
+   <servlet-mapping>
+      <servlet-name>emp</servlet-name>
+      <url-pattern>/com.javacodegeeks.war.Application/emp</url-pattern>
+   </servlet-mapping>
+
+   <welcome-file-list>
+      <welcome-file>index.html</welcome-file>
+   </welcome-file-list>
 </web-app>
