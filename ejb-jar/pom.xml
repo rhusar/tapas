@@ -1,57 +1,76 @@
 <?xml version="1.0"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>ejb-gwt</artifactId>
-    <groupId>com.javacodegeeks</groupId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+      <artifactId>ejb-gwt</artifactId>
+      <groupId>com.javacodegeeks</groupId>
+      <version>0.0.1-SNAPSHOT</version>
+   </parent>
   
-  <groupId>com.javacodegeeks</groupId>
-  <artifactId>ejb-jar</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>ejb-jar</name>
-  <packaging>ejb</packaging>
-  <url>http://maven.apache.org</url>
-  
-  
+   <groupId>com.javacodegeeks</groupId>
+   <artifactId>ejb-jar</artifactId>
+   <version>0.0.1-SNAPSHOT</version>
+   <name>ejb-jar</name>
+   <packaging>ejb</packaging>
+   <url>http://maven.apache.org</url>
   
   
-  <repositories>
-  	<repository>
-  		<id>jboss-maven2</id>
-  		<url>http://repository.jboss.com/maven2</url>
-   </repository>
-  </repositories>
+  
+  
+   <repositories>
+      <repository>
+         <id>jboss-maven2</id>
+         <url>http://repository.jboss.com/maven2</url>
+      </repository>
+   </repositories>
 
  
-  <dependencies>
-  	<dependency>
-    	<groupId>org.jboss.jbossas</groupId>
-    	<artifactId>jboss-as-client</artifactId>
-    	<version>5.1.0.GA</version>
-    	<type>pom</type>
-    	<scope>provided</scope>
-	</dependency>
-  	<dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.7</version>
-      <scope>test</scope>
-    </dependency>	
-  </dependencies>
+   <dependencies>
+      <dependency>
+         <groupId>org.jboss.jbossas</groupId>
+         <artifactId>jboss-as-client</artifactId>
+         <version>5.1.0.GA</version>
+         <type>pom</type>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>4.7</version>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
   
-  <build>
-    <plugins>
-        <plugin>
+   <build>
+      <plugins>
+
+              <!-- jrebel -->
+         <plugin>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>jrebel-maven-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>generate-rebel-xml</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                     <goal>generate</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+
+
+         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-ejb-plugin</artifactId>
             <configuration>
-                <ejbVersion>3.0</ejbVersion>
+               <ejbVersion>3.0</ejbVersion>
             </configuration>
-        </plugin>
-    </plugins>
-</build>
-  
+         </plugin>
+      </plugins>
+   </build>
+   <properties>
+      <netbeans.hint.deploy.server>JBoss4</netbeans.hint.deploy.server>
+   </properties>
 </project>
