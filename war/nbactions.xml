@@ -10,4 +10,10 @@
                 <maven.test.skip>true</maven.test.skip>
             </properties>
         </action>
+        <action>
+            <actionName>run</actionName>
+            <goals>
+                <goal>gwt:run</goal>
+            </goals>
+        </action>
     </actions>
