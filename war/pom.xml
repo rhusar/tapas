@@ -85,6 +85,7 @@
             </executions>
             <configuration>
                <runTarget>com.javacodegeeks.war.Application/Application.html</runTarget>
+               <extraJvmArgs>-Xmx256m</extraJvmArgs>
             </configuration>
          </plugin>
       <!--
