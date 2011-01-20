@@ -16,7 +16,6 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.javacodegeeks.ejb.entity.Employee;
-import com.javacodegeeks.war.shared.entity.EmployeeUtil;
 import com.javacodegeeks.war.shared.services.EmployeeServiceGWT;
 import com.javacodegeeks.war.shared.services.EmployeeServiceGWTAsync;
 
@@ -193,7 +192,7 @@ public class Application
 				serverResponseLabel.setText("");
 
 				employeeService.findEmployee(Long.parseLong(textToServer),  
-						new AsyncCallback<EmployeeUtil>() {
+						new AsyncCallback<Employee>() {
 							public void onFailure(Throwable caught) {
 								// Show the RPC error message to the user
 								dialogBox
@@ -205,7 +204,7 @@ public class Application
 								closeButton.setFocus(true);
 							}
 
-							public void onSuccess(EmployeeUtil Employee) {
+							public void onSuccess(Employee Employee) {
 								dialogBox.setText("Remote Procedure Call");
 								serverResponseLabel
 										.removeStyleName("serverResponseLabelError");

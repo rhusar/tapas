@@ -50,6 +50,19 @@ xmlns="http://maven.apache.org/POM/4.0.0"    xmlns:xsi="http://www.w3.org/2001/X
    </dependencies>
   
    <build>
+
+            <!-- include entities -->
+      <resources>
+         <resource>
+                <!-- for GWT compiler-->
+            <directory>src/main/java</directory>
+         </resource>
+         <resource>
+            <directory>src/main/resources</directory>
+         </resource>
+      </resources>
+
+      
       <plugins>
          <!-- JRebel -->
          <plugin>

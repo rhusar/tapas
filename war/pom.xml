@@ -67,13 +67,23 @@
    <build>
       <!-- <finalName>war</finalName> -->
       <outputDirectory>war/WEB-INF/classes</outputDirectory>
+
+
+
       <plugins>
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>gwt-maven-plugin</artifactId>
+            <version>2.1.0-1</version>
+            
+            <!-- include entities -->
+<!--            <compileSourcesArtifacts>
+               <compileSourcesArtifact>com.myCompany:domain</compileSourcesArtifact>
+            </compileSourcesArtifacts>-->
 <!--            <version>2.1.0</version>-->
 <!--            <version>1.2</version>-->
 <!--2.1.0-1-->
+
             <executions>
                <execution>
                   <goals>
@@ -83,7 +93,11 @@
                   </goals>
                </execution>
             </executions>
+
             <configuration>
+               <draftCompile>true</draftCompile>
+               <x>x</x>
+<!--               <compileSourcesArtifact>com.javacodegeeks:ejb-gwt</compileSourcesArtifact>-->
                <runTarget>com.javacodegeeks.war.Application/Application.html</runTarget>
                <extraJvmArgs>-Xmx256m</extraJvmArgs>
             </configuration>

@@ -1,0 +1,16 @@
+<!DOCTYPE module PUBLIC "//gwt-module/" "http://google-web-toolkit.googlecode.com/svn/tags/2.1.1/distro-source/core/src/gwt-module.dtd">
+
+<!--
+    Document   : Entity.gwt.xml.xml
+    Created on : February 20, 2011, 8:53 PM
+    Author     : rhusar
+    Description:
+        Purpose of the document follows.
+-->
+
+<!--<root>-->
+   <module>
+      <inherits name="com.google.gwt.user.User" />
+      <source path="entity" />
+   </module>
+<!--</root>-->
