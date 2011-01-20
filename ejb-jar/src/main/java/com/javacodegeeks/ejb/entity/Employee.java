@@ -8,66 +8,61 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "EMPLOYEE")
 public class Employee implements java.io.Serializable {
-	
-	private static final long serialVersionUID = 7440297955003302414L;
 
-	@Id
-	@Column(name="employee_id")
-	private long employeeId;
-	
-	@Column(name="employee_name", nullable = false, length=30)
-	private String employeeName;
-	
-	@Column(name="employee_surname", nullable = false, length=30)
-	private String employeeSurname;
-	
-	@Column(name="job", length=50)
-	private String job;
-		
-	public Employee() {
-	}
+   private static final long serialVersionUID = 7440297955003302414L;
+   @Id
+   @Column(name = "employee_id")
+   private long employeeId;
+   @Column(name = "employee_name", nullable = false, length = 30)
+   private String employeeName;
+   @Column(name = "employee_surname", nullable = false, length = 30)
+   private String employeeSurname;
+   @Column(name = "job", length = 50)
+   private String job;
 
-	public Employee(int employeeId) {
-		this.employeeId = employeeId;		
-	}
+   public Employee() {
+   }
 
-	public Employee(long employeeId, String employeeName, String employeeSurname,
-			String job) {
-		this.employeeId = employeeId;
-		this.employeeName = employeeName;
-		this.employeeSurname = employeeSurname;
-		this.job = job;
-	}
+   public Employee(int employeeId) {
+      this.employeeId = employeeId;
+   }
 
-	public long getEmployeeId() {
-		return employeeId;
-	}
+   public Employee(long employeeId, String employeeName, String employeeSurname, String job) {
+      this.employeeId = employeeId;
+      this.employeeName = employeeName;
+      this.employeeSurname = employeeSurname;
+      this.job = job;
+   }
 
-	public void setEmployeeId(long employeeId) {
-		this.employeeId = employeeId;
-	}
+   public long getEmployeeId() {
+      return employeeId;
+   }
 
-	public String getEmployeeName() {
-		return employeeName;
-	}
+   public void setEmployeeId(long employeeId) {
+      this.employeeId = employeeId;
+   }
 
-	public void setEmployeeName(String employeeName) {
-		this.employeeName = employeeName;
-	}
+   public String getEmployeeName() {
+      return employeeName;
+   }
 
-	public String getEmployeeSurname() {
-		return employeeSurname;
-	}
+   public void setEmployeeName(String employeeName) {
+      this.employeeName = employeeName;
+   }
 
-	public void setEmployeeSurname(String employeeSurname) {
-		this.employeeSurname = employeeSurname;
-	}
+   public String getEmployeeSurname() {
+      return employeeSurname;
+   }
 
-	public String getJob() {
-		return job;
-	}
+   public void setEmployeeSurname(String employeeSurname) {
+      this.employeeSurname = employeeSurname;
+   }
 
-	public void setJob(String job) {
-		this.job = job;
-	}
+   public String getJob() {
+      return job;
+   }
+
+   public void setJob(String job) {
+      this.job = job;
+   }
 }

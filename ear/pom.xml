@@ -14,7 +14,6 @@
    <packaging>ear</packaging>
    <name>ear</name>
    <description>ear for gwt ejb3
-
 http://127.0.0.1:8080/ejb-gwt/com.javacodegeeks.war.Application/Application.html?gwt.codesvr=127.0.0.1:9997
    </description>
    
@@ -55,8 +54,19 @@ http://127.0.0.1:8080/ejb-gwt/com.javacodegeeks.war.Application/Application.html
          </plugin>
       </plugins>
    </build>
-   
-   <properties>
+    <!-- check style added by netbeans
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <configLocation>config/sun_checks.xml</configLocation>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>-->
+    <properties>
       <netbeans.hint.deploy.server>JBoss4</netbeans.hint.deploy.server>
    </properties>
 </project>

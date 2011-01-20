@@ -17,6 +17,10 @@ xmlns="http://maven.apache.org/POM/4.0.0"    xmlns:xsi="http://www.w3.org/2001/X
    <url>http://maven.apache.org</url>
   
    <repositories>
+<!--      <repository>
+         <id>gilead</id>
+         <url>https://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo</url>
+      </repository>-->
       <repository>
          <id>jboss-maven2</id>
          <url>http://repository.jboss.com/maven2</url>
@@ -24,6 +28,11 @@ xmlns="http://maven.apache.org/POM/4.0.0"    xmlns:xsi="http://www.w3.org/2001/X
    </repositories>
  
    <dependencies>
+<!--      <dependency>
+         <groupId>net.sf.gilead</groupId>
+         <artifactId>adapter-core</artifactId>
+         <version>1.2.1</version>
+      </dependency>-->
       <dependency>
          <groupId>org.jboss.jbossas</groupId>
          <artifactId>jboss-as-client</artifactId>
