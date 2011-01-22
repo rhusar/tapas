@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-xmlns="http://maven.apache.org/POM/4.0.0"    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
    <modelVersion>4.0.0</modelVersion>
    
    <parent>
@@ -50,18 +49,15 @@ xmlns="http://maven.apache.org/POM/4.0.0"    xmlns:xsi="http://www.w3.org/2001/X
    </dependencies>
   
    <build>
-
-            <!-- include entities -->
+      <!-- include entities for GWT compiler -->
       <resources>
          <resource>
-                <!-- for GWT compiler-->
             <directory>src/main/java</directory>
          </resource>
          <resource>
             <directory>src/main/resources</directory>
          </resource>
       </resources>
-
       
       <plugins>
          <!-- JRebel -->
@@ -78,6 +74,7 @@ xmlns="http://maven.apache.org/POM/4.0.0"    xmlns:xsi="http://www.w3.org/2001/X
                </execution>
             </executions>
          </plugin>
+
          <!-- EJB -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
