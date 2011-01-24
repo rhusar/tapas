@@ -1,13 +1,13 @@
-package com.javacodegeeks.war.server.services;
+package com.radoslavhusar.tapas.war.server.services;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.transaction.UserTransaction;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.javacodegeeks.ejb.entity.Employee;
-import com.javacodegeeks.ejb.session.EmployeeService;
-import com.javacodegeeks.war.shared.services.EmployeeServiceGWT;
+import com.radoslavhusar.tapas.ejb.entity.Employee;
+import com.radoslavhusar.tapas.ejb.session.EmployeeService;
+import com.radoslavhusar.tapas.war.shared.services.EmployeeServiceGWT;
 
 public class EmployeeServiceGWTImpl extends RemoteServiceServlet implements EmployeeServiceGWT {
 

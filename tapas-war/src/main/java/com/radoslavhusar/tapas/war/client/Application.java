@@ -1,4 +1,4 @@
-package com.javacodegeeks.war.client;
+package com.radoslavhusar.tapas.war.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -15,9 +15,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.javacodegeeks.ejb.entity.Employee;
-import com.javacodegeeks.war.shared.services.EmployeeServiceGWT;
-import com.javacodegeeks.war.shared.services.EmployeeServiceGWTAsync;
+import com.radoslavhusar.tapas.ejb.entity.Employee;
+import com.radoslavhusar.tapas.war.shared.services.EmployeeServiceGWT;
+import com.radoslavhusar.tapas.war.shared.services.EmployeeServiceGWTAsync;
 
 
 /**

@@ -1,8 +1,8 @@
-package com.javacodegeeks.war.shared.services;
+package com.radoslavhusar.tapas.war.shared.services;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import com.javacodegeeks.ejb.entity.Employee;
+import com.radoslavhusar.tapas.ejb.entity.Employee;
 
 @RemoteServiceRelativePath("emp")
 public interface EmployeeServiceGWT  extends RemoteService  {

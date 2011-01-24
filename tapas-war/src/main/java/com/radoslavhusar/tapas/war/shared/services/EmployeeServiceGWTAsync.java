@@ -1,7 +1,7 @@
-package com.javacodegeeks.war.shared.services;
+package com.radoslavhusar.tapas.war.shared.services;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.javacodegeeks.ejb.entity.Employee;
+import com.radoslavhusar.tapas.ejb.entity.Employee;
 
 public interface EmployeeServiceGWTAsync {
 	void deleteEmployee(long employeeId, AsyncCallback<Void> callback);

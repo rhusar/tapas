@@ -1,6 +1,6 @@
-package com.javacodegeeks.ejb.session;
+package com.radoslavhusar.tapas.ejb.session;
 
-import com.javacodegeeks.ejb.entity.Employee;
+import com.radoslavhusar.tapas.ejb.entity.Employee;
 
 public interface EmployeeService {
 

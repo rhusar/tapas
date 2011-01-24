@@ -1,4 +1,4 @@
-package com.javacodegeeks.ejb.entity;
+package com.radoslavhusar.tapas.ejb.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
