@@ -1,34 +1,35 @@
-
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
-      <artifactId>ejb-gwt</artifactId>
-      <groupId>com.javacodegeeks</groupId>
+      <artifactId>tapas-parent</artifactId>
+      <groupId>com.radoslavhusar.tapas</groupId>
       <version>0.0.1-SNAPSHOT</version>
    </parent>
 
-   <groupId>com.javacodegeeks</groupId>
-   <artifactId>ear</artifactId>
-   <version>0.0.1-SNAPSHOT</version>
+   <groupId>com.radoslavhusar.tapas</groupId>
+   <artifactId>tapas-ear</artifactId>
    <packaging>ear</packaging>
-   <name>ear</name>
+   <version>0.0.1-SNAPSHOT</version>
+   <name>${project.artifactId} ${project.version}</name>
+
    <description>ear for gwt ejb3
-http://127.0.0.1:8080/ejb-gwt/com.javacodegeeks.war.Application/Application.html?gwt.codesvr=127.0.0.1:9997
+      http://127.0.0.1:8080/ejb-gwt/com.javacodegeeks.war.Application/Application.html?gwt.codesvr=127.0.0.1:9997
    </description>
    
    <dependencies>
       <dependency>
-         <groupId>com.javacodegeeks</groupId>
-         <artifactId>ejb-jar</artifactId>
-         <version>0.0.1-SNAPSHOT</version>
+         <groupId>com.radoslavhusar.tapas</groupId>
+         <artifactId>tapas-ejb</artifactId>
          <type>ejb</type>
+         <version>0.0.1-SNAPSHOT</version>         
       </dependency>
       <dependency>
-         <groupId>com.javacodegeeks</groupId>
-         <artifactId>war</artifactId>
-         <version>0.0.1-SNAPSHOT</version>
+         <groupId>com.radoslavhusar.tapas</groupId>
+         <artifactId>tapas-war</artifactId>
          <type>war</type>
+         <version>0.0.1-SNAPSHOT</version>         
       </dependency>
    </dependencies>
 
@@ -66,7 +67,7 @@ http://127.0.0.1:8080/ejb-gwt/com.javacodegeeks.war.Application/Application.html
             </plugin>
         </plugins>
     </reporting>-->
-    <properties>
+   <properties>
       <netbeans.hint.deploy.server>JBoss4</netbeans.hint.deploy.server>
    </properties>
 </project>

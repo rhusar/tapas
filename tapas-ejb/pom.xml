@@ -1,33 +1,22 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
    <modelVersion>4.0.0</modelVersion>
    
    <parent>
-      <artifactId>ejb-gwt</artifactId>
-      <groupId>com.javacodegeeks</groupId>
+      <artifactId>tapas-parent</artifactId>
+      <groupId>com.radoslavhusar.tapas</groupId>
       <version>0.0.1-SNAPSHOT</version>
    </parent>
   
-   <groupId>com.javacodegeeks</groupId>
-   <artifactId>ejb-jar</artifactId>
+   <groupId>com.radoslavhusar.tapas</groupId>
+   <artifactId>tapas-ejb</artifactId>
    <version>0.0.1-SNAPSHOT</version>
-   <name>ejb</name>
    <packaging>ejb</packaging>
+   <name>${project.artifactId} ${project.version}</name>
    <url>http://maven.apache.org</url>
   
-   <repositories>
-<!--      <repository>
-         <id>gilead</id>
-         <url>https://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo</url>
-      </repository>-->
-      <repository>
-         <id>jboss-maven2</id>
-         <url>http://repository.jboss.com/maven2</url>
-      </repository>
-   </repositories>
- 
    <dependencies>
-<!--      <dependency>
+      <!-- <dependency>
          <groupId>net.sf.gilead</groupId>
          <artifactId>adapter-core</artifactId>
          <version>1.2.1</version>
@@ -47,7 +36,18 @@
          <scope>test</scope>
       </dependency>
    </dependencies>
-  
+
+   <repositories>
+      <!-- <repository>
+         <id>gilead</id>
+         <url>https://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo</url>
+      </repository>-->
+      <repository>
+         <id>jboss-maven2</id>
+         <url>http://repository.jboss.com/maven2</url>
+      </repository>
+   </repositories>
+   
    <build>
       <!-- include entities for GWT compiler -->
       <resources>
