@@ -86,7 +86,5 @@
       </plugins>
    </build>
    
-   <properties>
-      <netbeans.hint.deploy.server>JBoss4</netbeans.hint.deploy.server>
-   </properties>
+   <properties></properties>
 </project>

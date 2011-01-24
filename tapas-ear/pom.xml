@@ -23,13 +23,13 @@
          <groupId>com.radoslavhusar.tapas</groupId>
          <artifactId>tapas-ejb</artifactId>
          <type>ejb</type>
-         <version>0.0.1-SNAPSHOT</version>         
+         <version>0.0.1-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>com.radoslavhusar.tapas</groupId>
          <artifactId>tapas-war</artifactId>
          <type>war</type>
-         <version>0.0.1-SNAPSHOT</version>         
+         <version>0.0.1-SNAPSHOT</version>
       </dependency>
    </dependencies>
 
@@ -44,7 +44,7 @@
                   <webModule>
                      <groupId>com.radoslavhusar.tapas</groupId>
                      <artifactId>tapas-war</artifactId>
-                     <contextRoot>tapas</contextRoot>
+                     <contextRoot>/tapas</contextRoot>
                   </webModule>
                   <ejbModule>
                      <groupId>com.radoslavhusar.tapas</groupId>
