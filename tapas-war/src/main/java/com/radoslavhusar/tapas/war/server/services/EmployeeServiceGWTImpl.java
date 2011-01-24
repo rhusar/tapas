@@ -11,24 +11,24 @@ import com.radoslavhusar.tapas.war.shared.services.EmployeeServiceGWT;
 
 public class EmployeeServiceGWTImpl extends RemoteServiceServlet implements EmployeeServiceGWT {
 
-   /**
-    *
-    */
    private static final long serialVersionUID = 5995064321382986251L;
+   @EJB //(mappedName = "EmployeeServiceBean/local")
    private EmployeeService employeeService;
    @Resource(name = "java:UserTransaction")
    UserTransaction ut;
 
-   @EJB
+   /*
+   @EJB(mappedName = "employeeService/local")
    public void setEmployeeService(EmployeeService employeeService) {
-      this.employeeService = employeeService;
-   }
-
+   this.employeeService = employeeService;
+   }*/
+   @Override
    public void deleteEmployee(long employeeId) throws Exception {
       employeeService.deleteEmployee(employeeId);
 
    }
 
+   @Override
    public Employee findEmployee(long employeeId) {
 
       Employee emp = employeeService.findEmployee(employeeId);

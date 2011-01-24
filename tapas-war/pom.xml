@@ -25,6 +25,7 @@
       <maven.compiler.source>1.6</maven.compiler.source>
       <maven.compiler.target>1.6</maven.compiler.target>
       -->
+      <netbeans.hint.deploy.server>JBoss4</netbeans.hint.deploy.server>
    </properties>
 
    <dependencies>
@@ -87,6 +88,13 @@
                      <goal>test</goal>
                   </goals>
                </execution>
+               <execution>
+                  <id>mergewebxml</id>
+                  <phase>process-classes</phase>
+                  <goals>
+                     <goal>mergewebxml</goal>
+                  </goals>
+               </execution>
             </executions>
 
             <configuration>
@@ -94,22 +102,25 @@
                <draftCompile>true</draftCompile>
                <runTarget>com.javacodegeeks.war.Application/Application.html</runTarget>
                <extraJvmArgs>-Xmx256m</extraJvmArgs>
+               <logLevel>TRACE</logLevel>
+               <!-- for server.xml mapping -->
+               <!--
+               <packageNamePerModule>
+                  <hello>com.radoslavhusar.tapas.war.server.services</hello>
+               </packageNamePerModule>-->
+               <scanRemoteServiceRelativePathAnnotation>true</scanRemoteServiceRelativePathAnnotation>
             </configuration>
          </plugin>
-          <!--
-          If you want to use the target/web.xml file mergewebxml produces,
-          tell the war plugin to use it.
-          Also, exclude what you want from the final artifact here. -->
-          <!--  <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <webXml>target/web.xml</webXml>
-                    <warSourceExcludes>.gwt-tmp/**</warSourceExcludes>
-                </configuration>
-            </plugin>
-            -->
-
+         <!-- If you want to use the target/web.xml file mergewebxml produces,
+         tell the war plugin to use it. Also, exclude what you want from the final artifact here. -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <configuration>
+               <webXml>target/web.xml</webXml>
+               <warSourceExcludes>.gwt-tmp/**</warSourceExcludes>
+            </configuration>
+         </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>

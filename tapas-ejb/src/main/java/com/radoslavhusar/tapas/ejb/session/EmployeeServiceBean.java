@@ -7,7 +7,7 @@ import javax.persistence.PersistenceContext;
 
 import com.radoslavhusar.tapas.ejb.entity.Employee;
 
-@Stateless(name = "employeeService")
+@Stateless //(name = "employeeService")
 @Local(EmployeeService.class)
 public class EmployeeServiceBean implements EmployeeService {
 
@@ -25,8 +25,7 @@ public class EmployeeServiceBean implements EmployeeService {
    }
 
    @Override
-   public void saveEmployee(long employeeId, String name, String surname,
-           String jobDescription) throws Exception {
+   public void saveEmployee(long employeeId, String name, String surname, String jobDescription) throws Exception {
       Employee emp = new Employee();
       emp.setEmployeeId(employeeId);
       emp.setEmployeeName(name);
@@ -38,8 +37,7 @@ public class EmployeeServiceBean implements EmployeeService {
    }
 
    @Override
-   public void saveOrUpdateEmployee(long employeeId, String name,
-           String surname, String jobDescription) throws Exception {
+   public void saveOrUpdateEmployee(long employeeId, String name, String surname, String jobDescription) throws Exception {
       Employee emp = new Employee();
       emp.setEmployeeId(employeeId);
       emp.setEmployeeName(name);
