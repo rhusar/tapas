@@ -42,13 +42,13 @@
                <generateApplicationXml>true</generateApplicationXml>
                <modules>
                   <webModule>
-                     <groupId>com.javacodegeeks</groupId>
-                     <artifactId>war</artifactId>
-                     <contextRoot>ejb-gwt</contextRoot>
+                     <groupId>com.radoslavhusar.tapas</groupId>
+                     <artifactId>tapas-war</artifactId>
+                     <contextRoot>tapas</contextRoot>
                   </webModule>
                   <ejbModule>
-                     <groupId>com.javacodegeeks</groupId>
-                     <artifactId>ejb-jar</artifactId>
+                     <groupId>com.radoslavhusar.tapas</groupId>
+                     <artifactId>tapas-ejb</artifactId>
                   </ejbModule>
                </modules>
             </configuration>
