@@ -30,10 +30,9 @@ public class EmployeeServiceBean implements EmployeeService {
       emp.setEmployeeId(employeeId);
       emp.setEmployeeName(name);
       emp.setEmployeeSurname(surname);
-      emp.setJob(jobDescription + "jobsuffix");
+      emp.setJob(jobDescription);
 
       entityManager.persist(emp);
-
    }
 
    @Override
@@ -42,7 +41,7 @@ public class EmployeeServiceBean implements EmployeeService {
       emp.setEmployeeId(employeeId);
       emp.setEmployeeName(name);
       emp.setEmployeeSurname(surname);
-      emp.setJob(jobDescription + "jobsuffix");
+      emp.setJob(jobDescription);
 
       entityManager.merge(emp);
    }
