@@ -51,6 +51,13 @@
          <scope>provided</scope>
       </dependency>
 
+      <!-- http://code.google.com/p/google-gin/ -->
+<!--      <dependency>
+         <groupId>com.googlecode.gwt.inject</groupId>
+         <artifactId>gin</artifactId>
+         <version>1.0</version>
+      </dependency>-->
+
       <!-- JEE Server -->
       <dependency>
          <groupId>org.jboss.jbossas</groupId>
@@ -99,7 +106,8 @@
             <configuration>
                <!-- for production false -->
                <draftCompile>true</draftCompile>
-               <runTarget>com.javacodegeeks.war.Application/Application.html</runTarget>
+<!--               <runTarget>com.javacodegeeks.war.Application/Application.html</runTarget>-->
+               <runTarget>hellomvp.html</runTarget>
                <extraJvmArgs>-Xmx256m</extraJvmArgs>
                <logLevel>TRACE</logLevel>
                <!-- for server.xml mapping -->
