@@ -12,14 +12,14 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.hellomvp.client.mvp.AppActivityMapper;
 import com.hellomvp.client.mvp.AppPlaceHistoryMapper;
-import com.hellomvp.client.place.HelloPlace;
+import com.hellomvp.client.task.TaskListPlace;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class HelloMVP implements EntryPoint {
 
-   private Place defaultPlace = new HelloPlace("World!");
+   private Place defaultPlace = new TaskListPlace(); // new HelloPlace("World!"); //new DefaultPlace(); //
    private SimplePanel appWidget = new SimplePanel();
 
    /**

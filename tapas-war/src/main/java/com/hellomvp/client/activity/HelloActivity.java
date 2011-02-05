@@ -37,7 +37,7 @@ public class HelloActivity extends AbstractActivity implements HelloView.Present
     */
    @Override
    public String mayStop() {
-      return "Please hold on. This activity is stopping.";
+      return null; //return "Please hold on. This activity is stopping.";
    }
 
    /**

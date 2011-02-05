@@ -8,17 +8,17 @@ import com.hellomvp.client.activity.GoodbyeActivity;
 import com.hellomvp.client.activity.HelloActivity;
 import com.hellomvp.client.place.GoodbyePlace;
 import com.hellomvp.client.place.HelloPlace;
+import com.hellomvp.client.task.TaskListActivity;
+import com.hellomvp.client.task.TaskListPlace;
 
 public class AppActivityMapper implements ActivityMapper {
 
    private ClientFactory clientFactory;
 
    /**
-    * AppActivityMapper associates each Place with its corresponding
-    * {@link Activity}
+    * AppActivityMapper associates each Place with its corresponding  {@link Activity}
     *
-    * @param clientFactory
-    *            Factory to be passed to activities
+    * @param clientFactory Factory to be passed to activities
     */
    public AppActivityMapper(ClientFactory clientFactory) {
       super();
@@ -26,19 +26,22 @@ public class AppActivityMapper implements ActivityMapper {
    }
 
    /**
-    * Map each Place to its corresponding Activity. This would be a great use
-    * for GIN.
+    * Map each Place to its corresponding Activity. This would be a great use for GIN.
+    * 
     * @return Activity
     */
    @Override
    public Activity getActivity(Place place) {
       // This is begging for GIN
-      if (place instanceof HelloPlace) {
+
+      return new TaskListActivity((TaskListPlace) place, clientFactory);
+
+      /*if (place instanceof HelloPlace) {
          return new HelloActivity((HelloPlace) place, clientFactory);
       } else if (place instanceof GoodbyePlace) {
          return new GoodbyeActivity((GoodbyePlace) place, clientFactory);
       }
 
-      return null;
+      return null;*/
    }
 }

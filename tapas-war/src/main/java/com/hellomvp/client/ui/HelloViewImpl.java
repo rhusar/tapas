@@ -21,7 +21,7 @@ public class HelloViewImpl extends Composite implements HelloView {
    SpanElement nameSpan;
 //   @UiField
 //   Anchor goodbyeLink;
-   private Presenter listener;
+   private Presenter presenter;
    private String name;
 
    public HelloViewImpl() {
@@ -36,11 +36,11 @@ public class HelloViewImpl extends Composite implements HelloView {
 
    @UiHandler("goodbyeLink")
    void onClickGoodbye(ClickEvent e) {
-      listener.goTo(new GoodbyePlace(name));
+      presenter.goTo(new GoodbyePlace(name));
    }
 
    @Override
    public void setPresenter(Presenter listener) {
-      this.listener = listener;
+      this.presenter = listener;
    }
 }
