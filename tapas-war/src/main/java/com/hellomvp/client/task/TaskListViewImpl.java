@@ -23,28 +23,51 @@ package com.hellomvp.client.task;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
+import com.radoslavhusar.tapas.ejb.entity.Task;
 
 /**
  *
  * @author <a href="mailto:rhusar@redhat.com">Radoslav Husar</a>
  */
-public class TaskListViewImpl extends Composite implements TaskListView {
+public class TaskListViewImpl extends ResizeComposite implements TaskListView {
 
    private Presenter presenter;
-   private static TaskListViewImplUiBinder uiBinder = GWT.create(TaskListViewImplUiBinder.class);
+   private static Binder binder = GWT.create(Binder.class);
 
-   interface TaskListViewImplUiBinder extends UiBinder<Widget, TaskListViewImpl> {
+   interface Binder extends UiBinder<Widget, TaskListViewImpl> {
    }
+   @UiField
+   DockLayoutPanel panell;
+   @UiField
+   FlexTable header;
+   @UiField
+   FlexTable table;
 
    @SuppressWarnings("LeakingThisInConstructor")
    public TaskListViewImpl() {
-      initWidget(uiBinder.createAndBindUi(this));
+      initWidget(binder.createAndBindUi(this));
+
+      header.setText(0, 0, "Task ID");
+      header.setText(0, 1, "Text");
+      header.setText(0, 2, "Some Integer");
+
+      int i = 0;
+      for (Task t : TaskListDummySource.fetch()) {
+         //table.insertRow(0);
+         table.setText(i, 0, "" + t.getTaskId());
+         table.setText(i, 1, t.getSummary());
+         table.setText(i, 2, String.valueOf(t.getSomeinteger()));
+         i++;
+      }
    }
 
    @Override
-   public void setPresenter(Presenter listener) {
-      this.presenter = listener;
+   public void setPresenter(Presenter presenter) {
+      this.presenter = presenter;
    }
 }

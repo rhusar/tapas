@@ -21,16 +21,27 @@
  */
 package com.hellomvp.client.task;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.radoslavhusar.tapas.ejb.entity.Task;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
  * @author <a href="mailto:rhusar@redhat.com">Radoslav Husar</a>
  */
-public interface TaskListView extends IsWidget {
+public class TaskListDummySource {
 
-   void setPresenter(Presenter presenter);
+   public static Set<Task> fetch() {
 
-   public interface Presenter {
+      Set set = new HashSet<Task>();
+
+      set.add(new Task(1, "Implement somehting", 1));
+      set.add(new Task(2, "Do somthing else", 4));
+      set.add(new Task(4, "Ignore erros", 16));
+
+      return set;
+   }
+
+   private TaskListDummySource() {
    }
 }

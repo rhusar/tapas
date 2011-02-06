@@ -11,7 +11,7 @@ public class ResourceGroup implements java.io.Serializable {
 
    private static final long serialVersionUID = 7440297955003302414L;
    @Id
-   @Column(name = "employee_id")
+   @Column
    private long resourceGroupId;
 
    public long getResourceGroupId() {
