@@ -19,46 +19,30 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.hellomvp.client.menu;
+package com.hellomvp.client.task.edit;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.hellomvp.client.ClientFactory;
 
 /**
  *
  * @author <a href="mailto:rhusar@redhat.com">Radoslav Husar</a>
  */
-public class MenuViewImpl extends Composite implements MenuView {
+public class TaskEditActivity extends AbstractActivity implements TaskEditView.Presenter {
 
-   private static MenuViewImplUiBinder uiBinder = GWT.create(MenuViewImplUiBinder.class);
-   private Presenter presenter;
+   private final ClientFactory clientFactory;
 
-   interface MenuViewImplUiBinder extends UiBinder<Widget, MenuViewImpl> {
-   }
-   @UiField
-   Anchor signOutLink;
-//   @UiField
-//   Anchor aboutLink;
-
-   public MenuViewImpl() {
-      initWidget(uiBinder.createAndBindUi(this));
-   }
-
-   @UiHandler("signOutLink")
-   void onSelectMeAnchorClick(ClickEvent event) {
-      //Window.alert("clicked on selectMe");
-      presenter.doAbout();
+   public TaskEditActivity(TaskEditPlace taskListPlace, ClientFactory clientFactory) {
+      this.clientFactory = clientFactory;
    }
 
    @Override
-   public void setPresenter(Presenter presenter) {
-      this.presenter = presenter;
+   public void start(AcceptsOneWidget panel, EventBus eventBus) {
+      TaskEditView view = clientFactory.getTaskEditView();
+      view.setPresenter(this);
+
+      panel.setWidget(view.asWidget());
    }
 }

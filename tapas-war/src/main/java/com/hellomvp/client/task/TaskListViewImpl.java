@@ -22,10 +22,14 @@
 package com.hellomvp.client.task;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTMLTable.Cell;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import com.hellomvp.client.menu.MenuView;
@@ -69,6 +73,21 @@ public class TaskListViewImpl extends ResizeComposite implements TaskListView {
          table.setText(i, 2, String.valueOf(t.getSomeinteger()));
          i++;
       }
+   }
+
+   @UiHandler("table")
+   void onxclick(ClickEvent ce) {
+      //if (ce == null) return;
+//
+      Cell c = table.getCellForEvent(ce);
+//
+//      // get the id
+      String id = table.getText(c.getRowIndex(), 0);
+//
+      Window.alert(""+Integer.valueOf(id));
+
+
+
    }
 
    @Override

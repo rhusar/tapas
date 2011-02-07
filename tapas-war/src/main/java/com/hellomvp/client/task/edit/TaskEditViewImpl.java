@@ -19,42 +19,37 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.hellomvp.client.menu;
+package com.hellomvp.client.task.edit;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
+import com.hellomvp.client.menu.MenuView;
+import com.radoslavhusar.tapas.ejb.entity.Task;
 
 /**
  *
  * @author <a href="mailto:rhusar@redhat.com">Radoslav Husar</a>
  */
-public class MenuViewImpl extends Composite implements MenuView {
+public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
 
-   private static MenuViewImplUiBinder uiBinder = GWT.create(MenuViewImplUiBinder.class);
    private Presenter presenter;
+   private static Binder binder = GWT.create(Binder.class);
 
-   interface MenuViewImplUiBinder extends UiBinder<Widget, MenuViewImpl> {
+   interface Binder extends UiBinder<Widget, TaskEditViewImpl> {
    }
    @UiField
-   Anchor signOutLink;
-//   @UiField
-//   Anchor aboutLink;
+   MenuView menu;
 
-   public MenuViewImpl() {
-      initWidget(uiBinder.createAndBindUi(this));
-   }
+   @SuppressWarnings("LeakingThisInConstructor")
+   public TaskEditViewImpl(MenuView.Presenter him) {
+      initWidget(binder.createAndBindUi(this));
 
-   @UiHandler("signOutLink")
-   void onSelectMeAnchorClick(ClickEvent event) {
-      //Window.alert("clicked on selectMe");
-      presenter.doAbout();
+      menu.setPresenter(him);
    }
 
    @Override

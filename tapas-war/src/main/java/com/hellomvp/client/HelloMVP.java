@@ -50,12 +50,8 @@ public class HelloMVP implements EntryPoint {
 
       Window.enableScrolling(false);
       Window.setMargin("0px");
-
-//      RootPanel.get().add(appWidget);
-//      appWidget.setHeight("100%");
-//      appWidget.setWidth("100%");
-//appWidget.removeStyleName(null)
-//      appWidget.setTitle("THIS IS IT");
+      Window.setTitle("TAPAS | Task-Resource Allocation Platform");
+      
       RootLayoutPanel.get().add(appWidget);
 
       // Goes to place represented on URL or default place

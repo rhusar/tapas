@@ -19,32 +19,18 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.hellomvp.client.menu;
+package com.hellomvp.client.task.edit;
 
-import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  *
  * @author <a href="mailto:rhusar@redhat.com">Radoslav Husar</a>
  */
-public class MenuActivity extends AbstractActivity implements MenuView.Presenter {
+public interface TaskEditView extends IsWidget {
 
-   private EventBus eventBus;
+   void setPresenter(Presenter presenter);
 
-   public MenuActivity(EventBus eventBus) {
-      this.eventBus = eventBus;
-   }
-
-   @Override
-   public void start(AcceptsOneWidget panel, EventBus eventBus) {
-      return;
-   }
-
-   @Override
-   public void doAbout() {
-      Window.alert("Log out.");
+   public interface Presenter {
    }
 }
