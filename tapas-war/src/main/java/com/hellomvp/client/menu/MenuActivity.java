@@ -23,6 +23,7 @@ package com.hellomvp.client.menu;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 /**
@@ -31,8 +32,14 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
  */
 public class MenuActivity extends AbstractActivity implements MenuView.Presenter {
 
+
    @Override
    public void start(AcceptsOneWidget panel, EventBus eventBus) {
       return;
+   }
+
+   @Override
+   public void doAbout() {
+      Window.alert("clicked on selectMe");
    }
 }

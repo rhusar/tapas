@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
+import com.hellomvp.client.menu.MenuView;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 
 /**
@@ -47,10 +48,14 @@ public class TaskListViewImpl extends ResizeComposite implements TaskListView {
    FlexTable header;
    @UiField
    FlexTable table;
+   @UiField
+   MenuView menu;
 
    @SuppressWarnings("LeakingThisInConstructor")
-   public TaskListViewImpl() {
+   public TaskListViewImpl(MenuView.Presenter him) {
       initWidget(binder.createAndBindUi(this));
+
+      menu.setPresenter(him);
 
       header.setText(0, 0, "Task ID");
       header.setText(0, 1, "Text");

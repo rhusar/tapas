@@ -22,8 +22,11 @@
 package com.hellomvp.client.menu;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
@@ -35,6 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class MenuViewImpl extends Composite implements MenuView {
 
    private static MenuViewImplUiBinder uiBinder = GWT.create(MenuViewImplUiBinder.class);
+   private Presenter presenter;
 
    interface MenuViewImplUiBinder extends UiBinder<Widget, MenuViewImpl> {
    }
@@ -45,5 +49,16 @@ public class MenuViewImpl extends Composite implements MenuView {
 
    public MenuViewImpl() {
       initWidget(uiBinder.createAndBindUi(this));
+   }
+
+   @UiHandler("aboutLink")
+   void onSelectMeAnchorClick(ClickEvent event) {
+      //Window.alert("clicked on selectMe");
+      presenter.doAbout();
+   }
+
+   @Override
+   public void setPresenter(Presenter presenter) {
+      this.presenter = presenter;
    }
 }

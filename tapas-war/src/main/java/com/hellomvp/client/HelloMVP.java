@@ -34,15 +34,13 @@ public class HelloMVP implements EntryPoint {
    public void onModuleLoad() {
       // Create ClientFactory using deferred binding so we can replace with different
       // impls in gwt.xml
-      ClientFactory clientFactory = new ClientFactoryImpl(); //GWT.create(ClientFactory.class);
+      ClientFactory clientFactory = GWT.create(ClientFactory.class); //new ClientFactoryImpl(); //
       EventBus eventBus = clientFactory.getEventBus();
       PlaceController placeController = clientFactory.getPlaceController();
 
       // Start ActivityManager for the main widget with our ActivityMapper
       ActivityMapper activityMapper = new AppActivityMapper(clientFactory);
       ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
-//      appWidget.setHeight("1000px");
-//      appWidget.setWidth("1000px");
       activityManager.setDisplay(appWidget);
 
       // Start PlaceHistoryHandler with our PlaceHistoryMapper
@@ -54,8 +52,8 @@ public class HelloMVP implements EntryPoint {
       Window.setMargin("0px");
 
 //      RootPanel.get().add(appWidget);
-      appWidget.setHeight("100%");
-      appWidget.setWidth("100%");
+//      appWidget.setHeight("100%");
+//      appWidget.setWidth("100%");
 //appWidget.removeStyleName(null)
 //      appWidget.setTitle("THIS IS IT");
       RootLayoutPanel.get().add(appWidget);
