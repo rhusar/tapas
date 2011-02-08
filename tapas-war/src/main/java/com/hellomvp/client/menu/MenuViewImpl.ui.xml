@@ -3,6 +3,22 @@
    xmlns:ui="urn:ui:com.google.gwt.uibinder"
    xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
+   <g:HTMLPanel>
+      <div class='{style.logo}'/>
+
+      <div class="{style.statusDiv}">
+         <div>
+            <b>rhusar@redhat.com</b>
+         </div>
+
+         <div class='{style.linksDiv}'>
+            <g:Anchor href='javascript:;' ui:field='signOutLink'>Sign Out</g:Anchor>
+<!--            <g:Anchor href='javascript:;' ui:field='aboutLink'>About</g:Anchor>-->
+         </div>
+      </div>
+   </g:HTMLPanel>
+
+
    <ui:style>
   .statusDiv {
     text-align: right;
@@ -20,21 +36,6 @@
     height: 75px;
   }
    </ui:style>
-
-   <g:HTMLPanel>
-      <div class='{style.logo}'/>
-
-      <div class="{style.statusDiv}">
-         <div>
-            <b>rhusar@redhat.com</b>
-         </div>
-
-         <div class='{style.linksDiv}'>
-            <g:Anchor href='javascript:;' ui:field='signOutLink'>Sign Out</g:Anchor>
-<!--            <g:Anchor href='javascript:;' ui:field='aboutLink'>About</g:Anchor>-->
-         </div>
-      </div>
-   </g:HTMLPanel>
 
 
 </ui:UiBinder>

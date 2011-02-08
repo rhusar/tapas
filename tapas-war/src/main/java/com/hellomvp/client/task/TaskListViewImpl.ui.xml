@@ -4,6 +4,32 @@
   xmlns:g='urn:import:com.google.gwt.user.client.ui'
   xmlns:menu='urn:import:com.hellomvp.client.menu'>
 
+   <g:DockLayoutPanel ui:field='panell' unit='EM' height="100%" styleName='{style.outer}'>
+
+      <g:north size='5'>
+         <menu:MenuViewImpl ui:field='menu' />
+      </g:north>
+
+      <g:north size='3'>
+         <g:FlexTable ui:field='header' styleName='{style.header}' cellSpacing='0' cellPadding='0' />
+      </g:north>
+
+      <g:center>
+         <g:ScrollPanel>
+            <g:FlexTable ui:field='table'  styleName='{style.table}'  cellSpacing='0' cellPadding='0'/>
+         </g:ScrollPanel>
+      </g:center>
+
+      <g:south size="2">
+         <menu:StatusViewImpl ui:field='status' />
+      </g:south>
+      
+   </g:DockLayoutPanel>
+
+
+
+
+
 <!--  <ui:image field='gradient' src='gradient_bg_dark.png' repeatStyle='Horizontal'/>-->
 
    <ui:style>
@@ -61,25 +87,6 @@
  
 
 
-   <g:DockLayoutPanel ui:field='panell' unit='EM' height="100%" styleName='{style.outer}'>
 
-      <g:north size='5'>
-        <menu:MenuViewImpl ui:field='menu' />
-      </g:north>
-
-      <g:north size='3'>
-         <g:FlexTable ui:field='header' styleName='{style.header}' cellSpacing='0' cellPadding='0' />
-      </g:north>
-
-      <g:center>
-         <g:ScrollPanel>
-            <g:FlexTable ui:field='table'  styleName='{style.table}'  cellSpacing='0' cellPadding='0'/>
-         </g:ScrollPanel>
-      </g:center>
-
-      <g:south size="2">
-         <g:HTML>Just some dolna lista</g:HTML>
-      </g:south>
-   </g:DockLayoutPanel>
    
 </ui:UiBinder>
