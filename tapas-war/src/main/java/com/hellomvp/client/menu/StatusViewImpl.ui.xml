@@ -4,7 +4,7 @@
    xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
    <g:HTMLPanel>
-      <div style='text-align:right;'>Pretty much nothing happening over here! Yet. &nbsp;&nbsp;&nbsp;</div>
+      <div style='text-align:right;'>&copy; Radoslav Husar | 2011&nbsp;&nbsp;</div>
    </g:HTMLPanel>
 
 </ui:UiBinder>

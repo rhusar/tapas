@@ -22,14 +22,14 @@
 package com.hellomvp.client.task.edit;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import com.hellomvp.client.menu.MenuView;
-import com.radoslavhusar.tapas.ejb.entity.Task;
 
 /**
  *
@@ -56,4 +56,13 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
    public void setPresenter(Presenter presenter) {
       this.presenter = presenter;
    }
+
+   @UiField
+   Anchor aaa;
+
+   @UiHandler("aaa")
+   void dasdasdasdas(ClickEvent ce) {
+      presenter.goTo();
+   }
+
 }

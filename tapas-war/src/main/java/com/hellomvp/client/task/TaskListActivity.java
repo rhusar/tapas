@@ -23,8 +23,10 @@ package com.hellomvp.client.task;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.hellomvp.client.ClientFactory;
+import com.hellomvp.client.task.edit.TaskEditPlace;
 
 /**
  *
@@ -34,7 +36,7 @@ public class TaskListActivity extends AbstractActivity implements TaskListView.P
 
    private final ClientFactory clientFactory;
 
-   public TaskListActivity(TaskListPlace taskListPlace, ClientFactory clientFactory) {
+   public TaskListActivity(Place taskListPlace, ClientFactory clientFactory) {
       this.clientFactory = clientFactory;
    }
 
@@ -44,5 +46,10 @@ public class TaskListActivity extends AbstractActivity implements TaskListView.P
       view.setPresenter(this);
 
       panel.setWidget(view.asWidget());
+   }
+
+   @Override
+   public void goToEdit(String someId) {
+      clientFactory.getPlaceController().goTo(new TaskEditPlace(someId));
    }
 }

@@ -19,5 +19,5 @@ public interface ClientFactory {
 
    TaskListView getTaskListView();
 
-     TaskEditView getTaskEditView();
+   TaskEditView getTaskEditView();
 }

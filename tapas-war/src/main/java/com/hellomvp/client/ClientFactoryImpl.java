@@ -21,7 +21,7 @@ public class ClientFactoryImpl implements ClientFactory {
    private static final HelloView helloView = new HelloViewImpl();
    private static final GoodbyeView goodbyeView = new GoodbyeViewImpl();
    private static final TaskListViewImpl taskListView = new TaskListViewImpl(ma);
-   private static final TaskEditView tev = null; // new TaskEditViewImpl(ma) ;
+   private static final TaskEditView tev = new TaskEditViewImpl(ma) ;
 
    @Override
    public EventBus getEventBus() {

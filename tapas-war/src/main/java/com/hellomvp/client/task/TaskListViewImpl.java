@@ -23,6 +23,7 @@ package com.hellomvp.client.task;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -84,7 +85,12 @@ public class TaskListViewImpl extends ResizeComposite implements TaskListView {
 //      // get the id
       String id = table.getText(c.getRowIndex(), 0);
 //
-      Window.alert(""+Integer.valueOf(id));
+      //Window.alert(""+Integer.valueOf(id));
+
+      // change the view
+
+
+      presenter.goToEdit(id);
 
 
 

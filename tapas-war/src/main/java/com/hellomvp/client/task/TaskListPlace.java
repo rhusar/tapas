@@ -22,10 +22,38 @@
 package com.hellomvp.client.task;
 
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceTokenizer;
 
 /**
  *
  * @author <a href="mailto:rhusar@redhat.com">Radoslav Husar</a>
  */
 public class TaskListPlace extends Place {
+
+   private String helloName;
+
+   public TaskListPlace(String token) {
+      this.helloName = token;
+   }
+
+   public TaskListPlace() {
+      
+   }
+
+   public String getHelloName() {
+      return helloName;
+   }
+
+   public static class Tokenizer implements PlaceTokenizer<TaskListPlace> {
+
+      @Override
+      public String getToken(TaskListPlace place) {
+         return place.getHelloName();
+      }
+
+      @Override
+      public TaskListPlace getPlace(String token) {
+         return new TaskListPlace(token);
+      }
+   }
 }

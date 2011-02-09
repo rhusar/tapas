@@ -1,3 +1,5 @@
+package com.hellomvp.client.task.edit;
+
 /*
  * JBoss, Home of Professional Open Source.
  * Copyright 2010, Red Hat Middleware LLC, and individual contributors
@@ -19,13 +21,35 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.hellomvp.client.task.edit;
-
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceTokenizer;
 
 /**
  *
  * @author <a href="mailto:rhusar@redhat.com">Radoslav Husar</a>
  */
 public class TaskEditPlace extends Place {
+
+   private String helloName;
+
+   public TaskEditPlace(String token) {
+      this.helloName = token;
+   }
+
+   public String getHelloName() {
+      return helloName;
+   }
+
+   public static class Tokenizer implements PlaceTokenizer<TaskEditPlace> {
+
+      @Override
+      public String getToken(TaskEditPlace place) {
+         return place.getHelloName();
+      }
+
+      @Override
+      public TaskEditPlace getPlace(String token) {
+         return new TaskEditPlace(token);
+      }
+   }
 }

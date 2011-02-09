@@ -22,7 +22,7 @@ import com.hellomvp.client.task.TaskListPlace;
  */
 public class HelloMVP implements EntryPoint {
 
-   private Place defaultPlace = new TaskListPlace(); // new HelloPlace("World!"); //new DefaultPlace(); //
+   private Place defaultPlace = new TaskListPlace("something"); // new HelloPlace("World!"); //new DefaultPlace(); //
    //private SimplePanel appWidget = new ScrollPanel();
    private SimplePanel appWidget = new SimplePanel();
 //   private ComplexPanel appWidget = new DockLayoutPanel(Unit.EM);

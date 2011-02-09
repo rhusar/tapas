@@ -4,12 +4,10 @@ import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.hellomvp.client.ClientFactory;
-import com.hellomvp.client.activity.GoodbyeActivity;
-import com.hellomvp.client.activity.HelloActivity;
-import com.hellomvp.client.place.GoodbyePlace;
-import com.hellomvp.client.place.HelloPlace;
 import com.hellomvp.client.task.TaskListActivity;
 import com.hellomvp.client.task.TaskListPlace;
+import com.hellomvp.client.task.edit.TaskEditActivity;
+import com.hellomvp.client.task.edit.TaskEditPlace;
 
 public class AppActivityMapper implements ActivityMapper {
 
@@ -34,14 +32,21 @@ public class AppActivityMapper implements ActivityMapper {
    public Activity getActivity(Place place) {
       // This is begging for GIN
 
-      return new TaskListActivity((TaskListPlace) place, clientFactory);
+      //return new TaskListActivity((TaskListPlace) place, clientFactory);
+
+      if (place instanceof TaskListPlace) {
+         return new TaskListActivity(place, clientFactory);
+      } else if (place instanceof TaskEditPlace) {
+         return new TaskEditActivity(place, clientFactory);
+      }
+      
 
       /*if (place instanceof HelloPlace) {
          return new HelloActivity((HelloPlace) place, clientFactory);
       } else if (place instanceof GoodbyePlace) {
          return new GoodbyeActivity((GoodbyePlace) place, clientFactory);
-      }
+      }*/
 
-      return null;*/
+      return null;
    }
 }
