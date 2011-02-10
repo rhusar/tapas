@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import com.hellomvp.client.menu.MenuView;
+import com.hellomvp.client.menu.MenuViewImpl;
 
 /**
  *
@@ -42,14 +43,16 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
 
    interface Binder extends UiBinder<Widget, TaskEditViewImpl> {
    }
-   @UiField
-   MenuView menu;
+   @UiField(provided=true)
+   MenuViewImpl menu;
 
    @SuppressWarnings("LeakingThisInConstructor")
-   public TaskEditViewImpl(MenuView.Presenter him) {
+   public TaskEditViewImpl(MenuView menu) {
+      
+      this.menu = (MenuViewImpl) menu;
       initWidget(binder.createAndBindUi(this));
 
-      menu.setPresenter(him);
+      //menu.setPresenter(him);
    }
 
    @Override

@@ -23,17 +23,16 @@ package com.hellomvp.client.task;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTMLTable.Cell;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import com.hellomvp.client.menu.MenuView;
+import com.hellomvp.client.menu.MenuViewImpl;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 
 /**
@@ -53,14 +52,15 @@ public class TaskListViewImpl extends ResizeComposite implements TaskListView {
    FlexTable header;
    @UiField
    FlexTable table;
-   @UiField
-   MenuView menu;
+   @UiField(provided=true)
+   MenuViewImpl menu;
 
    @SuppressWarnings("LeakingThisInConstructor")
-   public TaskListViewImpl(MenuView.Presenter him) {
+   public TaskListViewImpl(MenuViewImpl menu) {
+      this.menu = (MenuViewImpl) menu;
       initWidget(binder.createAndBindUi(this));
 
-      menu.setPresenter(him);
+      //menu.setPresenter(him);
 
       header.setText(0, 0, "Task ID");
       header.setText(0, 1, "Text");

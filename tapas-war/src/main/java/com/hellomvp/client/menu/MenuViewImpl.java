@@ -38,8 +38,11 @@ public class MenuViewImpl extends Composite implements MenuView {
 //   @UiField
 //   Anchor signOutLink;
 
-   public MenuViewImpl() {
+   public MenuViewImpl(Presenter p) {
+      presenter=p;
       initWidget(binder.createAndBindUi(this));
+
+      System.out.println("init");
 
       Set<String> set = new HashSet<String>();
       set.clear();

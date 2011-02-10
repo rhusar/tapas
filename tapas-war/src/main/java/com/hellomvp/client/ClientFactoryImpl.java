@@ -4,6 +4,8 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.hellomvp.client.menu.MenuActivity;
+import com.hellomvp.client.menu.MenuView;
+import com.hellomvp.client.menu.MenuViewImpl;
 import com.hellomvp.client.task.TaskListView;
 import com.hellomvp.client.task.TaskListViewImpl;
 import com.hellomvp.client.task.edit.TaskEditView;
@@ -15,13 +17,16 @@ import com.hellomvp.client.ui.HelloViewImpl;
 
 public class ClientFactoryImpl implements ClientFactory {
 
+   // MVP
    private static final EventBus eventBus = new SimpleEventBus();
    private static final PlaceController placeController = new PlaceController(eventBus);
-   private static final MenuActivity ma = new MenuActivity(eventBus);
+   // Menu/Status
+   private static final MenuActivity menua = new MenuActivity(eventBus);
+   private static final MenuViewImpl menu = new MenuViewImpl(menua);
    private static final HelloView helloView = new HelloViewImpl();
    private static final GoodbyeView goodbyeView = new GoodbyeViewImpl();
-   private static final TaskListViewImpl taskListView = new TaskListViewImpl(ma);
-   private static final TaskEditView tev = new TaskEditViewImpl(ma) ;
+   //private static final TaskEditView tev = new TaskEditViewImpl(menu);
+   private static final TaskListViewImpl taskListView = new TaskListViewImpl(menu);
 
    @Override
    public EventBus getEventBus() {
@@ -45,11 +50,11 @@ public class ClientFactoryImpl implements ClientFactory {
 
    @Override
    public TaskListView getTaskListView() {
-      return taskListView;
+      return new TaskListViewImpl(menu);
    }
 
    @Override
    public TaskEditView getTaskEditView() {
-      return tev;
+      return new TaskEditViewImpl(menu);
    }
 }
