@@ -9,9 +9,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.hellomvp.client.mvp.AppActivityMapper;
 import com.hellomvp.client.mvp.AppPlaceHistoryMapper;
@@ -26,6 +24,7 @@ public class HelloMVP implements EntryPoint {
    //private SimplePanel appWidget = new ScrollPanel();
    private SimplePanel appWidget = new SimplePanel();
 //   private ComplexPanel appWidget = new DockLayoutPanel(Unit.EM);
+   private final MyWidgetGinjector injector = GWT.create(MyWidgetGinjector.class);
 
    /**
     * This is the entry point method.
@@ -51,7 +50,7 @@ public class HelloMVP implements EntryPoint {
       Window.enableScrolling(false);
       Window.setMargin("0px");
       Window.setTitle("TAPAS | Task-Resource Allocation Platform");
-      
+
       RootLayoutPanel.get().add(appWidget);
 
       // Goes to place represented on URL or default place
