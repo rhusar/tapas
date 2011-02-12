@@ -4,10 +4,11 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import com.hellomvp.client.menu.MenuActivity;
+import com.hellomvp.client.menu.MenuViewImpl;
 import com.hellomvp.client.task.TaskListActivity;
-import com.hellomvp.client.task.TaskListView;
+import com.hellomvp.client.task.TaskListViewImpl;
 import com.hellomvp.client.task.edit.TaskEditActivity;
-import com.hellomvp.client.task.edit.TaskEditView;
+import com.hellomvp.client.task.edit.TaskEditViewImpl;
 
 @GinModules(GinClientModule.class)
 public interface AppGinjector extends Ginjector {
@@ -18,11 +19,13 @@ public interface AppGinjector extends Ginjector {
 
    MenuActivity getMenuActivity();
 
+   MenuViewImpl getMenuView();
+
    TaskListActivity getTaskListActivity();
 
-   TaskListView getTaskListView();
+   TaskListViewImpl getTaskListView();
 
    TaskEditActivity getTaskEditActivity();
 
-   TaskEditView getTaskEditView();
+   TaskEditViewImpl getTaskEditView();
 }

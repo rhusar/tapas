@@ -30,9 +30,9 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTMLTable.Cell;
 import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
-import com.hellomvp.client.menu.MenuViewImpl;
+import com.hellomvp.client.HelloMVP;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 
 /**
@@ -52,12 +52,11 @@ public class TaskListViewImpl extends ResizeComposite implements TaskListView {
    FlexTable header;
    @UiField
    FlexTable table;
-   @UiField(provided = true)
-   MenuViewImpl menu;
+   @UiField
+   SimplePanel menu;
 
-   @Inject
-   public TaskListViewImpl(MenuViewImpl menu) {
-      this.menu = menu;
+
+   public TaskListViewImpl() {
       //this.menu = (MenuViewImpl) menu;
       initWidget(binder.createAndBindUi(this));
 
@@ -76,8 +75,15 @@ public class TaskListViewImpl extends ResizeComposite implements TaskListView {
          i++;
       }
 
-      System.out.println("TaskListViewImpl my menu is " + menu.getPresenter());
+//      System.out.println("TaskListViewImpl my menu is " + menu.getPresenter());
+   }
 
+   public void bind() {
+      menu.add(HelloMVP.getInjector().getMenuView());
+   }
+
+   public void unbind() {
+      menu.clear();
    }
 
    @UiHandler("table")

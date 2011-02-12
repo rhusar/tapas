@@ -28,8 +28,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import com.hellomvp.client.HelloMVP;
 import com.hellomvp.client.menu.MenuViewImpl;
 
 /**
@@ -43,19 +45,27 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
 
    interface Binder extends UiBinder<Widget, TaskEditViewImpl> {
    }
-   @UiField(provided = true)
-   MenuViewImpl menu;
+   @UiField
 
-   @Inject
-   public TaskEditViewImpl(MenuViewImpl menu) {
-      this.menu = (MenuViewImpl) menu;
+   SimplePanel menu;
+
+   public TaskEditViewImpl() {
+
       //this.menu = (MenuViewImpl) menu;
       initWidget(binder.createAndBindUi(this));
 
       //menu.setPresenter(him);
-            System.out.println("TaskEditViewImpl my menu is " + menu.getPresenter());
+//      System.out.println("TaskEditViewImpl my menu is " + menu.getPresenter());
 
 
+   }
+
+   public void bind() {
+      menu.add(HelloMVP.getInjector().getMenuView());
+   }
+
+   public void unbind() {
+      menu.clear();
    }
 
    @Override

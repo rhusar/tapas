@@ -16,7 +16,7 @@ public class GinClientModule extends AbstractGinModule {
    @Override
    protected void configure() {
 
-      bind(PlaceControllerGin.class).to(PlaceControllerGin.class).in(Singleton.class);
+//      bind(PlaceControllerGin.class).to(PlaceControllerGin.class).in(Singleton.class);
       bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
 
       bind(MenuActivity.class).in(Singleton.class);

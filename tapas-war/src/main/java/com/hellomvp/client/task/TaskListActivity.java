@@ -22,10 +22,8 @@
 package com.hellomvp.client.task;
 
 import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.hellomvp.client.AppGinjector;
 import com.hellomvp.client.HelloMVP;
 import com.hellomvp.client.task.edit.TaskEditPlace;
 import java.util.Date;
@@ -36,11 +34,13 @@ import java.util.Date;
  */
 public class TaskListActivity extends AbstractActivity implements TaskListView.Presenter {
 
- 
+ TaskListViewImpl view;
+
    @Override
    public void start(AcceptsOneWidget panel, EventBus eventBus) {
-      TaskListView view = HelloMVP.getInjector().getTaskListView();
+       view = HelloMVP.getInjector().getTaskListView();
       view.setPresenter(this);
+      view.bind();
 
       panel.setWidget(view.asWidget());
    }
@@ -58,6 +58,7 @@ public class TaskListActivity extends AbstractActivity implements TaskListView.P
    @Override
    public void onStop() {
       super.onStop();
+      view.unbind();
       System.out.println("task list stopped");
    }
 }

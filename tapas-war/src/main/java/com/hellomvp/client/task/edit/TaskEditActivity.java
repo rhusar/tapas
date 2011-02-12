@@ -41,17 +41,20 @@ public class TaskEditActivity extends AbstractActivity implements TaskEditView.P
 //   public TaskEditActivity(Place taskListPlace, ClientFactory clientFactory) {
 //      this.clientFactory = clientFactory;
 //   }
+   TaskEditView view;
+
    @Override
    public void start(AcceptsOneWidget panel, EventBus eventBus) {
-      TaskEditView view = HelloMVP.getInjector().getTaskEditView();
+      view = HelloMVP.getInjector().getTaskEditView();
       view.setPresenter(this);
-
+      view.bind();
       panel.setWidget(view.asWidget());
    }
 
    @Override
    public void goTo() {
       System.out.println(new Date() + " " + HelloMVP.getInjector().getPlaceControllerGin());
+      view.unbind();
       HelloMVP.getInjector().getPlaceControllerGin().goTo(new TaskListPlace());
 //      HelloMVP.placeController.goTo(new TaskListPlace());
    }
