@@ -21,9 +21,9 @@
    <entry-point class='com.hellomvp.client.HelloMVP'/>
 
   <!-- Use ClientFactoryImpl by default -->
-   <replace-with class="com.hellomvp.client.ClientFactoryImpl">
+<!--   <replace-with class="com.hellomvp.client.ClientFactoryImpl">
       <when-type-is class="com.hellomvp.client.ClientFactory"/>
-   </replace-with>
+   </replace-with>-->
 
   <!-- Specify the paths for translatable code                    -->
    <source path='client'/>
@@ -31,5 +31,8 @@
 
 <!--   <servlet class="com.radoslavhusar.tapas.war.server.services.EmployeeServiceGWTImpl" path="/emp" />-->
 
-
+   <!-- At development time, optimize only for 1 browser and locale you use -->
+   <set-property name="user.agent" value="safari" />
+   <!--   <set-property name="user.agent" value="gecko1_8" />-->
+   <!--   <set-property name="locale" value="cs" />-->
 </module>

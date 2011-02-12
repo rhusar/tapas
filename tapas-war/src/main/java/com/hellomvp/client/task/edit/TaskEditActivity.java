@@ -22,11 +22,14 @@
 package com.hellomvp.client.task.edit;
 
 import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.hellomvp.client.ClientFactory;
+import com.hellomvp.client.AppGinjector;
+import com.hellomvp.client.HelloMVP;
 import com.hellomvp.client.task.TaskListPlace;
+import java.util.Date;
 
 /**
  *
@@ -34,15 +37,13 @@ import com.hellomvp.client.task.TaskListPlace;
  */
 public class TaskEditActivity extends AbstractActivity implements TaskEditView.Presenter {
 
-   private final ClientFactory clientFactory;
-
-   public TaskEditActivity(Place taskListPlace, ClientFactory clientFactory) {
-      this.clientFactory = clientFactory;
-   }
-
+//   private final ClientFactory clientFactory;
+//   public TaskEditActivity(Place taskListPlace, ClientFactory clientFactory) {
+//      this.clientFactory = clientFactory;
+//   }
    @Override
    public void start(AcceptsOneWidget panel, EventBus eventBus) {
-      TaskEditView view = clientFactory.getTaskEditView();
+      TaskEditView view = HelloMVP.getInjector().getTaskEditView();
       view.setPresenter(this);
 
       panel.setWidget(view.asWidget());
@@ -50,6 +51,8 @@ public class TaskEditActivity extends AbstractActivity implements TaskEditView.P
 
    @Override
    public void goTo() {
-      clientFactory.getPlaceController().goTo(new TaskListPlace());
+      System.out.println(new Date() + " " + HelloMVP.getInjector().getPlaceControllerGin());
+      HelloMVP.getInjector().getPlaceControllerGin().goTo(new TaskListPlace());
+//      HelloMVP.placeController.goTo(new TaskListPlace());
    }
 }

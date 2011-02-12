@@ -3,26 +3,24 @@ package com.hellomvp.client.mvp;
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
-import com.hellomvp.client.ClientFactory;
-import com.hellomvp.client.task.TaskListActivity;
+import com.hellomvp.client.HelloMVP;
 import com.hellomvp.client.task.TaskListPlace;
-import com.hellomvp.client.task.edit.TaskEditActivity;
 import com.hellomvp.client.task.edit.TaskEditPlace;
 
 public class AppActivityMapper implements ActivityMapper {
 
-   private ClientFactory clientFactory;
+//   private ClientFactory clientFactory;
 
    /**
     * AppActivityMapper associates each Place with its corresponding  {@link Activity}
     *
     * @param clientFactory Factory to be passed to activities
     */
-   public AppActivityMapper(ClientFactory clientFactory) {
-      super();
-      this.clientFactory = clientFactory;
-   }
-
+//   @Inject
+//   public AppActivityMapper(ClientFactory clientFactory) {
+//      super();
+//      this.clientFactory = clientFactory;
+//   }
    /**
     * Map each Place to its corresponding Activity. This would be a great use for GIN.
     * 
@@ -34,17 +32,21 @@ public class AppActivityMapper implements ActivityMapper {
 
       //return new TaskListActivity((TaskListPlace) place, clientFactory);
 
+      System.out.println("returning new instance of " + place);
+
       if (place instanceof TaskListPlace) {
-         return new TaskListActivity(place, clientFactory);
+         return HelloMVP.getInjector().getTaskListActivity();
+//         return new TaskListActivity();
       } else if (place instanceof TaskEditPlace) {
-         return new TaskEditActivity(place, clientFactory);
+         return HelloMVP.getInjector().getTaskEditActivity();
+//         return new TaskEditActivity();
       }
-      
+
 
       /*if (place instanceof HelloPlace) {
-         return new HelloActivity((HelloPlace) place, clientFactory);
+      return new HelloActivity((HelloPlace) place, clientFactory);
       } else if (place instanceof GoodbyePlace) {
-         return new GoodbyeActivity((GoodbyePlace) place, clientFactory);
+      return new GoodbyeActivity((GoodbyePlace) place, clientFactory);
       }*/
 
       return null;

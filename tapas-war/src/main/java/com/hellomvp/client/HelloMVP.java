@@ -24,7 +24,8 @@ public class HelloMVP implements EntryPoint {
    //private SimplePanel appWidget = new ScrollPanel();
    private SimplePanel appWidget = new SimplePanel();
 //   private ComplexPanel appWidget = new DockLayoutPanel(Unit.EM);
-   private final MyWidgetGinjector injector = GWT.create(MyWidgetGinjector.class);
+   private  static final AppGinjector injector = GWT.create(AppGinjector.class);
+//   public static PlaceController placeController;
 
    /**
     * This is the entry point method.
@@ -33,12 +34,13 @@ public class HelloMVP implements EntryPoint {
    public void onModuleLoad() {
       // Create ClientFactory using deferred binding so we can replace with different
       // impls in gwt.xml
-      ClientFactory clientFactory = GWT.create(ClientFactory.class); //new ClientFactoryImpl(); //
-      EventBus eventBus = clientFactory.getEventBus();
-      PlaceController placeController = clientFactory.getPlaceController();
+      //AppGinjector clientFactory = injector; //GWT.create(ClientFactory.class); //new ClientFactoryImpl(); //
+      EventBus eventBus = injector.getEventBus();
+      PlaceController placeController = injector.getPlaceControllerGin();
+//      placeController = new PlaceController(eventBus);
 
       // Start ActivityManager for the main widget with our ActivityMapper
-      ActivityMapper activityMapper = new AppActivityMapper(clientFactory);
+      ActivityMapper activityMapper = new AppActivityMapper(); //clientFactory);
       ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
       activityManager.setDisplay(appWidget);
 
@@ -55,5 +57,9 @@ public class HelloMVP implements EntryPoint {
 
       // Goes to place represented on URL or default place
       historyHandler.handleCurrentHistory();
+   }
+
+   public static AppGinjector getInjector() {
+      return injector;
    }
 }

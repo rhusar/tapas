@@ -1,18 +1,22 @@
 package com.hellomvp.client.menu;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.text.shared.AbstractRenderer;
 import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.hellomvp.client.HelloMVP;
 import java.util.HashSet;
 import java.util.Set;
- 
+
 /**
  *
  * @author <a href="mailto:rhusar@redhat.com">Radoslav Husar</a>
@@ -21,6 +25,10 @@ public class MenuViewImpl extends Composite implements MenuView {
 
    private static Binder binder = GWT.create(Binder.class);
    private Presenter presenter;
+
+   public Presenter getPresenter() {
+      return presenter;
+   }
 
    interface Binder extends UiBinder<Widget, MenuViewImpl> {
    }
@@ -38,8 +46,10 @@ public class MenuViewImpl extends Composite implements MenuView {
 //   @UiField
 //   Anchor signOutLink;
 
-   public MenuViewImpl(Presenter p) {
-      presenter=p;
+   @UiConstructor
+   public MenuViewImpl() {
+      this.presenter = HelloMVP.getInjector().getMenuActivity();
+//      presenter=p;
       initWidget(binder.createAndBindUi(this));
 
       System.out.println("init");
@@ -56,17 +66,18 @@ public class MenuViewImpl extends Composite implements MenuView {
 
          @Override
          public void onValueChange(ValueChangeEvent<String> event) {
-             System.out.println(event.getValue());
+            System.out.println(event.getValue());
          }
       });
-      
+
    }
 
-//   @UiHandler("signOutLink")
-//   void onSelectMeAnchorClick(ClickEvent event) {
-//      //Window.alert("clicked on selectMe");
-//      presenter.doAbout();
-//   }
+   @UiHandler("signOutLink")
+   void onSelectMeAnchorClick(ClickEvent event) {
+      //Window.alert("clicked on selectMe");
+      presenter.doAbout();
+   }
+   
    @Override
    public void setPresenter(Presenter presenter) {
       this.presenter = presenter;

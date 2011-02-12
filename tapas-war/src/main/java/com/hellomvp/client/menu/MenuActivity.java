@@ -25,6 +25,7 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.inject.Inject;
 
 /**
  *
@@ -34,6 +35,7 @@ public class MenuActivity extends AbstractActivity implements MenuView.Presenter
 
    private EventBus eventBus;
 
+   @Inject
    public MenuActivity(EventBus eventBus) {
       this.eventBus = eventBus;
    }
@@ -47,4 +49,8 @@ public class MenuActivity extends AbstractActivity implements MenuView.Presenter
    public void doAbout() {
       Window.alert("Log out.");
    }
+
+ 
+
+
 }

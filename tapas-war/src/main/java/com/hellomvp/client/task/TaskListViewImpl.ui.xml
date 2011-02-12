@@ -8,6 +8,7 @@
 
       <g:north size='5'>
          <menu:MenuViewImpl ui:field='menu' />
+<!--         <p:SimplePanel ui:field='menu' />-->
       </g:north>
 
       <g:north size='3'>

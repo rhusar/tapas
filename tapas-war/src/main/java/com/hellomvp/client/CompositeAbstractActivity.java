@@ -19,45 +19,24 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.hellomvp.client.task;
+
+package com.hellomvp.client;
 
 import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.hellomvp.client.AppGinjector;
-import com.hellomvp.client.HelloMVP;
-import com.hellomvp.client.task.edit.TaskEditPlace;
-import java.util.Date;
 
 /**
  *
  * @author <a href="mailto:rhusar@redhat.com">Radoslav Husar</a>
  */
-public class TaskListActivity extends AbstractActivity implements TaskListView.Presenter {
-
- 
-   @Override
-   public void start(AcceptsOneWidget panel, EventBus eventBus) {
-      TaskListView view = HelloMVP.getInjector().getTaskListView();
-      view.setPresenter(this);
-
-      panel.setWidget(view.asWidget());
-   }
-
-   @Override
-   public void goToEdit(String someId) {
-      System.out.println(new Date() + " " + HelloMVP.getInjector().getPlaceControllerGin());
-
-      System.out.println(new Date());
-//      injector.getPlaceControllerGin().goTo(new TaskEditPlace(someId));
-      HelloMVP.getInjector().getPlaceControllerGin().goTo(new TaskEditPlace(someId));
-
-   }
+public abstract class CompositeAbstractActivity extends AbstractActivity {
 
    @Override
    public void onStop() {
       super.onStop();
-      System.out.println("task list stopped");
    }
+
+
+
 }
