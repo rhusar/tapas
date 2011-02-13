@@ -107,9 +107,10 @@
                <!-- for production false -->
                <draftCompile>true</draftCompile>
 <!--               <runTarget>com.javacodegeeks.war.Application/Application.html</runTarget>-->
-               <runTarget>hellomvp.html</runTarget>
+               <runTarget>tapas.html</runTarget>
+<!--               <runTarget>hellomvp.html</runTarget>-->
 <!--               <extraJvmArgs>-Xmx256m</extraJvmArgs>-->
-               <logLevel>TRACE</logLevel>
+<!--               <logLevel>TRACE</logLevel>-->
                <!-- for server.xml mapping -->
                <!--
                <packageNamePerModule>

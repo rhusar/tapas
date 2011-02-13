@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "//gwt-module/" "http://google-web-toolkit.googlecode.com/svn/tags/2.1.1/distro-source/core/src/gwt-module.dtd">
+<module>
+   <!-- Inherit the core Web Toolkit stuff. -->
+   <inherits name="com.google.gwt.user.User"/>
+   <inherits name="com.google.gwt.inject.Inject"/>
+   <!-- MVP -->
+   <inherits name="com.google.gwt.activity.Activity"/>
+   <inherits name="com.google.gwt.place.Place"/>
+
+
+   <!-- inherit css based theme -->
+   <inherits name='com.google.gwt.user.theme.chrome.Chrome'/>
+      <!--   <inherits name='com.google.gwt.user.theme.standard.Standard'/>-->
+      <!--   <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
+
+   <!-- include shadow package for entities -->
+   <inherits name="com.radoslavhusar.tapas.ejb.Entity"/>
+
+   <!-- Specify the app entry point class, which is this one. -->
+   <entry-point class="com.radoslavhusar.tapas.war.client.app.HelloMVP"/>
+
+   <!-- Specify the application specific style sheet. -->
+   <!--   <stylesheet src="Application.css"/>-->
+   
+   <source path="client"/>
+   <source path="shared"/>
+
+   <!-- automatically mapped to web.xml from here -->
+   <servlet class="com.radoslavhusar.tapas.war.server.services.EmployeeServiceGWTImpl" path="/emp" />
+
+   <!-- At development time, optimize only for 1 browser and locale you use -->
+   <set-property name="user.agent" value="safari" />
+   <!--   <set-property name="user.agent" value="gecko1_8" />-->
+   <!--   <set-property name="locale" value="cs" />-->
+</module>
