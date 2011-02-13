@@ -56,11 +56,11 @@ public class MenuViewImpl extends Composite implements MenuView {
 
       Set<String> set = new HashSet<String>();
       set.clear();
-      set.add("EAP 5.1");
-      set.add("SOA 5.0");
+      set.add("EAP 5.1 in Planning");
+      set.add("SOA 5.0 in Development");
       projectSwitch.setAcceptableValues(set);
 
-      projectSwitch.setValue("EAP 5.1");
+      projectSwitch.setValue("Switch to...");
 
       projectSwitch.addValueChangeHandler(new ValueChangeHandler<String>() {
 

@@ -6,7 +6,7 @@
 
    <g:DockLayoutPanel ui:field='panell' unit='EM' height="100%" styleName='{style.outer}'>
 
-      <g:north size='5'>
+      <g:north size='9'>
 <!--         <menu:MenuViewImpl ui:field='menu' />-->
          <g:SimplePanel ui:field='menu' />
       </g:north>

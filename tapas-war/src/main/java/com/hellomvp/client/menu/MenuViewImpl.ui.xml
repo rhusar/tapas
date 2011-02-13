@@ -4,45 +4,111 @@
    xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 
- 
+
    <g:HTMLPanel>
-<!--      <div class='{style.logo}'/>-->
+   <!--Logo + logged user section-->
+      <div>
+         <div class='{style.logo}'/>
 
+         <div class="{style.statusDiv}">
+            <br />
+            <div>
+               <b>rhusar@redhat.com</b>
+            </div>
 
-   <g:SimplePanel>
-      <g:ValueListBox ui:field="projectSwitch"/>
-   </g:SimplePanel>
+            <div class='{style.linksDiv}'>
+               <g:Anchor href='javascript:;' ui:field='signOutLink'>Sign Out</g:Anchor>
+            </div>
+         </div>
+      </div>
 
+      <!-- Menu + project switch -->
+      <div class="{style.menubar}">
 
-      <div class="{style.statusDiv}">
-         <div>
-            <b>rhusar@redhat.com</b>
+         <div class="{style.menuBarLeft}">
+            <g:Button>Overview</g:Button>
+            <g:Button>Tasks</g:Button>
+            <g:Button>Resources</g:Button>
+            <g:Button>Planning</g:Button>
          </div>
 
-         <div class='{style.linksDiv}'>
-            <g:Anchor href='javascript:;' ui:field='signOutLink'>Sign Out</g:Anchor>
-          </div>
+         <div class="{style.menuBarRight}">
+            Project:
+            <g:ValueListBox ui:field="projectSwitch"/>
+         </div>
+
       </div>
    </g:HTMLPanel>
 
-
    <ui:style>
+  .logo {
+    background: url(tapas-logo2.jpg);
+    width: 265px;
+    height: 70px;
+    float:left;
+  }
+  
+   .menubar {
+<!--    font-weight: bold;-->
+<!--    text-shadow: #fff 0 2px 2px;-->
+    padding: 2px 0px 3px 2px;
+    border-top: 1px solid #999;
+    border-bottom: 1px solid #999;
+    width: 100%;
+    float:left;
+      	background-color: #d3d6dd;
+
+<!--    height: 30px;-->
+  }
+
+  .menuBarLeft {
+  float:left;
+  }
+
+  .menuProjectSwitch {
+   width: 100px;
+  }
+
+  .menuBarRight {
+  padding: 0 20px 0 0;
+  float:right;  
+  }
+
   .statusDiv {
     text-align: right;
-    margin: 1em;
+    margin: 0 1em 0 0;
   }
 
   .linksDiv {
     text-align: right;
   }
 
-  .logo {
-    background: url(logo.png);
-    position: absolute;
-    width: 140px;
-    height: 75px;
-  }
    </ui:style>
 
+
+<!--      <g:MenuBar >
+         <g:MenuItem>Higgledy
+            <g:MenuBar vertical="true">
+               <g:MenuItem>able</g:MenuItem>
+               <g:MenuItem>baker</g:MenuItem>
+               <g:MenuItem>charlie</g:MenuItem>
+            </g:MenuBar>
+         </g:MenuItem>
+         <g:MenuItem>Piggledy
+            <g:MenuBar vertical="true">
+               <g:MenuItem>foo</g:MenuItem>
+               <g:MenuItem>bar</g:MenuItem>
+               <g:MenuItem>baz</g:MenuItem>
+            </g:MenuBar>
+         </g:MenuItem>
+         <g:MenuItem>
+            <b>Pop!</b>
+            <g:MenuBar vertical="true">
+               <g:MenuItem>uno</g:MenuItem>
+               <g:MenuItem>dos</g:MenuItem>
+               <g:MenuItem>tres</g:MenuItem>
+            </g:MenuBar>
+         </g:MenuItem>
+      </g:MenuBar>-->
 
 </ui:UiBinder>
