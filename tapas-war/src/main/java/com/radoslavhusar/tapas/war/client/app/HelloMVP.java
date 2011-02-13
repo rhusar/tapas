@@ -18,27 +18,20 @@ import com.radoslavhusar.tapas.war.client.tasks.TaskListPlace;
  */
 public class HelloMVP implements EntryPoint {
 
-   private Place defaultPlace = new TaskListPlace("something"); // new HelloPlace("World!"); //new DefaultPlace(); //
-   //private SimplePanel appWidget = new ScrollPanel();
+   private Place defaultPlace = new TaskListPlace();
    private SimplePanel appWidget = new SimplePanel();
-//   private ComplexPanel appWidget = new DockLayoutPanel(Unit.EM);
-   private  static final AppGinjector injector = GWT.create(AppGinjector.class);
-//   public static PlaceController placeController;
+   private static final AppGinjector injector = GWT.create(AppGinjector.class);
 
    /**
     * This is the entry point method.
     */
    @Override
    public void onModuleLoad() {
-      // Create ClientFactory using deferred binding so we can replace with different
-      // impls in gwt.xml
-      //AppGinjector clientFactory = injector; //GWT.create(ClientFactory.class); //new ClientFactoryImpl(); //
       EventBus eventBus = injector.getEventBus();
       PlaceController placeController = injector.getPlaceControllerGin();
-//      placeController = new PlaceController(eventBus);
 
       // Start ActivityManager for the main widget with our ActivityMapper
-      ActivityMapper activityMapper = new AppActivityMapper(); //clientFactory);
+      ActivityMapper activityMapper = new AppActivityMapper();
       ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
       activityManager.setDisplay(appWidget);
 
@@ -57,6 +50,11 @@ public class HelloMVP implements EntryPoint {
       historyHandler.handleCurrentHistory();
    }
 
+   /**
+    * Static method for getting Application-scope Ginjector.
+    *
+    * @return Ginjector
+    */
    public static AppGinjector getInjector() {
       return injector;
    }

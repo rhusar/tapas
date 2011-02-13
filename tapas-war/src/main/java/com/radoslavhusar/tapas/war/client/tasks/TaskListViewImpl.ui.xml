@@ -3,10 +3,9 @@
   xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
-   <g:DockLayoutPanel ui:field='panell' unit='EM' height="100%" styleName='{style.outer}'>
+   <g:DockLayoutPanel unit='EM' height="100%" styleName='{style.outer}'>
 
       <g:north size='9'>
-<!--         <menu:MenuViewImpl ui:field='menu' />-->
          <g:SimplePanel ui:field='menu' />
       </g:north>
 
@@ -25,12 +24,6 @@
       </g:south>
       
    </g:DockLayoutPanel>
-
-
-
-
-
-<!--  <ui:image field='gradient' src='gradient_bg_dark.png' repeatStyle='Horizontal'/>-->
 
    <ui:style>
   .outer {

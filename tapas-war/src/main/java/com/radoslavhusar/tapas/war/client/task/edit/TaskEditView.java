@@ -34,7 +34,6 @@ public interface TaskEditView extends IsWidget {
    public void bind();
 
    public void unbind();
-
  
    public interface Presenter {
       void goTo();

@@ -30,25 +30,25 @@ import com.google.gwt.place.shared.PlaceTokenizer;
  */
 public class TaskListPlace extends Place {
 
-   private String helloName;
+   private String selectedTaskId;
 
    public TaskListPlace(String token) {
-      this.helloName = token;
+      this.selectedTaskId = token;
    }
 
    public TaskListPlace() {
-      
+      selectedTaskId = null;
    }
 
-   public String getHelloName() {
-      return helloName;
+   public String getSelectedTaskId() {
+      return selectedTaskId;
    }
 
    public static class Tokenizer implements PlaceTokenizer<TaskListPlace> {
 
       @Override
       public String getToken(TaskListPlace place) {
-         return place.getHelloName();
+         return place.getSelectedTaskId();
       }
 
       @Override

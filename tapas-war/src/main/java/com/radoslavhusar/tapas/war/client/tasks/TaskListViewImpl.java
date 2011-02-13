@@ -46,8 +46,7 @@ public class TaskListViewImpl extends ResizeComposite implements TaskListView {
 
    interface Binder extends UiBinder<Widget, TaskListViewImpl> {
    }
-   @UiField
-   DockLayoutPanel panell;
+
    @UiField
    FlexTable header;
    @UiField
