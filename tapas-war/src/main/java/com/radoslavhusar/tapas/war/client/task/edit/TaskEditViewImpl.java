@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.war.client.app.HelloMVP;
-import com.radoslavhusar.tapas.war.client.menu.ui.MenuViewImpl;
+import com.radoslavhusar.tapas.war.client.ui.MenuViewImpl;
 
 /**
  *

@@ -1,4 +1,4 @@
-package com.radoslavhusar.tapas.war.client.menu.ui;
+package com.radoslavhusar.tapas.war.client.ui;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

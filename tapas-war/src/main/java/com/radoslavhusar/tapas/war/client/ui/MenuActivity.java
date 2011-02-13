@@ -19,20 +19,38 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.radoslavhusar.tapas.war.client.menu.ui;
+package com.radoslavhusar.tapas.war.client.ui;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.inject.Inject;
 
 /**
  *
  * @author <a href="mailto:rhusar@redhat.com">Radoslav Husar</a>
  */
-public interface MenuView extends IsWidget {
+public class MenuActivity extends AbstractActivity implements MenuView.Presenter {
 
-   void setPresenter(Presenter presenter);
+   private EventBus eventBus;
 
-   public interface Presenter {
-
-      void doAbout();
+   @Inject
+   public MenuActivity(EventBus eventBus) {
+      this.eventBus = eventBus;
    }
+
+   @Override
+   public void start(AcceptsOneWidget panel, EventBus eventBus) {
+      return;
+   }
+
+   @Override
+   public void doAbout() {
+      Window.alert("Log out.");
+   }
+
+ 
+
+
 }
