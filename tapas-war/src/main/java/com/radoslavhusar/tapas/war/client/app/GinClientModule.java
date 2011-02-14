@@ -16,13 +16,13 @@ public class GinClientModule extends AbstractGinModule {
    @Override
    protected void configure() {
 
-//      bind(PlaceControllerGin.class).to(PlaceControllerGin.class).in(Singleton.class);
+//      bind(PlaceController.class).to(PlaceControllerGin.class).in(Singleton.class);
       bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
+//      bind(PlaceController.class).PlaceControllerGin.class).in(Singleton.class);
 
       bind(MenuActivity.class).in(Singleton.class);
       bind(MenuViewImpl.class).in(Singleton.class);
       bind(TaskEditView.class).to(TaskEditViewImpl.class).in(Singleton.class);
       bind(TaskListView.class).to(TaskListViewImpl.class).in(Singleton.class);
-
    }
 }

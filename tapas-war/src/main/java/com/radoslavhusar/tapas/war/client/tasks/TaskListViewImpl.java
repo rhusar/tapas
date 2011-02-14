@@ -22,18 +22,20 @@
 package com.radoslavhusar.tapas.war.client.tasks;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTMLTable.Cell;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 import com.radoslavhusar.tapas.war.client.app.HelloMVP;
 import com.radoslavhusar.tapas.ejb.entity.Task;
+import java.util.List;
 
 /**
  *
@@ -46,36 +48,85 @@ public class TaskListViewImpl extends ResizeComposite implements TaskListView {
 
    interface Binder extends UiBinder<Widget, TaskListViewImpl> {
    }
-
-   @UiField
-   FlexTable header;
-   @UiField
-   FlexTable table;
+//   @UiField
+//   FlexTable header;
+   @UiField(provided = true)
+   CellTable table = new CellTable<Task>();
    @UiField
    SimplePanel menu;
    @UiField
    SimplePanel status;
 
    public TaskListViewImpl() {
-      //this.menu = (MenuViewImpl) menu;
       initWidget(binder.createAndBindUi(this));
 
-      //menu.setPresenter(him);
+      table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 
-      header.setText(0, 0, "Task ID");
-      header.setText(0, 1, "Text");
-      header.setText(0, 2, "Some Integer");
 
-      int i = 0;
-      for (Task t : TaskListDummySource.fetch()) {
-         //table.insertRow(0);
-         table.setText(i, 0, "" + t.getTaskId());
-         table.setText(i, 1, t.getSummary());
-         table.setText(i, 2, String.valueOf(t.getSomeinteger()));
-         i++;
-      }
+      TextColumn<Task> idColumn = new TextColumn<Task>() {
 
-//      System.out.println("TaskListViewImpl my menu is " + menu.getPresenter());
+         @Override
+         public String getValue(Task task) {
+            return "" + task.getTaskId();
+         }
+      };
+      table.addColumn(idColumn, "ID");
+      TextColumn<Task> nameColumn = new TextColumn<Task>() {
+
+         @Override
+         public String getValue(Task task) {
+            return task.getSummary();
+         }
+      };
+      table.addColumn(nameColumn, "Summary");
+
+
+      //    DateCell dateCell = new DateCell();
+//    Column<Contact, Date> dateColumn = new Column<Contact, Date>(dateCell) {
+//      @Override
+//      public Date getValue(Contact object) {
+//        return object.birthday;
+//      }
+//    };
+//    table.addColumn(dateColumn, "Birthday");
+
+//      header.setText(0, 0, "Task ID");
+//      header.setText(0, 1, "Text");
+//      header.setText(0, 2, "Some Integer");
+//
+//      int i = 0;
+//      for (Task t : TaskListDummySource.fetch()) {
+//          table.setText(i, 0, "" + t.getTaskId());
+//         table.setText(i, 1, t.getSummary());
+//         table.setText(i, 2, String.valueOf(t.getSomeinteger()));
+//         i++;
+//      }
+
+      // Add a selection model to handle user selection.
+      final SingleSelectionModel<Task> selectionModel = new SingleSelectionModel<Task>();
+      table.setSelectionModel(selectionModel);
+      selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+
+         @Override
+         public void onSelectionChange(SelectionChangeEvent event) {
+            Task selected = selectionModel.getSelectedObject();
+            if (selected != null) {
+//               Window.alert("You selected: " + selected.getTaskId());
+               presenter.goToEdit(""+selected.getTaskId());
+            }
+         }
+      });
+
+      table.setPageSize(Integer.MAX_VALUE-1);
+      
+      List<Task> s = TaskListDummySource.fetch();
+      // Set the total row count. This isn't strictly necessary, but it affects
+      // paging calculations, so its good habit to keep the row count up to date.
+      table.setRowCount(s.size(), true);
+
+      // Push the data into the widget.
+      table.setRowData(0, s);
+
    }
 
    public void bind() {
@@ -88,26 +139,20 @@ public class TaskListViewImpl extends ResizeComposite implements TaskListView {
       status.clear();
    }
 
-   @UiHandler("table")
-   void onxclick(ClickEvent ce) {
-      //if (ce == null) return;
+//   @UiHandler("table")
+//   void onxclick(ClickEvent ce) {
 //
-      Cell c = table.getCellForEvent(ce);
+//      Cell c = table.getCellForEvent(ce);
 //
-//      // get the id
-      String id = table.getText(c.getRowIndex(), 0);
 //
-      //Window.alert(""+Integer.valueOf(id));
-
-      // change the view
-
-
-      presenter.goToEdit(id);
-
-
-
-   }
-
+//      String id = table.getText(c.getRowIndex(), 0);
+//
+//
+//      presenter.goToEdit(id);
+//
+//
+//
+//   }
    @Override
    public void setPresenter(Presenter presenter) {
       this.presenter = presenter;

@@ -4,16 +4,19 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.text.shared.AbstractRenderer;
 import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.radoslavhusar.tapas.war.client.app.HelloMVP;
+import com.radoslavhusar.tapas.war.client.tasks.TaskListPlace;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,7 +37,6 @@ public class MenuViewImpl extends Composite implements MenuView {
    }
    @UiField(provided = true)
    ValueListBox<String> projectSwitch = new ValueListBox<String>(renderer);
-   @SuppressWarnings("PackageVisibleField")
    static Renderer<String> renderer = new AbstractRenderer<String>() {
 
       @Override
@@ -45,6 +47,8 @@ public class MenuViewImpl extends Composite implements MenuView {
    };
 //   @UiField
 //   Anchor signOutLink;
+   @UiField
+   Button tasks;
 
    @UiConstructor
    public MenuViewImpl() {
@@ -52,7 +56,7 @@ public class MenuViewImpl extends Composite implements MenuView {
 //      presenter=p;
       initWidget(binder.createAndBindUi(this));
 
-      System.out.println("init");
+      //System.out.println("init");
 
       Set<String> set = new HashSet<String>();
       set.clear();
@@ -76,6 +80,11 @@ public class MenuViewImpl extends Composite implements MenuView {
    void onSelectMeAnchorClick(ClickEvent event) {
       //Window.alert("clicked on selectMe");
       presenter.doAbout();
+   }
+
+   @UiHandler("tasks")
+   void navigateTasks(ClickEvent event) {
+      HelloMVP.getInjector().getPlaceController().goTo(new TaskListPlace());
    }
    
    @Override

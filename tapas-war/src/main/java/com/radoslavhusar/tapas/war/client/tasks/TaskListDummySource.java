@@ -22,8 +22,8 @@
 package com.radoslavhusar.tapas.war.client.tasks;
 
 import com.radoslavhusar.tapas.ejb.entity.Task;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -31,13 +31,18 @@ import java.util.Set;
  */
 public class TaskListDummySource {
 
-   public static Set<Task> fetch() {
+   public static List<Task> fetch() {
 
-      Set set = new HashSet<Task>();
+      List set = new LinkedList<Task>();
 
+      int i = 30;
       set.add(new Task(1, "Implement somehting", 1));
       set.add(new Task(2, "Do somthing else", 4));
       set.add(new Task(4, "Ignore erros", 16));
+      set.add(new Task(4 + i++, "Ignore erros", 16));
+      set.add(new Task(4 + i++, "Ignore erros", 16));
+      set.add(new Task(4 + i++, "Ignore erros", 16));
+      set.add(new Task(4 + i++, "Ignore erros", 16));
 
       return set;
    }

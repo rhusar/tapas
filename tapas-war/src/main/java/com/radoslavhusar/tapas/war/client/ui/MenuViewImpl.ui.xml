@@ -25,7 +25,7 @@
 
          <div class="{style.menuBarLeft}">
             <g:Button>Overview</g:Button>
-            <g:Button>Tasks</g:Button>
+            <g:Button ui:field="tasks">Tasks</g:Button>
             <g:Button>Resources</g:Button>
             <g:Button>Planning</g:Button>
          </div>

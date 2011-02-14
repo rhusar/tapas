@@ -28,7 +28,7 @@ public class HelloMVP implements EntryPoint {
    @Override
    public void onModuleLoad() {
       EventBus eventBus = injector.getEventBus();
-      PlaceController placeController = injector.getPlaceControllerGin();
+      PlaceController placeController = injector.getPlaceController();
 
       // Start ActivityManager for the main widget with our ActivityMapper
       ActivityMapper activityMapper = new AppActivityMapper();

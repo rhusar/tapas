@@ -21,7 +21,6 @@
  */
 package com.radoslavhusar.tapas.war.client.tasks;
 
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**

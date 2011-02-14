@@ -1,21 +1,20 @@
 
 <ui:UiBinder
   xmlns:ui='urn:ui:com.google.gwt.uibinder'
-  xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+  xmlns:g='urn:import:com.google.gwt.user.client.ui'
+  xmlns:c='urn:import:com.google.gwt.user.cellview.client'
+  >
 
    <g:DockLayoutPanel unit='EM' height="100%" styleName='{style.outer}'>
 
-      <g:north size='9'>
+      <g:north size='8'>
          <g:SimplePanel ui:field='menu' />
-      </g:north>
-
-      <g:north size='3'>
-         <g:FlexTable ui:field='header' styleName='{style.header}' cellSpacing='0' cellPadding='0' />
       </g:north>
 
       <g:center>
          <g:ScrollPanel>
-            <g:FlexTable ui:field='table'  styleName='{style.table}'  cellSpacing='0' cellPadding='0'/>
+            <c:CellTable ui:field='table'  styleName='{style.table}' />
+<!--            styleName='{style.table}'  cellSpacing='0' cellPadding='0'/>-->
          </g:ScrollPanel>
       </g:center>
 
@@ -51,7 +50,7 @@
   }
 
   .table {
-    table-layout: fixed;
+<!--    table-layout: fixed;-->
     width: 100%;  	
   }
 

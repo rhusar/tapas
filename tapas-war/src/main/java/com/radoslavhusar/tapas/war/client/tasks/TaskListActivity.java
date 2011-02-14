@@ -47,11 +47,11 @@ public class TaskListActivity extends AbstractActivity implements TaskListView.P
 
    @Override
    public void goToEdit(String someId) {
-      System.out.println(new Date() + " " + HelloMVP.getInjector().getPlaceControllerGin());
+      //System.out.println(new Date() + " " + HelloMVP.getInjector().getPlaceController());
 
-      System.out.println(new Date());
-//      injector.getPlaceControllerGin().goTo(new TaskEditPlace(someId));
-      HelloMVP.getInjector().getPlaceControllerGin().goTo(new TaskEditPlace(someId));
+      //System.out.println(new Date());
+//      injector.getPlaceController().goTo(new TaskEditPlace(someId));
+      HelloMVP.getInjector().getPlaceController().goTo(new TaskEditPlace(someId));
 
    }
 
@@ -59,6 +59,6 @@ public class TaskListActivity extends AbstractActivity implements TaskListView.P
    public void onStop() {
       super.onStop();
       view.unbind();
-      System.out.println("task list stopped");
+//      System.out.println("task list stopped");
    }
 }

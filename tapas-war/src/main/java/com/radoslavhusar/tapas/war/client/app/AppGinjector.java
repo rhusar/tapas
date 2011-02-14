@@ -16,7 +16,7 @@ public interface AppGinjector extends Ginjector {
 
    EventBus getEventBus();
 
-   PlaceControllerGin getPlaceControllerGin();
+   PlaceControllerGin getPlaceController();
 
    MenuActivity getMenuActivity();
 
@@ -28,7 +28,7 @@ public interface AppGinjector extends Ginjector {
 
    TaskListViewImpl getTaskListView();
 
-   TaskEditActivity getTaskEditActivity();
+//   TaskEditActivity getTaskEditActivity();
 
    TaskEditViewImpl getTaskEditView();
 

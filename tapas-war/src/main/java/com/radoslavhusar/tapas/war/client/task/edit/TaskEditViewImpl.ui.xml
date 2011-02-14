@@ -14,13 +14,9 @@
       </g:north>
 
       <g:center>
-<!--         <g:ScrollPanel>
-            <g:FlexTable ui:field='table'  styleName='{style.table}'  cellSpacing='0' cellPadding='0'/>
-         </g:ScrollPanel>-->
-
-         <g:SimplePanel >
-            <g:Anchor ui:field='aaa'>go back</g:Anchor>
-         </g:SimplePanel>
+         <g:ScrollPanel>
+            <g:Anchor ui:field='cancel'>Cancel (don't save changes)</g:Anchor>
+         </g:ScrollPanel>
       </g:center>
 
       <g:south size="2">
