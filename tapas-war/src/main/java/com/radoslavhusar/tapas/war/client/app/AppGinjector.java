@@ -8,8 +8,9 @@ import com.radoslavhusar.tapas.war.client.ui.MenuViewImpl;
 import com.radoslavhusar.tapas.war.client.ui.StatusViewImpl;
 import com.radoslavhusar.tapas.war.client.tasks.TaskListActivity;
 import com.radoslavhusar.tapas.war.client.tasks.TaskListViewImpl;
-import com.radoslavhusar.tapas.war.client.task.edit.TaskEditActivity;
 import com.radoslavhusar.tapas.war.client.task.edit.TaskEditViewImpl;
+import com.radoslavhusar.tapas.war.shared.services.MyResourceService;
+import com.radoslavhusar.tapas.war.shared.services.MyResourceServiceAsync;
 
 @GinModules(GinClientModule.class)
 public interface AppGinjector extends Ginjector {
@@ -17,6 +18,10 @@ public interface AppGinjector extends Ginjector {
    EventBus getEventBus();
 
    PlaceControllerGin getPlaceController();
+
+   MyResourceService getMyResourceService();
+
+   MyResourceServiceAsync getMyResourceServiceAsync();
 
    MenuActivity getMenuActivity();
 
@@ -29,7 +34,5 @@ public interface AppGinjector extends Ginjector {
    TaskListViewImpl getTaskListView();
 
 //   TaskEditActivity getTaskEditActivity();
-
    TaskEditViewImpl getTaskEditView();
-
 }

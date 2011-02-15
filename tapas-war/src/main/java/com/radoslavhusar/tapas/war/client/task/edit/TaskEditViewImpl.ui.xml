@@ -1,4 +1,4 @@
-
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder
   xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:g='urn:import:com.google.gwt.user.client.ui'>
@@ -9,13 +9,21 @@
          <g:SimplePanel ui:field='menu' />
       </g:north>
 
-      <g:north size='3'>
-         <g:FlexTable ui:field='header' styleName='{style.header}' cellSpacing='0' cellPadding='0' />
-      </g:north>
-
       <g:center>
          <g:ScrollPanel>
-            <g:Anchor ui:field='cancel'>Cancel (don't save changes)</g:Anchor>
+            <g:FormPanel>
+               <g:VerticalPanel horizontalAlignment="ALIGN_RIGHT" ui:field="allFields">
+                  <g:Label>Enter your name:</g:Label>
+                  <g:TextBox ui:field='box'>TBD</g:TextBox>
+<!--                  <g:CheckBox ui:field="white" formValue="white">White</g:CheckBox>-->
+
+<!--                  <g:TextBox ui:field='asdasdasd'>TBD</g:TextBox>-->
+
+                  <g:SuggestBox ui:field='person' />
+                  <g:Anchor ui:field='cancel'>Cancel (don't save changes)</g:Anchor>
+
+               </g:VerticalPanel>
+            </g:FormPanel>
          </g:ScrollPanel>
       </g:center>
 

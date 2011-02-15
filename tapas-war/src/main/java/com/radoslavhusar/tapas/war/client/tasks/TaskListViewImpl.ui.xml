@@ -13,7 +13,7 @@
 
       <g:center>
          <g:ScrollPanel>
-            <c:CellTable ui:field='table'  styleName='{style.table}' />
+             <c:CellTable ui:field='table'  styleName='{style.table}' />
 <!--            styleName='{style.table}'  cellSpacing='0' cellPadding='0'/>-->
          </g:ScrollPanel>
       </g:center>
