@@ -17,9 +17,12 @@
                   <g:TextBox ui:field='box'>TBD</g:TextBox>
 <!--                  <g:CheckBox ui:field="white" formValue="white">White</g:CheckBox>-->
 
-<!--                  <g:TextBox ui:field='asdasdasd'>TBD</g:TextBox>-->
+                  <g:TextBox ui:field='asdasdasd'>TBD</g:TextBox>
 
                   <g:SuggestBox ui:field='person' />
+
+                  <g:Button ui:field='save'>Save</g:Button>
+                  
                   <g:Anchor ui:field='cancel'>Cancel (don't save changes)</g:Anchor>
 
                </g:VerticalPanel>

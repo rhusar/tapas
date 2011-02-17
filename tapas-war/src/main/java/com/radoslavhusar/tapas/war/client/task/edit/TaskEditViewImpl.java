@@ -7,6 +7,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -15,6 +16,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Employee;
+import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.war.client.app.HelloMVP;
 import com.radoslavhusar.tapas.war.shared.services.MyResourceServiceAsync;
 import java.util.List;
@@ -40,6 +42,8 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
    @UiField(provided = true)
    SuggestBox person;
    private MultiWordSuggestOracle peopleList = new MultiWordSuggestOracle();
+   @UiField
+   Button save;
 
    @Inject
    public TaskEditViewImpl(MyResourceServiceAsync rs) {
@@ -49,10 +53,7 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
       initWidget(binder.createAndBindUi(this));
       System.out.println(rs);
 
-
-
-
-      rs.getResourcesForProject(null, new AsyncCallback<List<Employee>>() {
+      rs.getResourcesForProject(null, new AsyncCallback<List>() {
 
          @Override
          public void onFailure(Throwable caught) {
@@ -60,15 +61,12 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
          }
 
          @Override
-         public void onSuccess(List<Employee> result) {
-            for (Employee e : result) {
+         public void onSuccess(List result) {
+            for (Employee e : ((List<Employee>) result)) {
                peopleList.add(e.getEmployeeName());
             }
          }
       });
-
-
-
 
    }
 
@@ -92,5 +90,15 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
    @UiHandler("cancel")
    void cancelAndReturn(ClickEvent event) {
       presenter.goTo();
+   }
+
+   @UiHandler("save")
+   void save(ClickEvent event) {
+      Task t = new Task();
+      
+      t.setSummary(person.getText());
+//      t.setSomeinteger()
+
+      presenter.save(t);
    }
 }

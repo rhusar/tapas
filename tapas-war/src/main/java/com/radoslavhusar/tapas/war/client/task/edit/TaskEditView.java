@@ -22,6 +22,7 @@
 package com.radoslavhusar.tapas.war.client.task.edit;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.radoslavhusar.tapas.ejb.entity.Task;
 
 /**
  *
@@ -37,5 +38,7 @@ public interface TaskEditView extends IsWidget {
  
    public interface Presenter {
       void goTo();
+
+      public void save(Task t);
    }
 }

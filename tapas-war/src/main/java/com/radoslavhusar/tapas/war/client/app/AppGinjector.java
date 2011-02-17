@@ -19,9 +19,9 @@ public interface AppGinjector extends Ginjector {
 
    PlaceControllerGin getPlaceController();
 
-   MyResourceService getMyResourceService();
+//   MyResourceService getMyResourceService();
 
-   MyResourceServiceAsync getMyResourceServiceAsync();
+//   MyResourceServiceAsync getMyResourceServiceAsync();
 
    MenuActivity getMenuActivity();
 

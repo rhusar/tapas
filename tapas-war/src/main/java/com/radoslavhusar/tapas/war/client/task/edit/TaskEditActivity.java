@@ -1,7 +1,6 @@
 package com.radoslavhusar.tapas.war.client.task.edit;
 
 import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -16,7 +15,7 @@ public class TaskEditActivity extends AbstractActivity implements TaskEditView.P
    private TaskEditPlace place;
 
    public TaskEditActivity(Place place) {
-      this.place= (TaskEditPlace) place;
+      this.place = (TaskEditPlace) place;
    }
 
    @Override
@@ -35,14 +34,14 @@ public class TaskEditActivity extends AbstractActivity implements TaskEditView.P
       Integer taskId = Integer.valueOf(place.getTaskId());
 
       Task e = null;
-      for (Task t : TaskListDummySource.fetch() ) {
+      for (Task t : TaskListDummySource.fetch()) {
          if (t.getTaskId() == taskId) {
-            e=t;
+            e = t;
             break;
          }
       }
 
-      System.out.println("editing "+e.getTaskId());
+      System.out.println("editing " + e.getTaskId());
 
    }
 
@@ -52,16 +51,20 @@ public class TaskEditActivity extends AbstractActivity implements TaskEditView.P
       return super.mayStop();
    }
 
-
    @Override
    public void onStop() {
-       System.out.println(HelloMVP.getInjector().getPlaceController().getWhere().equals(Place.NOWHERE));
+      System.out.println(HelloMVP.getInjector().getPlaceController().getWhere().equals(Place.NOWHERE));
    }
-
 
    @Override
    public void goTo() {
       view.unbind();
       HelloMVP.getInjector().getPlaceController().goTo(new TaskListPlace());
+   }
+
+   @Override
+   public void save(Task t) {
+      System.out.println("saving task: " + t);
+      HelloMVP.getInjector().getEventBus().fireEvent(new TaskEditEvent(t));
    }
 }

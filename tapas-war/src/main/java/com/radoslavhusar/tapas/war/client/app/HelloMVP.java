@@ -11,6 +11,8 @@ import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.radoslavhusar.tapas.war.client.task.edit.TaskEditEvent;
+import com.radoslavhusar.tapas.war.client.task.edit.TaskEditEventHandler;
 import com.radoslavhusar.tapas.war.client.tasks.TaskListPlace;
 
 /**
@@ -45,6 +47,17 @@ public class HelloMVP implements EntryPoint {
       Window.setTitle("TAPAS | Task-Resource Allocation Platform");
 
       RootLayoutPanel.get().add(appWidget);
+
+
+      // handlers
+      eventBus.addHandler(TaskEditEvent.TYPE, new TaskEditEventHandler() {
+
+         @Override
+         public void onEditTask(TaskEditEvent event) {
+            System.out.println(this.getClass().getName() + "is handling " + event);
+         }
+      });
+
 
       // Goes to place represented on URL or default place
       historyHandler.handleCurrentHistory();
