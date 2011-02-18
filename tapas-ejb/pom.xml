@@ -16,11 +16,11 @@
    <url>http://maven.apache.org</url>
   
    <dependencies>
-      <!-- <dependency>
+      <dependency>
          <groupId>net.sf.gilead</groupId>
          <artifactId>adapter-core</artifactId>
          <version>1.2.1</version>
-      </dependency>-->
+      </dependency>
       <dependency>
          <groupId>org.jboss.jbossas</groupId>
          <artifactId>jboss-as-client</artifactId>
@@ -28,6 +28,7 @@
          <type>pom</type>
          <scope>provided</scope>
       </dependency>
+
       <!-- TEST dependencies -->
       <dependency>
          <groupId>junit</groupId>
@@ -35,13 +36,14 @@
          <version>4.7</version>
          <scope>test</scope>
       </dependency>
+      
    </dependencies>
 
    <repositories>
-      <!-- <repository>
+      <repository>
          <id>gilead</id>
          <url>https://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo</url>
-      </repository>-->
+      </repository>
       <repository>
          <id>jboss-maven2</id>
          <url>http://repository.jboss.com/maven2</url>

@@ -11,10 +11,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 
 @Entity
-@Table(name = "PROJECT")
-public class Project implements Serializable {
+@Table(name = "PROJECT_PHASE")
+public class ProjectPhase implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 2L;
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
    private Long id;
@@ -25,7 +25,7 @@ public class Project implements Serializable {
    private Date startDate;
    @Column
    @Temporal(javax.persistence.TemporalType.DATE)
-   private Date targetDate;
+   private Date endDate;
 
    public Long getId() {
       return id;
@@ -41,21 +41,5 @@ public class Project implements Serializable {
 
    public void setName(String name) {
       this.name = name;
-   }
-
-   public Date getStartDate() {
-      return startDate;
-   }
-
-   public void setStartDate(Date startDate) {
-      this.startDate = startDate;
-   }
-
-   public Date getTargetDate() {
-      return targetDate;
-   }
-
-   public void setTargetDate(Date targetDate) {
-      this.targetDate = targetDate;
    }
 }

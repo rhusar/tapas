@@ -13,13 +13,5 @@ public class TimeAllocation implements Serializable {
    private static final long serialVersionUID = 1L;
    @Id
    @Column
-   private long timeAllocationId;
-
-   public long getTimeAllocationId() {
-      return timeAllocationId;
-   }
-
-   public void setTimeAllocationId(long timeAllocationId) {
-      this.timeAllocationId = timeAllocationId;
-   }
+   private Long id;
 }
