@@ -7,7 +7,9 @@ import com.radoslavhusar.tapas.ejb.entity.Project;
 import java.util.List;
 
 @RemoteServiceRelativePath("res")
-public interface MyResourceService  extends RemoteService {
+public interface MyResourceService extends RemoteService {
 
-   public List<Employee> getResourcesForProject(Project project) throws Exception;
+   List<Employee> getResourcesForProject(Project project) throws Exception;
+
+   int getCount() throws Exception ;
 }

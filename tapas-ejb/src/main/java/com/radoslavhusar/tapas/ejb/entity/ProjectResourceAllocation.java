@@ -17,10 +17,8 @@ public class ProjectResourceAllocation implements Serializable {
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
    private Long id;
-   @Column
    @ManyToOne
    private Resource resource;
-   @Column
    @ManyToOne
    private Project project;
    @Column

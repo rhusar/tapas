@@ -6,7 +6,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.war.client.app.HelloMVP;
-import com.radoslavhusar.tapas.war.client.tasks.TaskListDummySource;
+import com.radoslavhusar.tapas.war.shared.services.TaskListDummySource;
 import com.radoslavhusar.tapas.war.client.tasks.TaskListPlace;
 
 public class TaskEditActivity extends AbstractActivity implements TaskEditView.Presenter {
@@ -35,13 +35,13 @@ public class TaskEditActivity extends AbstractActivity implements TaskEditView.P
 
       Task e = null;
       for (Task t : TaskListDummySource.fetch()) {
-         if (t.getTaskId() == taskId) {
+         if (t.getId() == taskId) {
             e = t;
             break;
          }
       }
 
-      System.out.println("editing " + e.getTaskId());
+      System.out.println("editing " + e.getId());
 
    }
 
@@ -64,7 +64,7 @@ public class TaskEditActivity extends AbstractActivity implements TaskEditView.P
 
    @Override
    public void save(Task t) {
-      System.out.println("saving task: " + t);
+      System.out.println("saving task: " + t.toString());
       HelloMVP.getInjector().getEventBus().fireEvent(new TaskEditEvent(t));
    }
 }

@@ -19,34 +19,29 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.radoslavhusar.tapas.war.client.tasks;
+package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Task;
-import java.util.LinkedList;
-import java.util.List;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  *
  * @author <a href="mailto:rhusar@redhat.com">Radoslav Husar</a>
  */
-public class TaskListDummySource {
+@Stateless
+public class TaskFacade extends AbstractFacade<Task> implements TaskFacadeLocal {
 
-   public static List<Task> fetch() {
+   @PersistenceContext(unitName = "MyPersistenceUnit")
+   private EntityManager em;
 
-      List set = new LinkedList<Task>();
-
-      int i = 30;
-      set.add(new Task(1, "Implement somehting", 1));
-      set.add(new Task(2, "Do somthing else", 4));
-      set.add(new Task(4, "Ignore erros", 16));
-      set.add(new Task(4 + i++, "Ignore erros", 16));
-      set.add(new Task(4 + i++, "Ignore erros", 16));
-      set.add(new Task(4 + i++, "Ignore erros", 16));
-      set.add(new Task(4 + i++, "Ignore erros", 16));
-
-      return set;
+   @Override
+   protected EntityManager getEntityManager() {
+      return em;
    }
 
-   private TaskListDummySource() {
+   public TaskFacade() {
+      super(Task.class);
    }
 }

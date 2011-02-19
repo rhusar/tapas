@@ -12,8 +12,49 @@
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
    </properties>
    
-   <dependencies>
-   </dependencies>
+<!--   <dependencies>
+      <dependency>
+         <groupId>net.sf.gilead</groupId>
+         <artifactId>gilead4gwt</artifactId>
+         <version>1.3.2</version>
+         <scope>compile</scope>
+         <exclusions>
+            <exclusion>
+               <artifactId>spring</artifactId>
+               <groupId>org.springframework</groupId>
+            </exclusion>
+            <exclusion>
+               <artifactId>hibernate</artifactId>
+               <groupId>org.hibernate</groupId>
+            </exclusion>
+            <exclusion>
+               <artifactId>org.hibernate</artifactId>
+               <groupId>hibernate-core</groupId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.hibernate</groupId>
+               <artifactId>ejb3-persistence</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.jboss.ejb3</groupId>
+               <artifactId>jboss-ejb3-core</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.jboss.jpa</groupId>
+               <artifactId>jboss-jpa-deployers</artifactId>
+            </exclusion>
+            <exclusion>
+               <artifactId>log4j</artifactId>
+               <groupId>log4j</groupId>
+            </exclusion>
+            <exclusion>
+               <artifactId>javassist</artifactId>
+               <groupId>javassist</groupId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+   </dependencies>-->
 
    <modules>
       <module>tapas-ejb</module>

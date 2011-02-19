@@ -4,4 +4,8 @@
 <module>
    <inherits name="com.google.gwt.user.User" />
    <source path="entity" />
+
+      <!-- Gilead entities -->
+   <inherits name="net.sf.gilead.Gilead4Gwt" />
+   
 </module>

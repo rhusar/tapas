@@ -8,6 +8,8 @@
    <inherits name="com.google.gwt.activity.Activity"/>
    <inherits name="com.google.gwt.place.Place"/>
 
+   <!-- Gilead entities -->
+   <inherits name="net.sf.gilead.Gilead4Gwt" />
 
    <!-- inherit css based theme -->
    <inherits name='com.google.gwt.user.theme.chrome.Chrome'/>

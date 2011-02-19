@@ -21,13 +21,13 @@
  */
 package com.radoslavhusar.tapas.war.client.tasks;
 
+import com.radoslavhusar.tapas.war.shared.services.TaskListDummySource;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -67,7 +67,7 @@ public class TaskListViewImpl extends ResizeComposite implements TaskListView {
 
          @Override
          public String getValue(Task task) {
-            return "" + task.getTaskId();
+            return "" + task.getId();
          }
       };
       table.addColumn(idColumn, "ID");
@@ -112,7 +112,7 @@ public class TaskListViewImpl extends ResizeComposite implements TaskListView {
             Task selected = selectionModel.getSelectedObject();
             if (selected != null) {
 //               Window.alert("You selected: " + selected.getTaskId());
-               presenter.goToEdit(""+selected.getTaskId());
+               presenter.goToEdit(""+selected.getId());
             }
          }
       });

@@ -14,14 +14,14 @@
    </servlet-mapping>
 -->
 
-   <!-- FOR GWT:RUN ONLY! -->
+   <!-- FOR GWT:RUN ONLY! or with gilead it doesnt work... -->
    <servlet>
-      <servlet-name>myResourceServiceImpl</servlet-name>
-      <servlet-class>com.radoslavhusar.tapas.war.server.services.MyResourceServiceImpl</servlet-class>
-   </servlet>
-   <servlet-mapping>
-      <servlet-name>myResourceServiceImpl</servlet-name>
-      <url-pattern>/com.radoslavhusar.tapas.war.Application/res</url-pattern>
+      <servlet-name>myResourceServiceImpl</servlet-name> 
+      <servlet-class>com.radoslavhusar.tapas.war.server.services.MyResourceServiceImpl</servlet-class> 
+   </servlet> 
+   <servlet-mapping> 
+      <servlet-name>myResourceServiceImpl</servlet-name> 
+      <url-pattern>/com.radoslavhusar.tapas.war.Application/res</url-pattern> 
    </servlet-mapping>
 
 

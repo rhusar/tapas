@@ -53,7 +53,7 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
       initWidget(binder.createAndBindUi(this));
       System.out.println(rs);
 
-      rs.getResourcesForProject(null, new AsyncCallback<List>() {
+      rs.getResourcesForProject(null, new AsyncCallback<List<Employee>>() {
 
          @Override
          public void onFailure(Throwable caught) {

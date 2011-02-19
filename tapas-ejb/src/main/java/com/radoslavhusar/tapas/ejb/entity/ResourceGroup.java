@@ -1,5 +1,6 @@
 package com.radoslavhusar.tapas.ejb.entity;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "RESOURCE_GROUP")
-public class ResourceGroup implements java.io.Serializable {
+public class ResourceGroup implements Serializable {
 
    private static final long serialVersionUID = 7440297955003302414L;
    @Id
@@ -17,4 +18,20 @@ public class ResourceGroup implements java.io.Serializable {
    private Long id;
    @Column
    private String name;
+
+   public Long getId() {
+      return id;
+   }
+
+   public void setId(Long id) {
+      this.id = id;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
 }

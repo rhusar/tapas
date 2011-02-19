@@ -9,6 +9,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.radoslavhusar.tapas.war.client.task.edit.TaskEditEvent;
@@ -58,6 +59,18 @@ public class HelloMVP implements EntryPoint {
          }
       });
 
+
+      injector.getMyResourceService().getCount(new AsyncCallback<Integer>() {
+         @Override
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(Integer result) {
+            System.out.println("IT WORKED!!! " + result);
+         }
+      });
 
       // Goes to place represented on URL or default place
       historyHandler.handleCurrentHistory();
