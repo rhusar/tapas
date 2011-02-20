@@ -29,7 +29,7 @@ import javax.ejb.Local;
  *
  * @author rhusar
  */
-@Local
+//@Local
 public interface TaskFacadeLocal {
 
    void create(Task task);

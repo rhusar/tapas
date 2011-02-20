@@ -61,14 +61,17 @@ public class HelloMVP implements EntryPoint {
 
 
       injector.getMyResourceService().getCount(new AsyncCallback<Integer>() {
+
          @Override
          public void onFailure(Throwable caught) {
-            throw new UnsupportedOperationException("Not supported yet.");
+//            throw new UnsupportedOperationException("Not supported yet.");
+            Window.alert("Request failed :-( ");
          }
 
          @Override
          public void onSuccess(Integer result) {
-            System.out.println("IT WORKED!!! " + result);
+//            System.out.println("IT WORKED!!! " + result);
+            Window.alert("IT WORKED!!! " + result);
          }
       });
 

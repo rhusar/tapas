@@ -22,6 +22,7 @@
 package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Task;
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -31,6 +32,7 @@ import javax.persistence.PersistenceContext;
  * @author <a href="mailto:rhusar@redhat.com">Radoslav Husar</a>
  */
 @Stateless
+@Local(TaskFacadeLocal.class)
 public class TaskFacade extends AbstractFacade<Task> implements TaskFacadeLocal {
 
    @PersistenceContext(unitName = "MyPersistenceUnit")
