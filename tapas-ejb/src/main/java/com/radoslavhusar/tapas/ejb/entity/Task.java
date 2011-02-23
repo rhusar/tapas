@@ -31,7 +31,7 @@ public class Task implements Serializable {
    private Byte priority;
    @Column
    private TaskState status;
-   @ManyToOne(fetch = FetchType.LAZY)
+   @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn
    private ResourceGroup resourceGroup;
 
@@ -93,6 +93,6 @@ public class Task implements Serializable {
 
    @Override
    public String toString() {
-      return "Task{" + "id=" + id + "name=" + name + "summary=" + summary + "assignee=" + assignee + '}';
+      return "Task{id=" + id + ",name=" + name + ",summary=" + summary + ",assignee=" + assignee + '}';
    }
 }

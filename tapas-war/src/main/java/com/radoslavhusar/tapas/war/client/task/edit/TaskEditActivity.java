@@ -3,6 +3,8 @@ package com.radoslavhusar.tapas.war.client.task.edit;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.war.client.app.HelloMVP;
@@ -65,6 +67,18 @@ public class TaskEditActivity extends AbstractActivity implements TaskEditView.P
    @Override
    public void save(Task t) {
       System.out.println("saving task: " + t.toString());
-      HelloMVP.getInjector().getEventBus().fireEvent(new TaskEditEvent(t));
+      //HelloMVP.getInjector().getEventBus().fireEvent(new TaskEditEvent(t));
+      HelloMVP.getInjector().getMyResourceService().create(t, new AsyncCallback<Void>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            Window.alert("error while saving!");
+         }
+
+         @Override
+         public void onSuccess(Void result) {
+            Window.alert("SAVED!");
+         }
+      });
    }
 }

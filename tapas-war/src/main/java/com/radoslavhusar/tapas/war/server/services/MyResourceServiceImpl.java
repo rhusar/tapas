@@ -2,16 +2,15 @@ package com.radoslavhusar.tapas.war.server.services;
 
 import com.radoslavhusar.tapas.ejb.entity.Employee;
 import com.radoslavhusar.tapas.ejb.entity.Project;
+import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.session.TaskFacadeLocal;
 import com.radoslavhusar.tapas.war.shared.services.MyResourceService;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
 import net.sf.gilead.configuration.ConfigurationHelper;
 import net.sf.gilead.gwt.PersistentRemoteService;
 import net.sf.gilead.core.hibernate.jboss.HibernateJBossUtil;
@@ -91,7 +90,7 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
 //   }
    @Override
    public List<Employee> getResourcesForProject(Project project) throws Exception {
-      List e = new LinkedList();
+      List e = new ArrayList();
 
       e.add(new Employee(1, "Radoslav", "Husar", null));
       e.add(new Employee(1, "Falsodar", "Husar", null));
@@ -100,7 +99,38 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
       return e;
    }
 
+   @Override
    public int getCount() throws Exception {
       return tasks.count();
+   }
+
+   @Override
+   public List<Task> findAll() {
+      return tasks.findAll();
+   }
+
+   @Override
+   public void create(Task task) {
+      tasks.create(task);
+   }
+
+   @Override
+   public void edit(Task task) {
+      tasks.create(task);
+   }
+
+   @Override
+   public void remove(Task task) {
+      throw new UnsupportedOperationException("Not supported yet.");
+   }
+
+   @Override
+   public Task find(long id) {
+      return tasks.find(id);
+   }
+
+   @Override
+   public List<Task> findRange(int[] range) {
+      throw new UnsupportedOperationException("Not supported yet.");
    }
 }

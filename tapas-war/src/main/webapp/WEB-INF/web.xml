@@ -2,7 +2,7 @@
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
    <display-name>TAPAS</display-name>
 
-<!--
+
    <servlet>
       <servlet-name>emp</servlet-name>
       <servlet-class>com.radoslavhusar.tapas.war.server.services.EmployeeServiceGWTImpl</servlet-class>
@@ -12,7 +12,6 @@
       <servlet-name>emp</servlet-name>
       <url-pattern>/com.radoslavhusar.tapas.war.Application/emp</url-pattern>
    </servlet-mapping>
--->
 
    <!-- FOR GWT:RUN ONLY! or with gilead it doesnt work... -->
    <servlet>

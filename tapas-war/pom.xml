@@ -174,6 +174,7 @@
       <outputDirectory>war/WEB-INF/classes</outputDirectory>
 
       <plugins>
+         <!-- GWT Plugin -->
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>gwt-maven-plugin</artifactId>
@@ -204,6 +205,7 @@
                <runTarget>tapas.html</runTarget>
 <!--               <runTarget>hellomvp.html</runTarget>-->
 <!--               <extraJvmArgs>-Xmx256m</extraJvmArgs>-->
+               <extraJvmArgs>-Xmx1g</extraJvmArgs>
 <!--               <logLevel>TRACE</logLevel>-->
                <!-- for server.xml mapping -->
                <!--
@@ -230,6 +232,21 @@
                <source>1.6</source>
                <target>1.6</target>
             </configuration>
+         </plugin>
+
+         <!-- JRebel plugin (for server part!) -->
+         <plugin>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>jrebel-maven-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>generate-rebel-xml</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                     <goal>generate</goal>
+                  </goals>
+               </execution>
+            </executions>
          </plugin>
          
          <!-- Release plugin -->

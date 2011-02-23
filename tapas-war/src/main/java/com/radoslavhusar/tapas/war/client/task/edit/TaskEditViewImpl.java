@@ -94,11 +94,11 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
 
    @UiHandler("save")
    void save(ClickEvent event) {
-      Task t = new Task();
+      Task task = new Task();
       
-      t.setSummary(person.getText());
+      task.setSummary(person.getText());
 //      t.setSomeinteger()
 
-      presenter.save(t);
+      presenter.save(task);
    }
 }
