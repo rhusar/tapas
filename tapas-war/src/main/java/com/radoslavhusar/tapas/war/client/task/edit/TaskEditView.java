@@ -35,10 +35,12 @@ public interface TaskEditView extends IsWidget {
    public void bind();
 
    public void unbind();
+
+   public void setTask(Long integer);
  
    public interface Presenter {
       void goTo();
 
-      public void save(Task t);
+      public void doSubmit(Task t);
    }
 }

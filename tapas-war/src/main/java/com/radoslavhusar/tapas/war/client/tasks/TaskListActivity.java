@@ -24,7 +24,7 @@ package com.radoslavhusar.tapas.war.client.tasks;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.radoslavhusar.tapas.war.client.app.HelloMVP;
+import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.task.edit.TaskEditPlace;
 import java.util.Date;
 
@@ -38,7 +38,7 @@ public class TaskListActivity extends AbstractActivity implements TaskListView.P
 
    @Override
    public void start(AcceptsOneWidget panel, EventBus eventBus) {
-       view = HelloMVP.getInjector().getTaskListView();
+       view = Application.getInjector().getTaskListView();
       view.setPresenter(this);
       view.bind();
 
@@ -47,11 +47,11 @@ public class TaskListActivity extends AbstractActivity implements TaskListView.P
 
    @Override
    public void goToEdit(String someId) {
-      //System.out.println(new Date() + " " + HelloMVP.getInjector().getPlaceController());
+      //System.out.println(new Date() + " " + Application.getInjector().getPlaceController());
 
       //System.out.println(new Date());
 //      injector.getPlaceController().goTo(new TaskEditPlace(someId));
-      HelloMVP.getInjector().getPlaceController().goTo(new TaskEditPlace(someId));
+      Application.getInjector().getPlaceController().goTo(new TaskEditPlace(someId));
 
    }
 

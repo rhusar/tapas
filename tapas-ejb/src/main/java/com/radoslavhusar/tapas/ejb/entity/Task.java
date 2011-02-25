@@ -31,9 +31,9 @@ public class Task implements Serializable {
    private Byte priority;
    @Column
    private TaskState status;
-   @ManyToOne(fetch = FetchType.EAGER)
-   @JoinColumn
-   private ResourceGroup resourceGroup;
+//   @ManyToOne(fetch = FetchType.EAGER)
+//   @JoinColumn
+//   private ResourceGroup resourceGroup;
 
    public Resource getAssignee() {
       return assignee;
@@ -67,13 +67,13 @@ public class Task implements Serializable {
       this.priority = priority;
    }
 
-   public ResourceGroup getResourceGroup() {
-      return resourceGroup;
-   }
-
-   public void setResourceGroup(ResourceGroup resourceGroup) {
-      this.resourceGroup = resourceGroup;
-   }
+//   public ResourceGroup getResourceGroup() {
+//      return resourceGroup;
+//   }
+//
+//   public void setResourceGroup(ResourceGroup resourceGroup) {
+//      this.resourceGroup = resourceGroup;
+//   }
 
    public TaskState getStatus() {
       return status;

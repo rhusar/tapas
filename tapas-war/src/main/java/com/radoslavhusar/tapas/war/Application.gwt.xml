@@ -20,7 +20,7 @@
    <inherits name="com.radoslavhusar.tapas.ejb.Entity"/>
 
    <!-- Specify the app entry point class, which is this one. -->
-   <entry-point class="com.radoslavhusar.tapas.war.client.app.HelloMVP"/>
+   <entry-point class="com.radoslavhusar.tapas.war.client.app.Application"/>
 
    <!-- Specify the application specific style sheet. -->
    <!--   <stylesheet src="Application.css"/>-->

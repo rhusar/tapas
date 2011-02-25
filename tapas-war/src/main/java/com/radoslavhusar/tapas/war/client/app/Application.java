@@ -19,7 +19,7 @@ import com.radoslavhusar.tapas.war.client.tasks.TaskListPlace;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class HelloMVP implements EntryPoint {
+public class Application implements EntryPoint {
 
    private Place defaultPlace = new TaskListPlace();
    private SimplePanel appWidget = new SimplePanel();
@@ -82,7 +82,7 @@ public class HelloMVP implements EntryPoint {
    /**
     * Static method for getting Application-scope Ginjector.
     *
-    * @return Ginjector
+    * @return app's Ginjector
     */
    public static AppGinjector getInjector() {
       return injector;

@@ -13,15 +13,16 @@
          <g:ScrollPanel>
             <g:FormPanel>
                <g:VerticalPanel horizontalAlignment="ALIGN_RIGHT" ui:field="allFields">
-                  <g:Label>Enter your name:</g:Label>
-                  <g:TextBox ui:field='box'>TBD</g:TextBox>
+                  
+                  <g:Label>Name</g:Label>
+                  <g:TextBox ui:field='name'>TBD</g:TextBox>
 <!--                  <g:CheckBox ui:field="white" formValue="white">White</g:CheckBox>-->
-
-                  <g:TextBox ui:field='asdasdasd'>TBD</g:TextBox>
+                  <g:Label>Summary</g:Label>
+                  <g:TextBox ui:field='summary'>TBD</g:TextBox>
 
                   <g:SuggestBox ui:field='person' />
 
-                  <g:Button ui:field='save'>Save</g:Button>
+                  <g:Button ui:field='submit'>Submit</g:Button>
                   
                   <g:Anchor ui:field='cancel'>Cancel (don't save changes)</g:Anchor>
 

@@ -21,20 +21,22 @@
  */
 package com.radoslavhusar.tapas.war.client.tasks;
 
-import com.radoslavhusar.tapas.war.shared.services.TaskListDummySource;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
-import com.radoslavhusar.tapas.war.client.app.HelloMVP;
+import com.radoslavhusar.tapas.ejb.entity.Employee;
+import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.ejb.entity.Task;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -112,26 +114,41 @@ public class TaskListViewImpl extends ResizeComposite implements TaskListView {
             Task selected = selectionModel.getSelectedObject();
             if (selected != null) {
 //               Window.alert("You selected: " + selected.getTaskId());
-               presenter.goToEdit(""+selected.getId());
+               presenter.goToEdit("" + selected.getId());
             }
          }
       });
 
-      table.setPageSize(Integer.MAX_VALUE-1);
-      
-      List<Task> s = TaskListDummySource.fetch();
-      // Set the total row count. This isn't strictly necessary, but it affects
-      // paging calculations, so its good habit to keep the row count up to date.
-      table.setRowCount(s.size(), true);
+      table.setPageSize(Integer.MAX_VALUE - 1);
 
-      // Push the data into the widget.
-      table.setRowData(0, s);
+
+      Application.getInjector().getMyResourceService().findAll(new AsyncCallback<List<Task>>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(List<Task> result) {
+            List<Task> s = new ArrayList(result); // = TaskListDummySource.fetch();
+
+            // Set the total row count. This isn't strictly necessary, but it affects
+            // paging calculations, so its good habit to keep the row count up to date.
+            table.setRowCount(s.size(), true);
+
+            // Push the data into the widget.
+            table.setRowData(0, s);
+         }
+      });
+
+
 
    }
 
    public void bind() {
-      menu.add(HelloMVP.getInjector().getMenuView());
-      status.add(HelloMVP.getInjector().getStatusView());
+      menu.add(Application.getInjector().getMenuView());
+      status.add(Application.getInjector().getStatusView());
    }
 
    public void unbind() {

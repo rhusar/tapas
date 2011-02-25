@@ -19,9 +19,9 @@ public class AppActivityMapper implements ActivityMapper {
    public Activity getActivity(Place place) {
 
       if (place instanceof TaskListPlace) {
-         return HelloMVP.getInjector().getTaskListActivity();
+         return Application.getInjector().getTaskListActivity();
       } else if (place instanceof TaskEditPlace) {
-         //return HelloMVP.getInjector().getTaskEditActivity();
+         //return Application.getInjector().getTaskEditActivity();
 
          // Dont make this singleton..
          return new TaskEditActivity(place);

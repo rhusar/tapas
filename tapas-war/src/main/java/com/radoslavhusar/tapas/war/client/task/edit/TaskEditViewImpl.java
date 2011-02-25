@@ -17,7 +17,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Employee;
 import com.radoslavhusar.tapas.ejb.entity.Task;
-import com.radoslavhusar.tapas.war.client.app.HelloMVP;
+import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.shared.services.MyResourceServiceAsync;
 import java.util.List;
 
@@ -25,8 +25,8 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
 
    private Presenter presenter;
    private static Binder binder = GWT.create(Binder.class);
+   private Long taskId;
 
-//   private MyResourceService rs; // = GWT.create(MyResourceService.class);
    interface Binder extends UiBinder<Widget, TaskEditViewImpl> {
    }
    @UiField
@@ -34,7 +34,9 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
    @UiField
    SimplePanel status;
    @UiField
-   TextBox box;
+   TextBox name;
+   @UiField
+   TextBox summary;
 //   @UiField
 //   CheckBox white;
    @UiField
@@ -43,21 +45,24 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
    SuggestBox person;
    private MultiWordSuggestOracle peopleList = new MultiWordSuggestOracle();
    @UiField
-   Button save;
+   Button submit;
 
-   @Inject
-   public TaskEditViewImpl(MyResourceServiceAsync rs) {
-      //    rs = GWT.create(MyResourceService.class);
-
+   public TaskEditViewImpl() {
       person = new SuggestBox(peopleList);
       initWidget(binder.createAndBindUi(this));
-      System.out.println(rs);
+   }
 
-      rs.getResourcesForProject(null, new AsyncCallback<List<Employee>>() {
+   // UI Integration Routines
+   @Override
+   public void bind() {
+      menu.add(Application.getInjector().getMenuView());
+      status.add(Application.getInjector().getStatusView());
+
+      Application.getInjector().getMyResourceService().getResourcesForProject(null, new AsyncCallback<List<Employee>>() {
 
          @Override
          public void onFailure(Throwable caught) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            GWT.log("Error loading possible assignees for project.");
          }
 
          @Override
@@ -67,13 +72,6 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
             }
          }
       });
-
-   }
-
-   @Override
-   public void bind() {
-      menu.add(HelloMVP.getInjector().getMenuView());
-      status.add(HelloMVP.getInjector().getStatusView());
    }
 
    @Override
@@ -87,18 +85,42 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
       this.presenter = presenter;
    }
 
+   @Override
+   public void setTask(Long integer) {
+      this.taskId = integer;
+
+      submit.setEnabled(false);
+      // Now preload the data
+      Application.getInjector().getMyResourceService().find(taskId, new AsyncCallback<Task>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            submit.setEnabled(false);
+         }
+
+         @Override
+         public void onSuccess(Task result) {
+            name.setText(result.getName());
+            summary.setText(result.getSummary());
+            submit.setEnabled(true);
+         }
+      });
+      
+   }
+
+   // UI Handlers
    @UiHandler("cancel")
-   void cancelAndReturn(ClickEvent event) {
+   void cancel(ClickEvent event) {
       presenter.goTo();
    }
 
-   @UiHandler("save")
-   void save(ClickEvent event) {
+   @UiHandler("submit")
+   void submit(ClickEvent event) {
+      // Create a task and pass to presenter
       Task task = new Task();
-      
-      task.setSummary(person.getText());
-//      t.setSomeinteger()
-
-      presenter.save(task);
+      task.setId(taskId);
+      task.setName(name.getText());
+      task.setSummary(summary.getText());
+      presenter.doSubmit(task);
    }
 }

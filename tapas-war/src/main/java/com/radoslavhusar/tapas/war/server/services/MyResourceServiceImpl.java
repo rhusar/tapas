@@ -90,11 +90,11 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
 //   }
    @Override
    public List<Employee> getResourcesForProject(Project project) throws Exception {
-      List e = new ArrayList();
+      List e = new ArrayList(this.findAll());
 
-      e.add(new Employee(1, "Radoslav", "Husar", null));
-      e.add(new Employee(1, "Falsodar", "Husar", null));
-      e.add(new Employee(1, "Michal", "Husar", null));
+//      e.add(new Employee(1, "Radoslav", "Husar", null));
+//      e.add(new Employee(1, "Falsodar", "Husar", null));
+//      e.add(new Employee(1, "Michal", "Husar", null));
 
       return e;
    }
@@ -116,7 +116,7 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
 
    @Override
    public void edit(Task task) {
-      tasks.create(task);
+      tasks.edit(task);
    }
 
    @Override

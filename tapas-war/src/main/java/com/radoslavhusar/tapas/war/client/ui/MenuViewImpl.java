@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.radoslavhusar.tapas.war.client.app.HelloMVP;
+import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.tasks.TaskListPlace;
 import java.util.HashSet;
 import java.util.Set;
@@ -52,7 +52,7 @@ public class MenuViewImpl extends Composite implements MenuView {
 
    @UiConstructor
    public MenuViewImpl() {
-      this.presenter = HelloMVP.getInjector().getMenuActivity();
+      this.presenter = Application.getInjector().getMenuActivity();
 //      presenter=p;
       initWidget(binder.createAndBindUi(this));
 
@@ -84,7 +84,7 @@ public class MenuViewImpl extends Composite implements MenuView {
 
    @UiHandler("tasks")
    void navigateTasks(ClickEvent event) {
-      HelloMVP.getInjector().getPlaceController().goTo(new TaskListPlace());
+      Application.getInjector().getPlaceController().goTo(new TaskListPlace());
    }
    
    @Override
