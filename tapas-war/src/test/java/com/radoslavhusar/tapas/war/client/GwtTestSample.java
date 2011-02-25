@@ -8,7 +8,7 @@ public class GwtTestSample extends GWTTestCase {
 
    @Override
    public String getModuleName() {
-      return "com.hellomvp.HelloMVP";
+      return "com.radoslavhusar.tapas.war.Application";
    }
 
    public void testSomething() {
