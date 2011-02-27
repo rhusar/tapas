@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.shared.services.TaskListDummySource;
-import com.radoslavhusar.tapas.war.client.tasks.TaskListPlace;
+import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
 
 public class TaskEditActivity extends AbstractActivity implements TaskEditView.Presenter {
 
@@ -62,7 +62,7 @@ public class TaskEditActivity extends AbstractActivity implements TaskEditView.P
    @Override
    public void goTo() {
       view.unbind();
-      Application.getInjector().getPlaceController().goTo(new TaskListPlace());
+      Application.getInjector().getPlaceController().goTo(new TasksPlace());
    }
 
    @Override
@@ -79,8 +79,11 @@ public class TaskEditActivity extends AbstractActivity implements TaskEditView.P
 
          @Override
          public void onSuccess(Void result) {
-            Window.alert("SAVED!");
+            //Window.alert("SAVED!");
+            GWT.log("saved");
          }
       });
+
+      Application.getInjector().getPlaceController().goTo(new TasksPlace());
    }
 }

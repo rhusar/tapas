@@ -14,11 +14,9 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Employee;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.war.client.app.Application;
-import com.radoslavhusar.tapas.war.shared.services.MyResourceServiceAsync;
 import java.util.List;
 
 public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
@@ -110,12 +108,12 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
 
    // UI Handlers
    @UiHandler("cancel")
-   void cancel(ClickEvent event) {
+   void onCancel(ClickEvent event) {
       presenter.goTo();
    }
 
    @UiHandler("submit")
-   void submit(ClickEvent event) {
+   void onSubmit(ClickEvent event) {
       // Create a task and pass to presenter
       Task task = new Task();
       task.setId(taskId);

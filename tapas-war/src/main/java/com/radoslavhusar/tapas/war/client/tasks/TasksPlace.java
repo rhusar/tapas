@@ -28,15 +28,15 @@ import com.google.gwt.place.shared.PlaceTokenizer;
  *
  * @author <a href="mailto:rhusar@redhat.com">Radoslav Husar</a>
  */
-public class TaskListPlace extends Place {
+public class TasksPlace extends Place {
 
    private String selectedTaskId;
 
-   public TaskListPlace(String token) {
+   public TasksPlace(String token) {
       this.selectedTaskId = token;
    }
 
-   public TaskListPlace() {
+   public TasksPlace() {
       selectedTaskId = null;
    }
 
@@ -44,16 +44,16 @@ public class TaskListPlace extends Place {
       return selectedTaskId;
    }
 
-   public static class Tokenizer implements PlaceTokenizer<TaskListPlace> {
+   public static class Tokenizer implements PlaceTokenizer<TasksPlace> {
 
       @Override
-      public String getToken(TaskListPlace place) {
+      public String getToken(TasksPlace place) {
          return place.getSelectedTaskId();
       }
 
       @Override
-      public TaskListPlace getPlace(String token) {
-         return new TaskListPlace(token);
+      public TasksPlace getPlace(String token) {
+         return new TasksPlace(token);
       }
    }
 }

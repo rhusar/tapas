@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.radoslavhusar.tapas.war.client.app.Application;
-import com.radoslavhusar.tapas.war.client.tasks.TaskListPlace;
+import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,10 +53,8 @@ public class MenuViewImpl extends Composite implements MenuView {
    @UiConstructor
    public MenuViewImpl() {
       this.presenter = Application.getInjector().getMenuActivity();
-//      presenter=p;
-      initWidget(binder.createAndBindUi(this));
 
-      //System.out.println("init");
+      initWidget(binder.createAndBindUi(this));
 
       Set<String> set = new HashSet<String>();
       set.clear();
@@ -84,7 +82,7 @@ public class MenuViewImpl extends Composite implements MenuView {
 
    @UiHandler("tasks")
    void navigateTasks(ClickEvent event) {
-      Application.getInjector().getPlaceController().goTo(new TaskListPlace());
+      Application.getInjector().getPlaceController().goTo(new TasksPlace());
    }
    
    @Override

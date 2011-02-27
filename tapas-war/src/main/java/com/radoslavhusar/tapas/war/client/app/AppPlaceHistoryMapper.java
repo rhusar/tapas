@@ -2,7 +2,7 @@ package com.radoslavhusar.tapas.war.client.app;
 
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.place.shared.WithTokenizers;
-import com.radoslavhusar.tapas.war.client.tasks.TaskListPlace;
+import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
 import com.radoslavhusar.tapas.war.client.task.edit.TaskEditPlace;
 
 /**
@@ -12,7 +12,7 @@ import com.radoslavhusar.tapas.war.client.task.edit.TaskEditPlace;
  * separate TokenizerFactory.
  */
 @WithTokenizers({
-   TaskListPlace.Tokenizer.class,
+   TasksPlace.Tokenizer.class,
    TaskEditPlace.Tokenizer.class})
 public interface AppPlaceHistoryMapper extends PlaceHistoryMapper {
 }

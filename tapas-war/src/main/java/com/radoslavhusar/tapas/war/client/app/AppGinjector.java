@@ -6,8 +6,8 @@ import com.google.gwt.inject.client.Ginjector;
 import com.radoslavhusar.tapas.war.client.ui.MenuActivity;
 import com.radoslavhusar.tapas.war.client.ui.MenuViewImpl;
 import com.radoslavhusar.tapas.war.client.ui.StatusViewImpl;
-import com.radoslavhusar.tapas.war.client.tasks.TaskListActivity;
-import com.radoslavhusar.tapas.war.client.tasks.TaskListViewImpl;
+import com.radoslavhusar.tapas.war.client.tasks.TasksActivity;
+import com.radoslavhusar.tapas.war.client.tasks.TasksViewImpl;
 import com.radoslavhusar.tapas.war.client.task.edit.TaskEditViewImpl;
 import com.radoslavhusar.tapas.war.shared.services.MyResourceServiceAsync;
 
@@ -26,9 +26,9 @@ public interface AppGinjector extends Ginjector {
 
    StatusViewImpl getStatusView();
 
-   TaskListActivity getTaskListActivity();
+   TasksActivity getTaskListActivity();
 
-   TaskListViewImpl getTaskListView();
+   TasksViewImpl getTaskListView();
 
 //   TaskEditActivity getTaskEditActivity();
    TaskEditViewImpl getTaskEditView();

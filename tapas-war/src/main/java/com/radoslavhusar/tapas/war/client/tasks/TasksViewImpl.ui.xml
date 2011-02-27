@@ -1,4 +1,4 @@
-
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder
   xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:g='urn:import:com.google.gwt.user.client.ui'
@@ -13,8 +13,16 @@
 
       <g:center>
          <g:ScrollPanel>
-             <c:CellTable ui:field='table'  styleName='{style.table}' />
-<!--            styleName='{style.table}'  cellSpacing='0' cellPadding='0'/>-->
+
+            <g:HTMLPanel>
+               <div styleName='{style.filter}' style="text-align: right;">
+                  <span>Task Filter</span>
+                  <g:TextBox ui:field='filter' />
+                  <span>&nbsp;</span>
+               </div>
+               <c:CellTable ui:field='table'  styleName='{style.table}' />
+            </g:HTMLPanel>
+
          </g:ScrollPanel>
       </g:center>
 
@@ -25,6 +33,11 @@
    </g:DockLayoutPanel>
 
    <ui:style>
+      .filter {
+      width: 100%;
+      text-align: right;
+      }
+
   .outer {
     border-left: 1px solid #999;
     border-bottom: 1px solid #999;

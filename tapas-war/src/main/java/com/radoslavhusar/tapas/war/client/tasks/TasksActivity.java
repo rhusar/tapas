@@ -21,17 +21,43 @@
  */
 package com.radoslavhusar.tapas.war.client.tasks;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.radoslavhusar.tapas.war.client.app.Application;
+import com.radoslavhusar.tapas.war.client.task.edit.TaskEditPlace;
 
 /**
  *
  * @author <a href="mailto:rhusar@redhat.com">Radoslav Husar</a>
  */
-public interface TaskListView extends IsWidget {
+public class TasksActivity extends AbstractActivity implements TasksView.Presenter {
 
-   void setPresenter(Presenter presenter);
+ TasksViewImpl view;
 
-   public interface Presenter {
-      void goToEdit(String someId);
+   @Override
+   public void start(AcceptsOneWidget panel, EventBus eventBus) {
+       view = Application.getInjector().getTaskListView();
+      view.setPresenter(this);
+      view.bind();
+
+      panel.setWidget(view.asWidget());
+   }
+
+   @Override
+   public void goToEdit(String someId) {
+      //System.out.println(new Date() + " " + Application.getInjector().getPlaceController());
+
+      //System.out.println(new Date());
+//      injector.getPlaceController().goTo(new TaskEditPlace(someId));
+      Application.getInjector().getPlaceController().goTo(new TaskEditPlace(someId));
+
+   }
+
+   @Override
+   public void onStop() {
+      super.onStop();
+      view.unbind();
+//      System.out.println("task list stopped");
    }
 }

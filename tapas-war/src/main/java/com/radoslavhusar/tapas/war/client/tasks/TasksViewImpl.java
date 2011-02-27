@@ -21,19 +21,30 @@
  */
 package com.radoslavhusar.tapas.war.client.tasks;
 
+import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.cellview.client.Header;
+import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.AsyncDataProvider;
+import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.ProvidesKey;
+import com.google.gwt.view.client.Range;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
-import com.radoslavhusar.tapas.ejb.entity.Employee;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import java.util.ArrayList;
@@ -43,27 +54,109 @@ import java.util.List;
  *
  * @author <a href="mailto:rhusar@redhat.com">Radoslav Husar</a>
  */
-public class TaskListViewImpl extends ResizeComposite implements TaskListView {
+public class TasksViewImpl extends ResizeComposite implements TasksView {
 
    private Presenter presenter;
    private static Binder binder = GWT.create(Binder.class);
 
-   interface Binder extends UiBinder<Widget, TaskListViewImpl> {
+   interface Binder extends UiBinder<Widget, TasksViewImpl> {
    }
-//   @UiField
-//   FlexTable header;
    @UiField(provided = true)
    CellTable table = new CellTable<Task>();
+//   @UiField
+//   Grid grid;
    @UiField
    SimplePanel menu;
    @UiField
    SimplePanel status;
+   @UiField
+   TextBox filter;
+   ListDataProvider<Task> provider;
+   SimplePager pager;
+   /*public class MyHeader extends Header {
 
-   public TaskListViewImpl() {
+   private String text;
+
+   public MyHeader(String text) {
+   super(new ClickableTextCell());
+   this.text = text;
+   }
+
+   @Override
+   public String getValue() {
+   return text;
+   }
+
+   @Override
+   public void onBrowserEvent(Element elem, NativeEvent event) {
+   super.onBrowserEvent(elem, event);
+   GWT.log("" + event.getType().equals("click"));
+
+   //         PopupPanel pp = new PopupPanel(true);
+   //         FormPanel fp = new FormPanel();
+   //         fp.add(new TextField());
+   //         pp.setWidget();
+   //         pp.show();
+   }
+   }*/
+
+   public TasksViewImpl() {
+      provider = new ListDataProvider<Task>() {
+
+         @Override
+         public void refresh() {
+            super.refresh();
+            this.onRangeChanged(table);
+         }
+
+         @Override
+         protected void onRangeChanged(HasData<Task> display) {
+            if (filter.getText().isEmpty()) {
+               display.setVisibleRange(0, this.getList().size());
+               display.setRowData(0, this.getList());
+            } else {
+               ArrayList<Task> filteredlist = new ArrayList<Task>();
+
+               for (Task t : this.getList()) {
+                  if (t.getSummary().contains(filter.getText())) {
+                     filteredlist.add(t);
+                  }
+               }
+
+               display.setRowCount(filteredlist.size());
+               display.setRowData(0, filteredlist);
+               GWT.log("Filtered!");
+            }
+         }
+      };
+      table = new CellTable<Task>(provider);
+
       initWidget(binder.createAndBindUi(this));
 
-      table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+      filter.addKeyUpHandler(new KeyUpHandler() {
 
+         @Override
+         public void onKeyUp(KeyUpEvent event) {
+            // Do the filter!!
+            provider.refresh();
+         }
+      });
+
+
+
+//      ProvidesKey<Task> keyProvider = new ProvidesKey<Task>() {
+//
+//         @Override
+//         public Object getKey(Task item) {
+//            // Always do a null check.
+//            return (item == null) ? null : item.getId();
+//         }
+//      };
+
+
+
+
+//      table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 
       TextColumn<Task> idColumn = new TextColumn<Task>() {
 
@@ -72,7 +165,14 @@ public class TaskListViewImpl extends ResizeComposite implements TaskListView {
             return "" + task.getId();
          }
       };
+
+
+      //Header idHeader = new MyHeader("ID HEADER");
+      //GWT.log(idHeader.getCell().getConsumedEvents().toString());
+
+
       table.addColumn(idColumn, "ID");
+
       TextColumn<Task> nameColumn = new TextColumn<Task>() {
 
          @Override
@@ -83,26 +183,6 @@ public class TaskListViewImpl extends ResizeComposite implements TaskListView {
       table.addColumn(nameColumn, "Summary");
 
 
-      //    DateCell dateCell = new DateCell();
-//    Column<Contact, Date> dateColumn = new Column<Contact, Date>(dateCell) {
-//      @Override
-//      public Date getValue(Contact object) {
-//        return object.birthday;
-//      }
-//    };
-//    table.addColumn(dateColumn, "Birthday");
-
-//      header.setText(0, 0, "Task ID");
-//      header.setText(0, 1, "Text");
-//      header.setText(0, 2, "Some Integer");
-//
-//      int i = 0;
-//      for (Task t : TaskListDummySource.fetch()) {
-//          table.setText(i, 0, "" + t.getTaskId());
-//         table.setText(i, 1, t.getSummary());
-//         table.setText(i, 2, String.valueOf(t.getSomeinteger()));
-//         i++;
-//      }
 
       // Add a selection model to handle user selection.
       final SingleSelectionModel<Task> selectionModel = new SingleSelectionModel<Task>();
@@ -113,7 +193,7 @@ public class TaskListViewImpl extends ResizeComposite implements TaskListView {
          public void onSelectionChange(SelectionChangeEvent event) {
             Task selected = selectionModel.getSelectedObject();
             if (selected != null) {
-//               Window.alert("You selected: " + selected.getTaskId());
+               // Window.alert("You selected: " + selected.getTaskId());
                presenter.goToEdit("" + selected.getId());
             }
          }
@@ -131,21 +211,28 @@ public class TaskListViewImpl extends ResizeComposite implements TaskListView {
 
          @Override
          public void onSuccess(List<Task> result) {
-            List<Task> s = new ArrayList(result); // = TaskListDummySource.fetch();
+//            List<Task> s = new ArrayList(result);
+            provider.setList(result);
 
             // Set the total row count. This isn't strictly necessary, but it affects
             // paging calculations, so its good habit to keep the row count up to date.
-            table.setRowCount(s.size(), true);
+            table.setRowCount(result.size(), true);
 
             // Push the data into the widget.
-            table.setRowData(0, s);
+            table.setRowData(0, result);
          }
       });
 
-
+//   @UiHandler("table")
+//   void onxclick(ClickEvent ce) {
+//      Cell c = table.getCellForEvent(ce);
+//      String id = table.getText(c.getRowIndex(), 0);
+//      presenter.goToEdit(id);
+//   }
 
    }
 
+   // UI routines
    public void bind() {
       menu.add(Application.getInjector().getMenuView());
       status.add(Application.getInjector().getStatusView());
@@ -156,20 +243,6 @@ public class TaskListViewImpl extends ResizeComposite implements TaskListView {
       status.clear();
    }
 
-//   @UiHandler("table")
-//   void onxclick(ClickEvent ce) {
-//
-//      Cell c = table.getCellForEvent(ce);
-//
-//
-//      String id = table.getText(c.getRowIndex(), 0);
-//
-//
-//      presenter.goToEdit(id);
-//
-//
-//
-//   }
    @Override
    public void setPresenter(Presenter presenter) {
       this.presenter = presenter;
