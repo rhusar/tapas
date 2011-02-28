@@ -2,6 +2,11 @@ body {
    font-family: "DejaVu Sans","Liberation Sans","sans-serif";
 }
 
+.idColumnStyle {
+   color: red;
+   height: 100px;
+}
+
 /*body, table {
    font-size: small;
 }

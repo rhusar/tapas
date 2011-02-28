@@ -16,7 +16,7 @@
 
             <g:HTMLPanel>
                <div styleName='{style.filter}' style="text-align: right;">
-                  <span>Task Filter</span>
+                  <span title="Press ESC to clear.">Task Filter</span>
                   <g:TextBox ui:field='filter' />
                   <span>&nbsp;</span>
                </div>
@@ -33,6 +33,12 @@
    </g:DockLayoutPanel>
 
    <ui:style>
+
+      .idColumnStyle {
+      color: red;
+      height: 100px;
+      }
+
       .filter {
       width: 100%;
       text-align: right;

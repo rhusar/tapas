@@ -21,16 +21,13 @@
  */
 package com.radoslavhusar.tapas.war.client.tasks;
 
-import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -38,11 +35,8 @@ import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.ProvidesKey;
-import com.google.gwt.view.client.Range;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.radoslavhusar.tapas.war.client.app.Application;
@@ -104,6 +98,9 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       provider = new ListDataProvider<Task>() {
 
          @Override
+         /**
+          * Work around...
+          */
          public void refresh() {
             super.refresh();
             this.onRangeChanged(table);
@@ -137,6 +134,11 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
 
          @Override
          public void onKeyUp(KeyUpEvent event) {
+            if (event.getNativeKeyCode() == 27) {
+               // if ESC is pressed, clear the filter
+               filter.setText("");
+            }
+
             // Do the filter!!
             provider.refresh();
          }
@@ -166,12 +168,9 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
          }
       };
 
-
-      //Header idHeader = new MyHeader("ID HEADER");
-      //GWT.log(idHeader.getCell().getConsumedEvents().toString());
-
-
       table.addColumn(idColumn, "ID");
+      table.addColumnStyleName(1, ".idColumnStyle");
+      table.setColumnWidth(idColumn, 2, Unit.EM);
 
       TextColumn<Task> nameColumn = new TextColumn<Task>() {
 
