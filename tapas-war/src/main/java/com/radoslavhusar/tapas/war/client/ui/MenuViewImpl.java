@@ -9,6 +9,7 @@ import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -48,7 +49,16 @@ public class MenuViewImpl extends Composite implements MenuView {
    @Inject
    public MenuViewImpl(MyResourceServiceAsync res) {
       this.presenter = Application.getInjector().getMenuPresenter();
+
       initWidget(binder.createAndBindUi(this));
+
+      // Set loading title
+      Project dummy = new Project();
+      dummy.setName("Loading...");
+      projectSwitch.setValue(dummy);
+      // Workaround for http://code.google.com/p/google-web-toolkit/issues/detail?id=6112
+      DOM.setElementPropertyBoolean(projectSwitch.getElement(), "disabled", true);
+
 
       res.findAllProjects(new AsyncCallback<List<Project>>() {
 
@@ -59,7 +69,11 @@ public class MenuViewImpl extends Composite implements MenuView {
 
          @Override
          public void onSuccess(List<Project> result) {
+            Project defaultProject = result.get(0);
+            Application.getInjector().getClientState().setProject(defaultProject);
+            projectSwitch.setValue(defaultProject);
             projectSwitch.setAcceptableValues(result);
+            DOM.setElementPropertyBoolean(projectSwitch.getElement(), "disabled", false);
          }
       });
 
@@ -87,7 +101,7 @@ public class MenuViewImpl extends Composite implements MenuView {
 
    @UiHandler("overview")
    void navigateOverview(ClickEvent event) {
-      Application.getInjector().getPlaceController().goTo(new OverviewPlace(999));
+      Application.getInjector().getPlaceController().goTo(new OverviewPlace());
    }
 
    @Override

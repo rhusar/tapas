@@ -3,6 +3,7 @@ package com.radoslavhusar.tapas.war.server.services;
 import com.radoslavhusar.tapas.ejb.entity.Employee;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.Task;
+import com.radoslavhusar.tapas.ejb.session.ProjectFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskFacadeLocal;
 import com.radoslavhusar.tapas.war.shared.services.MyResourceService;
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
    private static final long serialVersionUID = 1L;
    @EJB
    private TaskFacadeLocal tasks;
+   @EJB
+   private ProjectFacadeLocal projects;
 
    public MyResourceServiceImpl() {
       EntityManagerFactory emf = null;
@@ -118,6 +121,11 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
    }
 
    @Override
+   public void editProject(Project project) {
+      projects.edit(project);
+   }
+
+   @Override
    public void remove(Task task) {
       throw new UnsupportedOperationException("Not supported yet.");
    }
@@ -135,7 +143,7 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
    @Override
    public List<Project> findAllProjects() {
       Project sampleA = new Project();
-      sampleA.setId(1);
+      sampleA.setId(2);
       sampleA.setName("Enterprise Application Platform 5.1");
       sampleA.setPhases(null);
       sampleA.setStartDate(new Date());
@@ -146,13 +154,13 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
       ar.add(sampleA);
 
       Project sampleB = new Project();
-      sampleB.setId(2);
+      sampleB.setId(3);
       sampleB.setName("Enterprise Web Platform 5.0.1");
       sampleB.setPhases(null);
       sampleB.setStartDate(new Date());
       futureDate.setTime((new Date().getTime() + 225663));
 
-      sampleB.setStartDate(futureDate); 
+      sampleB.setStartDate(futureDate);
 
       ar.add(sampleB);
       return ar;

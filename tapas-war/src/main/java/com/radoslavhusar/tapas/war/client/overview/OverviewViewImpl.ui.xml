@@ -14,8 +14,14 @@
          <g:ScrollPanel>
 
             <g:HTMLPanel>
+               <h1>
+                  <g:Label ui:field='projectName'>TBD</g:Label>
+               </h1>
                <h1>Project Phases</h1>
-               <c:CellTable ui:field='phases' />
+               <c:CellTable ui:field='phases'  styleName='{style.table}' />
+               <g:Anchor ui:field='phaseAdd'>Add</g:Anchor>
+               <g:Anchor ui:field='phaseRemove'>Remove</g:Anchor>
+               <g:Anchor ui:field='phaseSave'>Save</g:Anchor>
             </g:HTMLPanel>
 
          </g:ScrollPanel>
@@ -34,6 +40,11 @@
     cursor: pointer;
     cursor: hand;
   }
+
+    .table {
+     width: 100%;
+  }
+
    </ui:style>
 
 </ui:UiBinder>

@@ -27,4 +27,6 @@ public interface MyResourceService extends RemoteService {
    List<Task> findAll();
 
    List<Task> findRange(int[] range);
+
+   void editProject(Project project);
 }

@@ -1,11 +1,11 @@
 package com.radoslavhusar.tapas.ejb.entity;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,7 +29,7 @@ public class Project implements Serializable {
    @Column
    @Temporal(javax.persistence.TemporalType.DATE)
    private Date targetDate;
-   @OneToMany
+   @OneToMany(fetch = FetchType.EAGER)
    private List<ProjectPhase> phases;
 
    public long getId() {
@@ -64,6 +64,7 @@ public class Project implements Serializable {
       this.targetDate = targetDate;
    }
 
+   @SuppressWarnings("ReturnOfCollectionOrArrayField")
    public List<ProjectPhase> getPhases() {
       return phases;
    }
