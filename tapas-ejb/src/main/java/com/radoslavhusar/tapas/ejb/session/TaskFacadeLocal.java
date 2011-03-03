@@ -23,7 +23,6 @@ package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import java.util.List;
-import javax.ejb.Local;
 
 /**
  *

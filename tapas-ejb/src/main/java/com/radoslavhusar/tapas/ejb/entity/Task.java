@@ -117,6 +117,7 @@ public class Task implements Serializable {
    }
 
    public static String formatState(TaskStatus state) {
-      return state.toString().substring(0, 1).toUpperCase() + state.toString().substring(1).toLowerCase();
+
+      return state == null ? "" : state.toString().substring(0, 1).toUpperCase() + state.toString().substring(1).toLowerCase();
    }
 }
