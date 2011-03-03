@@ -5,30 +5,27 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 
 public class OverviewPlace extends Place {
 
-   private String selectedProjectId;
+   private long projectId;
 
-   public OverviewPlace(String token) {
-      this.selectedProjectId = token;
+   public OverviewPlace(long projectId) {
+      this.projectId = projectId;
    }
 
-   public OverviewPlace() {
-      selectedProjectId = null;
-   }
-
-   public String getSelectedTaskId() {
-      return selectedProjectId;
+   public long getProjectId() {
+      return projectId;
    }
 
    public static class Tokenizer implements PlaceTokenizer<OverviewPlace> {
 
       @Override
       public String getToken(OverviewPlace place) {
-         return place.getSelectedTaskId();
+         return "" + place.getProjectId();
       }
 
       @Override
       public OverviewPlace getPlace(String token) {
-         return new OverviewPlace(token);
+         long projectId = Long.valueOf(token);
+         return new OverviewPlace(projectId);
       }
    }
 }

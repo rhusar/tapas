@@ -134,16 +134,27 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
 
    @Override
    public List<Project> findAllProjects() {
-      Project sampleProject = new Project();
-      sampleProject.setId(1);
-      sampleProject.setName("Enterprise Application Platform 5.1");
-      sampleProject.setPhases(null);
-      sampleProject.setStartDate(new Date());
+      Project sampleA = new Project();
+      sampleA.setId(1);
+      sampleA.setName("Enterprise Application Platform 5.1");
+      sampleA.setPhases(null);
+      sampleA.setStartDate(new Date());
       Date futureDate = new Date();
       futureDate.setTime((new Date().getTime() + 225663));
-      sampleProject.setStartDate(futureDate);
+      sampleA.setStartDate(futureDate);
       ArrayList ar = new ArrayList();
-      ar.add(sampleProject);
+      ar.add(sampleA);
+
+      Project sampleB = new Project();
+      sampleB.setId(2);
+      sampleB.setName("Enterprise Web Platform 5.0.1");
+      sampleB.setPhases(null);
+      sampleB.setStartDate(new Date());
+      futureDate.setTime((new Date().getTime() + 225663));
+
+      sampleB.setStartDate(futureDate); 
+
+      ar.add(sampleB);
       return ar;
    }
 }

@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.war.client.app.Application;
+import com.radoslavhusar.tapas.war.client.overview.OverviewPlace;
 import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
 import com.radoslavhusar.tapas.war.shared.services.MyResourceServiceAsync;
 import java.util.List;
@@ -49,11 +50,6 @@ public class MenuViewImpl extends Composite implements MenuView {
       this.presenter = Application.getInjector().getMenuPresenter();
       initWidget(binder.createAndBindUi(this));
 
-//      Set<String> set = new HashSet<String>();
-//      set.clear();
-//      set.add("EAP 5.1 in Planning");
-//      set.add("SOA 5.0 in Development");
-
       res.findAllProjects(new AsyncCallback<List<Project>>() {
 
          @Override
@@ -73,8 +69,7 @@ public class MenuViewImpl extends Composite implements MenuView {
          @Override
          public void onValueChange(ValueChangeEvent<Project> event) {
             Project selected = event.getValue();
-            GWT.log("Switched to project: " + selected.getName());
-            Application.getInjector().getClientState().setProject(selected);
+            presenter.switchProject(selected);
          }
       });
 
@@ -88,6 +83,11 @@ public class MenuViewImpl extends Composite implements MenuView {
    @UiHandler("tasks")
    void navigateTasks(ClickEvent event) {
       Application.getInjector().getPlaceController().goTo(new TasksPlace());
+   }
+
+   @UiHandler("overview")
+   void navigateOverview(ClickEvent event) {
+      Application.getInjector().getPlaceController().goTo(new OverviewPlace(999));
    }
 
    @Override

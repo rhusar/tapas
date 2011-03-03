@@ -3,6 +3,7 @@ package com.radoslavhusar.tapas.war.client.app;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
+import com.radoslavhusar.tapas.war.client.overview.OverviewActivity;
 import com.radoslavhusar.tapas.war.client.overview.OverviewViewImpl;
 import com.radoslavhusar.tapas.war.client.ui.MenuPresenter;
 import com.radoslavhusar.tapas.war.client.ui.MenuViewImpl;
@@ -23,12 +24,14 @@ public interface AppGinjector extends Ginjector {
 
    ClientState getClientState();
 
-   // Activities
+   // Presenters + Activities
    MenuPresenter getMenuPresenter();
 
    StatusPresenter getStatusPresenter();
 
    TasksActivity getTaskListActivity();
+
+   OverviewActivity getOverviewActivity();
 
    // Views
    MenuViewImpl getMenuView();
