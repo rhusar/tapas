@@ -3,35 +3,44 @@ package com.radoslavhusar.tapas.war.client.app;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
-import com.radoslavhusar.tapas.war.client.ui.MenuActivity;
+import com.radoslavhusar.tapas.war.client.overview.OverviewViewImpl;
+import com.radoslavhusar.tapas.war.client.ui.MenuPresenter;
 import com.radoslavhusar.tapas.war.client.ui.MenuViewImpl;
 import com.radoslavhusar.tapas.war.client.ui.StatusViewImpl;
 import com.radoslavhusar.tapas.war.client.tasks.TasksActivity;
 import com.radoslavhusar.tapas.war.client.tasks.TasksViewImpl;
 import com.radoslavhusar.tapas.war.client.task.edit.TaskEditViewImpl;
+import com.radoslavhusar.tapas.war.client.ui.StatusPresenter;
 import com.radoslavhusar.tapas.war.shared.services.MyResourceServiceAsync;
 
 @GinModules(GinClientModule.class)
 public interface AppGinjector extends Ginjector {
 
+   // Shared components
    EventBus getEventBus();
 
    PlaceControllerGin getPlaceController();
 
-//   MyResourceService getMyResourceService();
-//   MyResourceServiceAsync getMyResourceServiceAsync();
-   MenuActivity getMenuActivity();
+   ClientState getClientState();
 
+   // Activities
+   MenuPresenter getMenuPresenter();
+
+   StatusPresenter getStatusPresenter();
+
+   TasksActivity getTaskListActivity();
+
+   // Views
    MenuViewImpl getMenuView();
 
    StatusViewImpl getStatusView();
 
-   TasksActivity getTaskListActivity();
+   OverviewViewImpl getOverviewView();
 
    TasksViewImpl getTaskListView();
 
-//   TaskEditActivity getTaskEditActivity();
    TaskEditViewImpl getTaskEditView();
 
+   // Services - must be defined in Application.gwt.xml and web.xml
    MyResourceServiceAsync getMyResourceService();
 }

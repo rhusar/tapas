@@ -1,0 +1,39 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+  xmlns:ui='urn:ui:com.google.gwt.uibinder'
+  xmlns:g='urn:import:com.google.gwt.user.client.ui'
+  xmlns:c='urn:import:com.google.gwt.user.cellview.client' >
+
+   <g:DockLayoutPanel unit='EM' height="100%" styleName='{style.outer}'>
+
+      <g:north size='8'>
+         <g:SimplePanel ui:field='menu' />
+      </g:north>
+
+      <g:center>
+         <g:ScrollPanel>
+
+            <g:HTMLPanel>
+               <h1>Project Phases</h1>
+               <c:CellTable ui:field='phases' />
+            </g:HTMLPanel>
+
+         </g:ScrollPanel>
+      </g:center>
+
+      <g:south size="2">
+         <g:SimplePanel ui:field='status' />
+      </g:south>
+
+   </g:DockLayoutPanel>
+
+   <ui:style>
+  .outer {
+    border-left: 1px solid #999;
+    border-bottom: 1px solid #999;
+    cursor: pointer;
+    cursor: hand;
+  }
+   </ui:style>
+
+</ui:UiBinder>

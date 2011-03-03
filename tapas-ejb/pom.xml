@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
    <modelVersion>4.0.0</modelVersion>
-   
+
    <parent>
       <artifactId>tapas-parent</artifactId>
       <groupId>com.radoslavhusar.tapas</groupId>
       <version>0.0.1-SNAPSHOT</version>
    </parent>
-  
+
    <groupId>com.radoslavhusar.tapas</groupId>
    <artifactId>tapas-ejb</artifactId>
    <version>0.0.1-SNAPSHOT</version>
    <packaging>ejb</packaging>
    <name>${project.artifactId} ${project.version}</name>
    <url>http://maven.apache.org</url>
-  
+
    <dependencies>
       <dependency>
          <groupId>org.jboss.jbossas</groupId>
@@ -31,7 +31,7 @@
          <version>4.7</version>
          <scope>test</scope>
       </dependency>
-      
+
    </dependencies>
 
    <repositories>
@@ -44,7 +44,7 @@
          <url>http://repository.jboss.com/maven2</url>
       </repository>
    </repositories>
-   
+
    <build>
       <!-- include entities for GWT compiler -->
       <resources>
@@ -55,12 +55,13 @@
             <directory>src/main/resources</directory>
          </resource>
       </resources>
-      
+
       <plugins>
          <!-- JRebel -->
          <plugin>
             <groupId>org.zeroturnaround</groupId>
             <artifactId>jrebel-maven-plugin</artifactId>
+            <version>1.0.7</version>
             <executions>
                <execution>
                   <id>generate-rebel-xml</id>
@@ -76,6 +77,7 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-ejb-plugin</artifactId>
+            <version>2.3</version>
             <configuration>
                <ejbVersion>3.0</ejbVersion>
             </configuration>

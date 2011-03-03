@@ -6,6 +6,7 @@ import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.session.TaskFacadeLocal;
 import com.radoslavhusar.tapas.war.shared.services.MyResourceService;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.naming.InitialContext;
@@ -15,14 +16,11 @@ import net.sf.gilead.configuration.ConfigurationHelper;
 import net.sf.gilead.gwt.PersistentRemoteService;
 import net.sf.gilead.core.hibernate.jboss.HibernateJBossUtil;
 
-//@PersistenceContext(unitName = "MyPersistenceUnit", name = "persistence/em")
 public class MyResourceServiceImpl extends PersistentRemoteService implements MyResourceService {
 
    private static final long serialVersionUID = 1L;
    @EJB
    private TaskFacadeLocal tasks;
-//   @PersistenceUnit(unitName = "MyPersistenceUnit")
-//   private EntityManagerFactory emf;
 
    public MyResourceServiceImpl() {
       EntityManagerFactory emf = null;
@@ -132,5 +130,20 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
    @Override
    public List<Task> findRange(int[] range) {
       throw new UnsupportedOperationException("Not supported yet.");
+   }
+
+   @Override
+   public List<Project> findAllProjects() {
+      Project sampleProject = new Project();
+      sampleProject.setId(1);
+      sampleProject.setName("Enterprise Application Platform 5.1");
+      sampleProject.setPhases(null);
+      sampleProject.setStartDate(new Date());
+      Date futureDate = new Date();
+      futureDate.setTime((new Date().getTime() + 225663));
+      sampleProject.setStartDate(futureDate);
+      ArrayList ar = new ArrayList();
+      ar.add(sampleProject);
+      return ar;
    }
 }

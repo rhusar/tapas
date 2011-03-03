@@ -5,10 +5,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- *
- * @author <a href="mailto:rhusar@redhat.com">Radoslav Husar</a>
- */
 public class StatusViewImpl extends Composite implements StatusView {
 
    private static Binder binder = GWT.create(Binder.class);

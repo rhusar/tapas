@@ -18,18 +18,18 @@ public class Resource implements Serializable {
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
    private Long id;
-   @OneToMany(mappedBy = "assignee")
-   private List<Task> tasks;
+//   @OneToMany(mappedBy = "assignee")
+//   private List<Task> tasks;
 
    public Long getId() {
       return id;
    }
 
-   public void setId(Long id) {
-      this.id = id;
-   }
-
-   public List<Task> getTasks() {
-      return Collections.unmodifiableList(tasks);
-   }
+//   public void setId(Long id) {
+//      this.id = id;
+//   }
+//
+//   public List<Task> getTasks() {
+//      return Collections.unmodifiableList(tasks);
+//   }
 }

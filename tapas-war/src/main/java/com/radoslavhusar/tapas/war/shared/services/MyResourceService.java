@@ -10,6 +10,8 @@ import java.util.List;
 @RemoteServiceRelativePath("res")
 public interface MyResourceService extends RemoteService {
 
+   List<Project> findAllProjects();
+
    List<Employee> getResourcesForProject(Project project) throws Exception;
 
    int getCount() throws Exception;

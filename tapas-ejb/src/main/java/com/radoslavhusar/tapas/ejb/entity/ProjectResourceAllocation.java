@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "PROJECT_RESOURCE_ALLOC")
+@Table(name = "PROJECT_RESOURCE_ALLOCATION")
 public class ProjectResourceAllocation implements Serializable {
 
    private static final long serialVersionUID = 2L;

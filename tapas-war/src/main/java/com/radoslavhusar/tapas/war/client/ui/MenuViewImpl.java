@@ -4,26 +4,23 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.text.shared.AbstractRenderer;
 import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Inject;
+import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
-import java.util.HashSet;
-import java.util.Set;
+import com.radoslavhusar.tapas.war.shared.services.MyResourceServiceAsync;
+import java.util.List;
 
-/**
- *
- * @author <a href="mailto:rhusar@redhat.com">Radoslav Husar</a>
- */
 public class MenuViewImpl extends Composite implements MenuView {
 
    private static Binder binder = GWT.create(Binder.class);
@@ -36,39 +33,48 @@ public class MenuViewImpl extends Composite implements MenuView {
    interface Binder extends UiBinder<Widget, MenuViewImpl> {
    }
    @UiField(provided = true)
-   ValueListBox<String> projectSwitch = new ValueListBox<String>(renderer);
-   static Renderer<String> renderer = new AbstractRenderer<String>() {
+   ValueListBox<Project> projectSwitch = new ValueListBox<Project>(renderer);
+   static Renderer<Project> renderer = new AbstractRenderer<Project>() {
 
       @Override
-      public String render(String object) {
-         //return "" + object.getName() + " [" + object.getProjectId() + "]";
-         return object;
+      public String render(Project project) {
+         return project.getName();
       }
    };
-//   @UiField
-//   Anchor signOutLink;
    @UiField
    Button tasks;
 
-   @UiConstructor
-   public MenuViewImpl() {
-      this.presenter = Application.getInjector().getMenuActivity();
-
+   @Inject
+   public MenuViewImpl(MyResourceServiceAsync res) {
+      this.presenter = Application.getInjector().getMenuPresenter();
       initWidget(binder.createAndBindUi(this));
 
-      Set<String> set = new HashSet<String>();
-      set.clear();
-      set.add("EAP 5.1 in Planning");
-      set.add("SOA 5.0 in Development");
-      projectSwitch.setAcceptableValues(set);
+//      Set<String> set = new HashSet<String>();
+//      set.clear();
+//      set.add("EAP 5.1 in Planning");
+//      set.add("SOA 5.0 in Development");
 
-      projectSwitch.setValue("Switch to...");
-
-      projectSwitch.addValueChangeHandler(new ValueChangeHandler<String>() {
+      res.findAllProjects(new AsyncCallback<List<Project>>() {
 
          @Override
-         public void onValueChange(ValueChangeEvent<String> event) {
-            System.out.println(event.getValue());
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(List<Project> result) {
+            projectSwitch.setAcceptableValues(result);
+         }
+      });
+
+
+      projectSwitch.addValueChangeHandler(new ValueChangeHandler<Project>() {
+
+         @Override
+         public void onValueChange(ValueChangeEvent<Project> event) {
+            Project selected = event.getValue();
+            GWT.log("Switched to project: " + selected.getName());
+            Application.getInjector().getClientState().setProject(selected);
          }
       });
 
@@ -76,7 +82,6 @@ public class MenuViewImpl extends Composite implements MenuView {
 
    @UiHandler("signOutLink")
    void onSelectMeAnchorClick(ClickEvent event) {
-      //Window.alert("clicked on selectMe");
       presenter.doAbout();
    }
 
@@ -84,7 +89,7 @@ public class MenuViewImpl extends Composite implements MenuView {
    void navigateTasks(ClickEvent event) {
       Application.getInjector().getPlaceController().goTo(new TasksPlace());
    }
-   
+
    @Override
    public void setPresenter(Presenter presenter) {
       this.presenter = presenter;

@@ -1,12 +1,15 @@
 package com.radoslavhusar.tapas.ejb.entity;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 
@@ -17,7 +20,7 @@ public class Project implements Serializable {
    private static final long serialVersionUID = 1L;
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
-   private Long id;
+   private long id;
    @Column
    private String name;
    @Column
@@ -26,12 +29,14 @@ public class Project implements Serializable {
    @Column
    @Temporal(javax.persistence.TemporalType.DATE)
    private Date targetDate;
+   @OneToMany
+   private List<ProjectPhase> phases;
 
-   public Long getId() {
+   public long getId() {
       return id;
    }
 
-   public void setId(Long id) {
+   public void setId(long id) {
       this.id = id;
    }
 
@@ -57,5 +62,13 @@ public class Project implements Serializable {
 
    public void setTargetDate(Date targetDate) {
       this.targetDate = targetDate;
+   }
+
+   public List<ProjectPhase> getPhases() {
+      return phases;
+   }
+
+   public void setPhases(List<ProjectPhase> phases) {
+      this.phases = phases;
    }
 }

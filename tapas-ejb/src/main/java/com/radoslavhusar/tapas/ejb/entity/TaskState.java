@@ -21,11 +21,13 @@
  */
 package com.radoslavhusar.tapas.ejb.entity;
 
+import java.io.Serializable;
+
 /**
  *
  * @author rhusar
  */
-public enum TaskState {
+public enum TaskState implements Serializable {
 
    COMMITTED, UNCOMMITED, DEFERRED
 }

@@ -12,12 +12,12 @@ import javax.persistence.Temporal;
 
 @Entity
 @Table(name = "PROJECT_PHASE")
-public class ProjectPhase implements Serializable {
+public class ProjectPhase implements Serializable, Comparable {
 
-   private static final long serialVersionUID = 2L;
+   private static final long serialVersionUID = 3L;
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
-   private Long id;
+   private long id;
    @Column
    private String name;
    @Column
@@ -27,11 +27,11 @@ public class ProjectPhase implements Serializable {
    @Temporal(javax.persistence.TemporalType.DATE)
    private Date endDate;
 
-   public Long getId() {
+   public long getId() {
       return id;
    }
 
-   public void setId(Long id) {
+   public void setId(long id) {
       this.id = id;
    }
 
@@ -41,5 +41,39 @@ public class ProjectPhase implements Serializable {
 
    public void setName(String name) {
       this.name = name;
+   }
+
+   public Date getEndDate() {
+      return endDate;
+   }
+
+   public void setEndDate(Date endDate) {
+      this.endDate = endDate;
+   }
+
+   public Date getStartDate() {
+      return startDate;
+   }
+
+   public void setStartDate(Date startDate) {
+      this.startDate = startDate;
+   }
+
+   /**
+    * Sorts by start date.
+    *
+    * @return positive integer if this phase starts after the compared to.
+    */
+   @Override
+   public int compareTo(Object o) {
+      if (o instanceof ProjectPhase) {
+         if (((ProjectPhase) o).getStartDate().after(this.startDate)) {
+            return 1;
+         } else {
+            return -1;
+         }
+      }
+
+      return 0;
    }
 }

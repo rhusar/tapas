@@ -8,7 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-//import net.sf.gilead.pojo.java5.LightEntity;
 
 @Entity
 @Table(name = "TASK")
@@ -22,23 +21,23 @@ public class Task implements Serializable {
    private String name;
    @Column
    private String summary;
-   @ManyToOne
-   private Resource assignee;
+//   @ManyToOne
+//   private Resource assignee;
    @Column
    private Byte priority;
-   @Column
-   private TaskState status;
+//   @Column
+//   private TaskState status;
 //   @ManyToOne(fetch = FetchType.EAGER)
 //   @JoinColumn
 //   private ResourceGroup resourceGroup;
 
-   public Resource getAssignee() {
-      return assignee;
-   }
-
-   public void setAssignee(Resource assignee) {
-      this.assignee = assignee;
-   }
+//   public Resource getAssignee() {
+//      return assignee;
+//   }
+//
+//   public void setAssignee(Resource assignee) {
+//      this.assignee = assignee;
+//   }
 
    public long getId() {
       return id;
@@ -71,15 +70,13 @@ public class Task implements Serializable {
 //   public void setResourceGroup(ResourceGroup resourceGroup) {
 //      this.resourceGroup = resourceGroup;
 //   }
-
-   public TaskState getStatus() {
-      return status;
-   }
-
-   public void setStatus(TaskState status) {
-      this.status = status;
-   }
-
+//   public TaskState getStatus() {
+//      return status;
+//   }
+//
+//   public void setStatus(TaskState status) {
+//      this.status = status;
+//   }
    public String getSummary() {
       return summary;
    }
@@ -90,6 +87,7 @@ public class Task implements Serializable {
 
    @Override
    public String toString() {
-      return "Task{id=" + id + ",name=" + name + ",summary=" + summary + ",assignee=" + assignee + '}';
+      return "Task{id=" + id;
+//      return "Task{id=" + id + ",name=" + name + ",summary=" + summary + ",assignee=" + assignee + '}';
    }
 }

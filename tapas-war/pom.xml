@@ -18,7 +18,7 @@
    <properties>
       <!-- Convenience to define GWT version in one place -->
       <gwt.version>2.2.0</gwt.version>
-      <gwt.maven.plugin.version>2.1.0-1</gwt.maven.plugin.version>
+      <gwt.maven.plugin.version>2.2.0</gwt.maven.plugin.version>
 
       <!-- Tell the compiler we can use 1.6 -->
       <maven.compiler.source>1.6</maven.compiler.source>
@@ -26,7 +26,7 @@
    </properties>
 
    <dependencies>
-      
+
       <!-- TAPAS Modules -->
       <dependency>
          <groupId>com.radoslavhusar.tapas</groupId>
@@ -57,7 +57,7 @@
          <type>jar</type>
          <scope>provided</scope>
       </dependency>
-      
+
       <!-- GXT @ http://www.sencha.com/products/extgwt/ -->
       <!--
       <dependency>
@@ -82,8 +82,14 @@
          <version>5.1.0.GA</version>
          <type>pom</type>
          <scope>provided</scope>
+         <exclusions>
+            <exclusion>
+               <artifactId>jboss-common-core</artifactId>
+               <groupId>org.jboss</groupId>
+            </exclusion>
+         </exclusions>
       </dependency>
-  	
+
       <!-- Gilead for Hibernate @ http://noon.gilead.free.fr/gilead/ -->
       <dependency>
          <groupId>net.sf.gilead</groupId>
@@ -180,7 +186,7 @@
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>gwt-maven-plugin</artifactId>
-            <version>2.1.0-1</version>
+            <version>${gwt.maven.plugin.version}</version>
 
             <executions>
                <execution>
@@ -196,7 +202,7 @@
                <execution>
                   <id>mergewebxml</id>
                   <phase>process-classes</phase>
- 
+
                   <goals>
                      <goal>mergewebxml</goal>
                   </goals>
@@ -227,6 +233,7 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-war-plugin</artifactId>
+            <version>2.1.1</version>
 <!--            <configuration>
                <webXml>target/web.xml</webXml>
                <warSourceExcludes>.gwt-tmp/**</warSourceExcludes>
@@ -235,6 +242,7 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
+            <version>2.3.2</version>
             <configuration>
                <source>1.6</source>
                <target>1.6</target>
@@ -245,6 +253,7 @@
          <plugin>
             <groupId>org.zeroturnaround</groupId>
             <artifactId>jrebel-maven-plugin</artifactId>
+            <version>1.0.7</version>
             <executions>
                <execution>
                   <id>generate-rebel-xml</id>
@@ -255,7 +264,7 @@
                </execution>
             </executions>
          </plugin>
-         
+
          <!-- Release plugin -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
