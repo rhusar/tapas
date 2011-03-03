@@ -10,27 +10,37 @@
          <g:SimplePanel ui:field='menu' />
       </g:north>
 
+      <g:north size='4'>
+         <g:HTMLPanel>
+            <h1>
+               <g:Label ui:field='projectName'>TBD</g:Label>
+            </h1>
+         </g:HTMLPanel>
+      </g:north>
+
+
+
       <g:center>
          <g:ScrollPanel>
-
             <g:HTMLPanel>
-               <h1>
-                  <g:Label ui:field='projectName'>TBD</g:Label>
-               </h1>
-               <h1>Project Phases</h1>
-               <c:CellTable ui:field='phases'  styleName='{style.table}' />
-               <g:Anchor ui:field='phaseAdd'>Add</g:Anchor>
-               <g:Anchor ui:field='phaseRemove'>Remove</g:Anchor>
-               <g:Anchor ui:field='phaseSave'>Save</g:Anchor>
+               <p>Some other info comes here...</p>
             </g:HTMLPanel>
-
          </g:ScrollPanel>
       </g:center>
 
       <g:south size="2">
          <g:SimplePanel ui:field='status' />
       </g:south>
-
+      
+      <g:east size="40" unit="PCT">
+         <g:HTMLPanel>
+            <h1>Project Phases</h1>
+            <c:CellTable ui:field='phases'  styleName='{style.table}' />
+            <g:Anchor ui:field='phaseAdd'>Add</g:Anchor> |
+            <g:Anchor ui:field='phaseRemove'>Remove</g:Anchor> |
+            <g:Anchor ui:field='phaseSave'>Save</g:Anchor>
+         </g:HTMLPanel>
+      </g:east>
    </g:DockLayoutPanel>
 
    <ui:style>

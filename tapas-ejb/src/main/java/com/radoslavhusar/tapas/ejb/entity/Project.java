@@ -3,6 +3,7 @@ package com.radoslavhusar.tapas.ejb.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,7 +30,7 @@ public class Project implements Serializable {
    @Column
    @Temporal(javax.persistence.TemporalType.DATE)
    private Date targetDate;
-   @OneToMany(fetch = FetchType.EAGER)
+   @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
    private List<ProjectPhase> phases;
 
    public long getId() {

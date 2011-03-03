@@ -12,9 +12,11 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Label;
@@ -29,6 +31,7 @@ import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 public class OverviewViewImpl extends ResizeComposite implements OverviewView {
@@ -195,7 +198,15 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       }
 
       projectName.setText(project.getName());
-      phases.setRowData(project.getPhases() == null ? new ArrayList() : project.getPhases());
+
+      if (project.getPhases() == null) {
+         phases.setRowData(new ArrayList());
+      } else {
+         Collections.sort(project.getPhases());
+         Collections.reverse(project.getPhases());
+         phases.setRowData(project.getPhases());
+      }
+
 //      phasesProvider.setList(project.getPhases() == null ? new ArrayList() : project.getPhases());
 //      phases.setRowCount(phasesProvider.getList().size(), true);
 
@@ -231,5 +242,10 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
    @Override
    public void setPresenter(Presenter presenter) {
       this.presenter = presenter;
+   }
+
+   @UiHandler("phaseRemove")
+   public void removePhase(ClickEvent event) {
+      Window.alert("Not supported yet.");
    }
 }
