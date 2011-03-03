@@ -1,11 +1,15 @@
 package com.radoslavhusar.tapas.ejb.entity;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -20,16 +24,19 @@ public class Task implements Serializable {
    private String name;
    @Column
    private String summary;
-//   @ManyToOne
-//   private Resource assignee;
+   @ManyToOne(fetch = FetchType.LAZY)
+   private Resource resource;
    @Column
    private Byte priority;
-//   @Column
-//   private TaskState status;
+   @ManyToOne(fetch = FetchType.LAZY)
+   private Project project;
+   @OneToMany(mappedBy = "task", fetch = FetchType.EAGER)
+   private List<TaskTimeAllocation> timeAllocations;
+   @Column
+   private TaskStatus status;
 //   @ManyToOne(fetch = FetchType.EAGER)
 //   @JoinColumn
 //   private ResourceGroup resourceGroup;
-
 //   public Resource getAssignee() {
 //      return assignee;
 //   }
@@ -62,20 +69,14 @@ public class Task implements Serializable {
       this.priority = priority;
    }
 
-//   public ResourceGroup getResourceGroup() {
-//      return resourceGroup;
-//   }
-//
-//   public void setResourceGroup(ResourceGroup resourceGroup) {
-//      this.resourceGroup = resourceGroup;
-//   }
-//   public TaskState getStatus() {
-//      return status;
-//   }
-//
-//   public void setStatus(TaskState status) {
-//      this.status = status;
-//   }
+   public TaskStatus getStatus() {
+      return status;
+   }
+
+   public void setStatus(TaskStatus status) {
+      this.status = status;
+   }
+
    public String getSummary() {
       return summary;
    }
@@ -84,9 +85,38 @@ public class Task implements Serializable {
       this.summary = summary;
    }
 
+   @SuppressWarnings("ReturnOfCollectionOrArrayField")
+   public List<TaskTimeAllocation> getTimeAllocations() {
+      return timeAllocations;
+   }
+
+   public void setTimeAllocations(List<TaskTimeAllocation> taskTimeAllocations) {
+      this.timeAllocations = taskTimeAllocations;
+   }
+
+   public Project getProject() {
+      return project;
+   }
+
+   public void setProject(Project project) {
+      this.project = project;
+   }
+
+   public Resource getResource() {
+      return resource;
+   }
+
+   public void setResource(Resource resource) {
+      this.resource = resource;
+   }
+
    @Override
    public String toString() {
       return "Task{id=" + id;
 //      return "Task{id=" + id + ",name=" + name + ",summary=" + summary + ",assignee=" + assignee + '}';
+   }
+
+   public static String formatState(TaskStatus state) {
+      return state.toString().substring(0, 1).toUpperCase() + state.toString().substring(1).toLowerCase();
    }
 }

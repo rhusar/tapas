@@ -7,6 +7,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -18,8 +19,11 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import com.radoslavhusar.tapas.ejb.entity.Project;
+import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.ejb.entity.Task;
+import com.radoslavhusar.tapas.ejb.entity.TaskTimeAllocation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +36,6 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
    }
    @UiField(provided = true)
    CellTable table = new CellTable<Task>();
-//   @UiField
-//   Grid grid;
    @UiField
    SimplePanel menu;
    @UiField
@@ -133,28 +135,60 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
 
 
 
-//      table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+      table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 
-      TextColumn<Task> idColumn = new TextColumn<Task>() {
+      // ID
+      TextColumn<Task> idCol = new TextColumn<Task>() {
 
          @Override
          public String getValue(Task task) {
             return "" + task.getId();
          }
       };
+      table.addColumn(idCol, "ID");
+      table.setColumnWidth(idCol, 2, Unit.EM);
 
-      table.addColumn(idColumn, "ID");
-      table.addColumnStyleName(1, ".idColumnStyle");
-      table.setColumnWidth(idColumn, 2, Unit.EM);
-
-      TextColumn<Task> nameColumn = new TextColumn<Task>() {
+      // Priority
+      TextColumn<Task> prioCol = new TextColumn<Task>() {
 
          @Override
          public String getValue(Task task) {
-            return task.getSummary();
+            return "P" + task.getPriority();
          }
       };
-      table.addColumn(nameColumn, "Summary");
+      table.addColumn(prioCol, "Prio");
+      table.setColumnWidth(prioCol, 1, Unit.EM);
+
+      // Name
+      TextColumn<Task> namecol = new TextColumn<Task>() {
+
+         @Override
+         public String getValue(Task task) {
+            return task.getName();
+         }
+      };
+      table.addColumn(namecol, "Summary");
+
+      // Status
+      TextColumn<Task> statusCol = new TextColumn<Task>() {
+
+         @Override
+         public String getValue(Task task) {
+            return Task.formatState(task.getStatus());
+         }
+      };
+      table.addColumn(statusCol, "Summary");
+
+      // Resource
+      TextColumn<Task> resourceCol = new TextColumn<Task>() {
+
+         @Override
+         public String getValue(Task task) {
+            return "Unassigned";
+         }
+      };
+      table.addColumn(resourceCol, "Resource");
+      table.setColumnWidth(resourceCol, 11, Unit.EM);
 
 
 
@@ -210,6 +244,46 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
    public void bind() {
       menu.add(Application.getInjector().getMenuView());
       status.add(Application.getInjector().getStatusView());
+
+      // Phases Times
+      Project project = Application.getInjector().getClientState().getProject();
+      if (project != null) {
+         for (final ProjectPhase phase : project.getPhases()) {
+            TextColumn<Task> timePhaseCol = new TextColumn<Task>() {
+
+               @Override
+               public String getValue(Task task) {
+                  for (TaskTimeAllocation tta : task.getTimeAllocations()) {
+                     if (tta.getPhase().getId() == phase.getId()) {
+                        return "" + tta.getTimeAllocation();
+                     }
+                  }
+                  return "";
+               }
+            };
+
+            table.addColumn(timePhaseCol, phase.getName().substring(0, 4));
+            table.setColumnWidth(timePhaseCol, 2, Unit.EM);
+         }
+      }
+
+      // Total
+      TextColumn<Task> timeTotalCol = new TextColumn<Task>() {
+
+         @Override
+         public String getValue(Task task) {
+            double total = 0;
+
+            for (TaskTimeAllocation tta : task.getTimeAllocations()) {
+               total += tta.getTimeAllocation();
+            }
+
+            return "" + total;
+         }
+      };
+
+      table.addColumn(timeTotalCol, "Total");
+      table.setColumnWidth(timeTotalCol, 2, Unit.EM);
    }
 
    public void unbind() {

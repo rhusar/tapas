@@ -10,12 +10,12 @@ public class MenuPresenter implements MenuView.Presenter {
 
    @Override
    public void doAbout() {
-      Window.alert("Dummy log out.");
+      Window.alert("Not implemented yet.");
    }
 
    @Override
    public void switchProject(Project selected) {
-      GWT.log("Switched to project: " + selected.getName());
+      GWT.log("Switched to project: " + selected.getName() + " (ID: " + selected.getId() + ")");
       Application.getInjector().getClientState().setProject(selected);
       Application.getInjector().getPlaceController().goTo(new OverviewPlace());
    }

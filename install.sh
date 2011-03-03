@@ -1,3 +1,3 @@
 #!/bin/bash
-time mvn install -Dmaven.test.skip=true
+time mvn package -Dmaven.test.skip=true
 

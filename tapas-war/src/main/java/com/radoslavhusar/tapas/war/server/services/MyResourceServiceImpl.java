@@ -7,8 +7,6 @@ import com.radoslavhusar.tapas.ejb.session.ProjectFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.ProjectPhaseFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskFacadeLocal;
 import com.radoslavhusar.tapas.war.shared.services.MyResourceService;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.naming.InitialContext;
@@ -17,10 +15,14 @@ import javax.persistence.EntityManagerFactory;
 import net.sf.gilead.configuration.ConfigurationHelper;
 import net.sf.gilead.gwt.PersistentRemoteService;
 import net.sf.gilead.core.hibernate.jboss.HibernateJBossUtil;
+import org.jboss.logging.Logger;
 
 public class MyResourceServiceImpl extends PersistentRemoteService implements MyResourceService {
 
    private static final long serialVersionUID = 1L;
+   // Using jboss Logger via log4j
+   private static final Logger log = Logger.getLogger(MyResourceServiceImpl.class.getName());
+   // Workaround for injection https://issues.jboss.org/browse/JBAS-5646
    @EJB
    private TaskFacadeLocal tasks;
    @EJB
@@ -34,72 +36,13 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
          InitialContext ic = new InitialContext();
          emf = (EntityManagerFactory) ic.lookup("java:/ManagerFactory");
       } catch (NamingException ex) {
-         ex.printStackTrace();
+         log.error("Problem getting ManagerFactory for GILEAD: " + ex);
       }
 
-
       HibernateJBossUtil gileadHibernateUtil = new HibernateJBossUtil(emf);
-      //gileadHibernateUtil.setSessionFactory(MyHibernateUtil.getSessionFactory());
       setBeanManager(ConfigurationHelper.initStatefulBeanManager(gileadHibernateUtil));
-
-
-//         gileadHibernateUtil.setEntityManagerFactory(emf);
-
-
-//      try {
-//         InitialContext ctx = new InitialContext();
-//         EntityManagerFactory emf = (EntityManagerFactory) ctx.lookup("java:/mrepoEntityManagerFactory");
-//         gileadHibernateUtil.setEntityManagerFactory(emf);
-//      } catch (Exception e) {
-//         e.printStackTrace();
-//      }
-
-      /*   PersistentBeanManager persistentBeanManager = new PersistentBeanManager();
-      persistentBeanManager.setPersistenceUtil(gileadHibernateUtil);
-      persistentBeanManager.setProxyStore(new StatelessProxyStore());
-
-      setBeanManager(persistentBeanManager);*/
    }
 
-//   public MyResourceServiceImpl() {
-////      HibernateUtil hibernateUtil = new HibernateUtil(MyApplicationHibernateUtil.getSessionFactory());
-////      PersistentBeanManager persistentBeanManager = GwtConfigurationHelper.initGwtStatelessBeanManager(hibernateUtil);
-////      setBeanManager(persistentBeanManager);
-//   }
-   /**
-    * Constructor
-    */
-//   public MyResourceServiceImpl() {
-//      HibernateUtil util = new HibernateUtil();
-//      util.setSessionFactory(util.getSessionFactory());
-//      PersistentBeanManager beanManager = new PersistentBeanManager();
-//      beanManager.setPersistenceUtil(util);
-//      beanManager.setProxyStore(new StatelessProxyStore());
-//      setBeanManager(beanManager);
-//   }
-   /**
-    * Constructor
-    */
-//   public MyResourceServiceImpl() {
-//      HibernateUtil gileadHibernateUtil = new HibernateUtil();
-////      gileadHibernateUtil.setSessionFactory(MyHibernateUtil.getSessionFactory());
-//      gileadHibernateUtil.setSessionFactory(HibernateJBossUtil.getSessionFactory());
-//
-//
-//      PersistentBeanManager persistentBeanManager = new PersistentBeanManager();
-//      persistentBeanManager.setPersistenceUtil(gileadHibernateUtil);
-//      persistentBeanManager.setProxyStore(new StatelessProxyStore());
-//
-//      this.setBeanManager(persistentBeanManager);
-//   }
-//   @Override
-//   public List<Employee> getResourcesForProject(Project project) throws Exception {
-//      List e = new ArrayList(this.findAll());
-//      e.add(new Employee(1, "Radoslav", "Husar", null));
-//      e.add(new Employee(1, "Falsodar", "Husar", null));
-//      e.add(new Employee(1, "Michal", "Husar", null));
-//      return e;
-//   }
    @Override
    public int getCount() throws Exception {
       return tasks.count();
@@ -150,11 +93,6 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
 
    @Override
    public List<Project> findAllProjects() {
-      return projects.findAll();
-   }
-
-
-   public List<Project> fixndAllProjects() {
       return projects.findAll();
    }
 }

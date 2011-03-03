@@ -60,28 +60,28 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
 
    @Inject
    public OverviewViewImpl(ClientState state) {
-//      phasesProvider = new ListDataProvider<ProjectPhase>();
-//      phases = new CellTable<ProjectPhase>(phasesProvider);
       phases = new CellTable<ProjectPhase>();
 
-      // Columns!
+      // ID
       TextColumn<ProjectPhase> idCol = new TextColumn<ProjectPhase>() {
 
          @Override
          public String getValue(ProjectPhase phase) {
-            return "" + (phase.getId() != 0 ? phase.getId() : "Unsaved");
+            return "" + (phase.getId() != 0 ? phase.getId() : "New");
          }
       };
 
       phases.addColumn(idCol, "ID");
       phases.setColumnWidth(idCol, 2, Unit.EM);
 
+      // Name
       Cell nameCell = new EditTextCell();
       Column<ProjectPhase, String> phaseNameCol = new Column<ProjectPhase, String>(nameCell) {
 
          @Override
          public String getValue(ProjectPhase phase) {
             return phase.getName();
+            //+ " (" + phase.getName().substring(0, 4) + ")";
          }
       };
       phaseNameCol.setFieldUpdater(new FieldUpdater<ProjectPhase, String>() {
@@ -89,7 +89,6 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
          @Override
          public void update(int index, ProjectPhase object, String value) {
             object.setName(value);
-            //table.redraw();
          }
       });
       phases.addColumn(phaseNameCol, "Name");
@@ -134,57 +133,9 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       // Add a selection model to handle user selection.
       final SingleSelectionModel<ProjectPhase> selectionModel = new SingleSelectionModel<ProjectPhase>();
       phases.setSelectionModel(selectionModel);
-      selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-
-         @Override
-         public void onSelectionChange(SelectionChangeEvent event) {
-            ProjectPhase selected = selectionModel.getSelectedObject();
-            if (selected != null) {
-            }
-         }
-      });
-
       phases.setPageSize(Integer.MAX_VALUE - 1);
 
       initWidget(binder.createAndBindUi(this));
-
-      phaseAdd.addClickHandler(new ClickHandler() {
-
-         @Override
-         public void onClick(ClickEvent event) {
-            ProjectPhase newPP = new ProjectPhase();
-            newPP.setName("New phase");
-            newPP.setStartDate(new Date());
-            newPP.setEndDate(new Date());
-            if (project.getPhases() == null) {
-               project.setPhases(new ArrayList<ProjectPhase>());
-            }
-            project.getPhases().add(newPP);
-
-//            phasesProvider.setList(project.getPhases());
-//            phases.setRowCount(project.getPhases().size(), true);
-            phases.setRowData(project.getPhases());
-         }
-      });
-
-      phaseSave.addClickHandler(new ClickHandler() {
-
-         @Override
-         public void onClick(ClickEvent event) {
-            Application.getInjector().getMyResourceService().editProject(project, new AsyncCallback<Void>() {
-
-               @Override
-               public void onFailure(Throwable caught) {
-                  GWT.log("failed saving phases");
-               }
-
-               @Override
-               public void onSuccess(Void result) {
-                  GWT.log("saved");
-               }
-            });
-         }
-      });
    }
 
    // UI routines
@@ -203,35 +154,8 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
          phases.setRowData(new ArrayList());
       } else {
          Collections.sort(project.getPhases());
-         Collections.reverse(project.getPhases());
          phases.setRowData(project.getPhases());
       }
-
-//      phasesProvider.setList(project.getPhases() == null ? new ArrayList() : project.getPhases());
-//      phases.setRowCount(phasesProvider.getList().size(), true);
-
-      /*
-      Application.getInjector().getMyResourceService().findAll(new AsyncCallback<List<Task>>() {
-
-      @Override
-      public void onFailure(Throwable caught) {
-      throw new UnsupportedOperationException("Not supported yet.");
-      }
-
-      @Override
-      public void onSuccess(List<Task> result) {
-      //            List<Task> s = new ArrayList(result);
-      phasesProvider.setList(result);
-
-      // Set the total row count. This isn't strictly necessary, but it affects
-      // paging calculations, so its good habit to keep the row count up to date.
-      phasesTable.setRowCount(result.size(), true);
-
-      // Push the data into the widget.
-      phasesTable.setRowData(0, result);
-      }
-      });*/
-
    }
 
    public void unbind() {
@@ -246,6 +170,43 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
 
    @UiHandler("phaseRemove")
    public void removePhase(ClickEvent event) {
-      Window.alert("Not supported yet.");
+      ProjectPhase deletePhase = ((SingleSelectionModel<ProjectPhase>) phases.getSelectionModel()).getSelectedObject();
+      if (deletePhase.getId() == 0) {
+         project.getPhases().remove(deletePhase);
+         phases.setRowData(project.getPhases());
+         Window.alert("Removed '" + deletePhase.getName() + "'.");
+      } else {
+         Window.alert("Do you want to remove '" + deletePhase.getName() + "' phase? Not supported yet.");
+      }
+   }
+
+   @UiHandler("phaseAdd")
+   public void phaseAddClick(ClickEvent event) {
+      ProjectPhase newPhase = new ProjectPhase();
+      newPhase.setName("New phase");
+      newPhase.setStartDate(new Date());
+      newPhase.setEndDate(new Date());
+      newPhase.setProject(project);
+      if (project.getPhases() == null) {
+         project.setPhases(new ArrayList<ProjectPhase>());
+      }
+      project.getPhases().add(newPhase);
+      phases.setRowData(project.getPhases());
+   }
+
+   @UiHandler("phaseSave")
+   public void phaseSaveClick(ClickEvent event) {
+      Application.getInjector().getMyResourceService().editProject(project, new AsyncCallback<Void>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            GWT.log("Failed saving phases.");
+         }
+
+         @Override
+         public void onSuccess(Void result) {
+            GWT.log("Saved phases OK.");
+         }
+      });
    }
 }

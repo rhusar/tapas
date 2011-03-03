@@ -17,7 +17,7 @@ public class PlaceControllerGin extends PlaceController {
 
    @Override
    public void goTo(Place newPlace) {
-      GWT.log("going to " + newPlace);
+      //GWT.log("going to " + newPlace);
       futurePlace = newPlace;
       super.goTo(newPlace);
    }

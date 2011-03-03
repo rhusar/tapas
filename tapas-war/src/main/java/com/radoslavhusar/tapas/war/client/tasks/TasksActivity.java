@@ -33,11 +33,11 @@ import com.radoslavhusar.tapas.war.client.task.edit.TaskEditPlace;
  */
 public class TasksActivity extends AbstractActivity implements TasksView.Presenter {
 
- TasksViewImpl view;
+   TasksViewImpl view;
 
    @Override
    public void start(AcceptsOneWidget panel, EventBus eventBus) {
-       view = Application.getInjector().getTaskListView();
+      view = Application.getInjector().getTaskListView();
       view.setPresenter(this);
       view.bind();
 

@@ -13,10 +13,6 @@
    <packaging>ear</packaging>
    <version>0.0.1-SNAPSHOT</version>
    <name>${project.artifactId} ${project.version}</name>
-
-   <description>ear for gwt ejb3
-      http://127.0.0.1:8080/ejb-gwt/com.javacodegeeks.war.Application/Application.html?gwt.codesvr=127.0.0.1:9997
-   </description>
    
    <dependencies>
       <dependency>

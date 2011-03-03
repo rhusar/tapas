@@ -30,8 +30,10 @@ public class Project implements Serializable {
    @Column
    @Temporal(javax.persistence.TemporalType.DATE)
    private Date targetDate;
-   @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+   @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "project")
    private List<ProjectPhase> phases;
+   @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
+   private List<Task> tasks;
 
    public long getId() {
       return id;
@@ -72,5 +74,14 @@ public class Project implements Serializable {
 
    public void setPhases(List<ProjectPhase> phases) {
       this.phases = phases;
+   }
+
+   @SuppressWarnings("ReturnOfCollectionOrArrayField")
+   public List<Task> getTasks() {
+      return tasks;
+   }
+
+   public void setTasks(List<Task> tasks) {
+      this.tasks = tasks;
    }
 }
