@@ -57,6 +57,23 @@
                 <maven.test.skip>true</maven.test.skip>
             </properties>
         </action>
+<action>
+            <actionName>CUSTOM-compiler:compile</actionName>
+            <displayName>compiler:compile</displayName>
+            <goals>
+                <goal>compiler:compile</goal>
+            </goals>
+        </action>
+<action>
+            <actionName>CUSTOM-compile</actionName>
+            <displayName>compile</displayName>
+            <goals>
+                <goal>compile</goal>
+            </goals>
+            <properties>
+                <maven.compile.src.set>src/com/radoslavhusar/tapas/war/server</maven.compile.src.set>
+            </properties>
+        </action>
 <!--        <action>
             <actionName>run</actionName>
             <goals>

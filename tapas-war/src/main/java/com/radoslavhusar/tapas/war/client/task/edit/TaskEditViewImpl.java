@@ -14,10 +14,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.radoslavhusar.tapas.ejb.entity.Employee;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.war.client.app.Application;
-import java.util.List;
 
 public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
 
@@ -56,20 +54,20 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
       menu.add(Application.getInjector().getMenuView());
       status.add(Application.getInjector().getStatusView());
 
-      Application.getInjector().getMyResourceService().getResourcesForProject(null, new AsyncCallback<List<Employee>>() {
-
-         @Override
-         public void onFailure(Throwable caught) {
-            GWT.log("Error loading possible assignees for project.");
-         }
-
-         @Override
-         public void onSuccess(List result) {
-            for (Employee e : ((List<Employee>) result)) {
-               peopleList.add(e.getEmployeeName());
-            }
-         }
-      });
+//      Application.getInjector().getMyResourceService().getResourcesForProject(null, new AsyncCallback<List<Employee>>() {
+//
+//         @Override
+//         public void onFailure(Throwable caught) {
+//            GWT.log("Error loading possible assignees for project.");
+//         }
+//
+//         @Override
+//         public void onSuccess(List result) {
+////            for (Employee e : ((List<Employee>) result)) {
+////               peopleList.add(e.getEmployeeName());
+////            }
+//         }
+//      });
    }
 
    @Override

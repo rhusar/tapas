@@ -1,9 +1,10 @@
 package com.radoslavhusar.tapas.war.server.services;
 
-import com.radoslavhusar.tapas.ejb.entity.Employee;
 import com.radoslavhusar.tapas.ejb.entity.Project;
+import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.session.ProjectFacadeLocal;
+import com.radoslavhusar.tapas.ejb.session.ProjectPhaseFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskFacadeLocal;
 import com.radoslavhusar.tapas.war.shared.services.MyResourceService;
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
    private TaskFacadeLocal tasks;
    @EJB
    private ProjectFacadeLocal projects;
+   @EJB
+   private ProjectPhaseFacadeLocal phases;
 
    public MyResourceServiceImpl() {
       EntityManagerFactory emf = null;
@@ -89,17 +92,14 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
 //
 //      this.setBeanManager(persistentBeanManager);
 //   }
-   @Override
-   public List<Employee> getResourcesForProject(Project project) throws Exception {
-      List e = new ArrayList(this.findAll());
-
+//   @Override
+//   public List<Employee> getResourcesForProject(Project project) throws Exception {
+//      List e = new ArrayList(this.findAll());
 //      e.add(new Employee(1, "Radoslav", "Husar", null));
 //      e.add(new Employee(1, "Falsodar", "Husar", null));
 //      e.add(new Employee(1, "Michal", "Husar", null));
-
-      return e;
-   }
-
+//      return e;
+//   }
    @Override
    public int getCount() throws Exception {
       return tasks.count();
@@ -122,6 +122,14 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
 
    @Override
    public void editProject(Project project) {
+      // Persist the phases
+      for (ProjectPhase p : project.getPhases()) {
+         if (p.getId() == 0) {
+            phases.create(p);
+         } else {
+            phases.edit(p);
+         }
+      }
       projects.edit(project);
    }
 
@@ -142,27 +150,11 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
 
    @Override
    public List<Project> findAllProjects() {
-      Project sampleA = new Project();
-      sampleA.setId(2);
-      sampleA.setName("Enterprise Application Platform 5.1");
-      sampleA.setPhases(null);
-      sampleA.setStartDate(new Date());
-      Date futureDate = new Date();
-      futureDate.setTime((new Date().getTime() + 225663));
-      sampleA.setStartDate(futureDate);
-      ArrayList ar = new ArrayList();
-      ar.add(sampleA);
+      return projects.findAll();
+   }
 
-      Project sampleB = new Project();
-      sampleB.setId(3);
-      sampleB.setName("Enterprise Web Platform 5.0.1");
-      sampleB.setPhases(null);
-      sampleB.setStartDate(new Date());
-      futureDate.setTime((new Date().getTime() + 225663));
 
-      sampleB.setStartDate(futureDate);
-
-      ar.add(sampleB);
-      return ar;
+   public List<Project> fixndAllProjects() {
+      return projects.findAll();
    }
 }

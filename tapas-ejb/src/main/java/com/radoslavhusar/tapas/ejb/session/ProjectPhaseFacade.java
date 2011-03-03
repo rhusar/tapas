@@ -1,6 +1,6 @@
 package com.radoslavhusar.tapas.ejb.session;
 
-import com.radoslavhusar.tapas.ejb.entity.Project;
+import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -12,17 +12,18 @@ import javax.persistence.PersistenceContext;
  * @version 2011
  */
 @Stateless
-@Local(ProjectFacadeLocal.class)
-public class ProjectFacade extends AbstractFacade<Project> implements ProjectFacadeLocal {
+@Local(ProjectPhaseFacadeLocal.class)
+public class ProjectPhaseFacade extends AbstractFacade<ProjectPhase> implements ProjectPhaseFacadeLocal {
 
    @PersistenceContext(unitName = "MyPersistenceUnit")
    private EntityManager em;
 
+   @Override
    protected EntityManager getEntityManager() {
       return em;
    }
 
-   public ProjectFacade() {
-      super(Project.class);
+   public ProjectPhaseFacade() {
+      super(ProjectPhase.class);
    }
 }

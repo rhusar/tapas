@@ -1,12 +1,15 @@
 package com.radoslavhusar.tapas.war.client.overview;
 
 import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.DatePickerCell;
+import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.TextInputCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -70,7 +73,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       phases.addColumn(idCol, "ID");
       phases.setColumnWidth(idCol, 2, Unit.EM);
 
-      Cell nameCell = new TextInputCell();
+      Cell nameCell = new EditTextCell();
       Column<ProjectPhase, String> phaseNameCol = new Column<ProjectPhase, String>(nameCell) {
 
          @Override
@@ -86,38 +89,44 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
             //table.redraw();
          }
       });
-
-      /*TextColumn<ProjectPhase> phaseNameCol = new TextColumn<ProjectPhase>() {
-
-      @Override
-      public String getValue(ProjectPhase phase) {
-      return phase.getName();
-      }
-
-      @Override
-      public FieldUpdater<ProjectPhase, String> getFieldUpdater() {
-      return new FieldUpdater<ProjectPhase, String>() {
-
-      @Override
-      public void update(int index, ProjectPhase object, String value) {
-      GWT.log("updating " + index);
-      }
-      };
-      }
-      };*/
-
-
       phases.addColumn(phaseNameCol, "Name");
 
-      TextColumn<ProjectPhase> startDateCol = new TextColumn<ProjectPhase>() {
+      // Start Date
+      DateTimeFormat dateFormat = DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT);
+      Cell datePickCell = new DatePickerCell(dateFormat);
+
+      Column<ProjectPhase, Date> startDateCol = new Column<ProjectPhase, Date>(datePickCell) {
 
          @Override
-         public String getValue(ProjectPhase phase) {
-            return phase.getStartDate().toLocaleString();
+         public Date getValue(ProjectPhase phase) {
+            return phase.getStartDate();
          }
       };
+      startDateCol.setFieldUpdater(new FieldUpdater<ProjectPhase, Date>() {
+
+         @Override
+         public void update(int index, ProjectPhase object, Date value) {
+            object.setStartDate(value);
+         }
+      });
       phases.addColumn(startDateCol, "Start Date");
 
+      // End Date
+      Column<ProjectPhase, Date> endDateCol = new Column<ProjectPhase, Date>(datePickCell) {
+
+         @Override
+         public Date getValue(ProjectPhase phase) {
+            return phase.getEndDate();
+         }
+      };
+      endDateCol.setFieldUpdater(new FieldUpdater<ProjectPhase, Date>() {
+
+         @Override
+         public void update(int index, ProjectPhase object, Date value) {
+            object.setEndDate(value);
+         }
+      });
+      phases.addColumn(endDateCol, "End Date");
 
       // Add a selection model to handle user selection.
       final SingleSelectionModel<ProjectPhase> selectionModel = new SingleSelectionModel<ProjectPhase>();
