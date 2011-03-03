@@ -7,7 +7,6 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -23,7 +22,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Project;
@@ -47,7 +45,6 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
    SimplePanel status;
    @UiField(provided = true)
    CellTable phases = new CellTable<ProjectPhase>();
-//   ListDataProvider<ProjectPhase> phasesProvider;
    @UiField
    Label projectName;
    @UiField
@@ -56,7 +53,16 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
    Anchor phaseSave;
    @UiField
    Anchor phaseRemove;
+   @UiField
+   Label propToday;
+   @UiField
+   Label propStart;
+   @UiField
+   Label propTarget;
+   @UiField
+   Label propDays;
    Project project;
+   DateTimeFormat dateFormat = DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT);
 
    @Inject
    public OverviewViewImpl(ClientState state) {
@@ -94,7 +100,6 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       phases.addColumn(phaseNameCol, "Name");
 
       // Start Date
-      DateTimeFormat dateFormat = DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT);
       Cell datePickCell = new DatePickerCell(dateFormat);
 
       Column<ProjectPhase, Date> startDateCol = new Column<ProjectPhase, Date>(datePickCell) {
@@ -148,6 +153,15 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
          return;
       }
 
+      // Set the properties
+      propToday.setText(dateFormat.format(new Date()));
+      propStart.setText(dateFormat.format(project.getStartDate()));
+      propTarget.setText(dateFormat.format(project.getTargetDate()));
+      double days = project.getTargetDate().getTime() - project.getStartDate().getTime();
+      days /= 86400000;
+      propDays.setText("" + days);
+
+      // Set the phases
       projectName.setText(project.getName());
 
       if (project.getPhases() == null) {

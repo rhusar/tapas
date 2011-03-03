@@ -19,6 +19,7 @@ import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.overview.OverviewPlace;
+import com.radoslavhusar.tapas.war.client.resources.ResourcesPlace;
 import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
 import com.radoslavhusar.tapas.war.shared.services.MyResourceServiceAsync;
 import java.util.List;
@@ -102,6 +103,11 @@ public class MenuViewImpl extends Composite implements MenuView {
    @UiHandler("overview")
    void navigateOverview(ClickEvent event) {
       Application.getInjector().getPlaceController().goTo(new OverviewPlace());
+   }
+
+   @UiHandler("resources")
+   void navigateResources(ClickEvent event) {
+      Application.getInjector().getPlaceController().goTo(new ResourcesPlace());
    }
 
    @Override

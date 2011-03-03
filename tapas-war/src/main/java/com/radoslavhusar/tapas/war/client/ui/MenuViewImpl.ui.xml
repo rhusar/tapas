@@ -26,12 +26,13 @@
          <div class="{style.menuBarLeft}">
             <g:Button ui:field="overview">Overview</g:Button>
             <g:Button ui:field="tasks">Tasks</g:Button>
-            <g:Button>Resources</g:Button>
+            <g:Button ui:field="resources">Resources</g:Button>
             <g:Button>Planning</g:Button>
+            <g:Button>Reports</g:Button>
          </div>
 
          <div class="{style.menuBarRight}">
-            Project:
+            <span>Project:</span>
             <g:ValueListBox ui:field="projectSwitch"/>
          </div>
 
@@ -40,7 +41,7 @@
 
    <ui:style>
   .logo {
-    background: url(tapas-logo2.jpg);
+    background: url(tapas-logo-menu.jpg);
     width: 265px;
     height: 70px;
     float:left;

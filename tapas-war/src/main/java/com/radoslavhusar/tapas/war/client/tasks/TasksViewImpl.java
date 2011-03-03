@@ -44,32 +44,6 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
    TextBox filter;
    ListDataProvider<Task> provider;
    SimplePager pager;
-   /*public class MyHeader extends Header {
-
-   private String text;
-
-   public MyHeader(String text) {
-   super(new ClickableTextCell());
-   this.text = text;
-   }
-
-   @Override
-   public String getValue() {
-   return text;
-   }
-
-   @Override
-   public void onBrowserEvent(Element elem, NativeEvent event) {
-   super.onBrowserEvent(elem, event);
-   GWT.log("" + event.getType().equals("click"));
-
-   //         PopupPanel pp = new PopupPanel(true);
-   //         FormPanel fp = new FormPanel();
-   //         fp.add(new TextField());
-   //         pp.setWidget();
-   //         pp.show();
-   }
-   }*/
 
    public TasksViewImpl() {
       provider = new ListDataProvider<Task>() {
@@ -92,7 +66,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                ArrayList<Task> filteredlist = new ArrayList<Task>();
 
                for (Task t : this.getList()) {
-                  if (t.getSummary().contains(filter.getText())) {
+                  if (t.getSummary().contains(filter.getText()) || t.getName().contains(filter.getText())) {
                      filteredlist.add(t);
                   }
                }
@@ -116,24 +90,10 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                filter.setText("");
             }
 
-            // Do the filter!!
+            // Do the filter!
             provider.refresh();
          }
       });
-
-
-
-//      ProvidesKey<Task> keyProvider = new ProvidesKey<Task>() {
-//
-//         @Override
-//         public Object getKey(Task item) {
-//            // Always do a null check.
-//            return (item == null) ? null : item.getId();
-//         }
-//      };
-
-
-
 
       table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 
@@ -159,6 +119,17 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       table.addColumn(prioCol, "Prio");
       table.setColumnWidth(prioCol, 1, Unit.EM);
 
+      // Status
+      TextColumn<Task> statusCol = new TextColumn<Task>() {
+
+         @Override
+         public String getValue(Task task) {
+            return Task.formatState(task.getStatus());
+         }
+      };
+      table.addColumn(statusCol, "Status");
+      table.setColumnWidth(statusCol, 10, Unit.EM);
+
       // Name
       TextColumn<Task> namecol = new TextColumn<Task>() {
 
@@ -169,16 +140,6 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       };
       table.addColumn(namecol, "Summary");
 
-      // Status
-      TextColumn<Task> statusCol = new TextColumn<Task>() {
-
-         @Override
-         public String getValue(Task task) {
-            return Task.formatState(task.getStatus());
-         }
-      };
-      table.addColumn(statusCol, "Summary");
-
       // Resource
       TextColumn<Task> resourceCol = new TextColumn<Task>() {
 
@@ -188,7 +149,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
          }
       };
       table.addColumn(resourceCol, "Resource");
-      table.setColumnWidth(resourceCol, 11, Unit.EM);
+      table.setColumnWidth(resourceCol, 10, Unit.EM);
 
 
 
