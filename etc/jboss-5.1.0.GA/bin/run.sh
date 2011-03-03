@@ -1,4 +1,5 @@
 #!/bin/sh
+# JRebel
 export JAVA_OPTS="-noverify -javaagent:/home/rhusar/tools/JRebel/jrebel.jar -Xms256m -XX:MaxPermSize=256m $JAVA_OPTS"
 
 ### ====================================================================== ###
