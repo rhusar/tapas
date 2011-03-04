@@ -1,14 +1,12 @@
 package com.radoslavhusar.tapas.ejb.entity;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -23,16 +21,15 @@ public class Resource implements Serializable {
    private String name;
    @Column
    private byte load;
-   @ManyToMany(fetch = FetchType.LAZY)
-   private List<ResourceGroup> groups;
+   @ManyToOne
+   private ResourceGroup group;
 
-   @SuppressWarnings("ReturnOfCollectionOrArrayField")
-   public List<ResourceGroup> getGroups() {
-      return groups;
+   public ResourceGroup getGroup() {
+      return group;
    }
 
-   public void setGroups(List<ResourceGroup> groups) {
-      this.groups = groups;
+   public void setGroup(ResourceGroup group) {
+      this.group = group;
    }
 
    public long getId() {

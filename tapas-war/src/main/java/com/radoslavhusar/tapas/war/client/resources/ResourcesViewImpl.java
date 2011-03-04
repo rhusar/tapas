@@ -2,8 +2,6 @@ package com.radoslavhusar.tapas.war.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -18,12 +16,11 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
-import com.radoslavhusar.tapas.ejb.entity.Project;
-import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
+import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
 import com.radoslavhusar.tapas.war.client.app.Application;
-import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.TaskTimeAllocation;
+import com.radoslavhusar.tapas.war.client.app.ClientState;
 import java.util.List;
 
 public class ResourcesViewImpl extends ResizeComposite implements ResourcesView {
@@ -33,6 +30,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
    interface Binder extends UiBinder<Widget, ResourcesViewImpl> {
    }
+   ClientState client;
    @UiField
    SimplePanel menu;
    @UiField
@@ -45,7 +43,10 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
    Anchor addResource;
 
    public ResourcesViewImpl() {
-      // Not automatically bound
+      // Client
+      client = Application.getInjector().getClientState();
+
+      // Not automatically bound items
       provider = new ListDataProvider<Resource>();
       resources = new CellTable<Resource>(provider);
 
@@ -74,11 +75,22 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       resources.addColumn(nameCol, "Name");
 
       // Load
+      TextColumn<Resource> groupCol = new TextColumn<Resource>() {
+
+         @Override
+         public String getValue(Resource resource) {
+            return resource.getGroup() == null ? "" : resource.getGroup().getName();
+         }
+      };
+      resources.addColumn(groupCol, "Group");
+      resources.setColumnWidth(groupCol, 3, Unit.EM);
+
+      // Load
       TextColumn<Resource> loadCol = new TextColumn<Resource>() {
 
          @Override
          public String getValue(Resource resource) {
-            return resource.getLoad() + "%";
+            return resource.getLoad() + " h";
          }
       };
       resources.addColumn(loadCol, "Load");
@@ -89,10 +101,16 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public String getValue(Resource resource) {
-            return "N/I";
+            for (ResourceProjectAllocation rpa : client.getResourceAllocations()) {
+               if (rpa.getResource().getId() == resource.getId()) {
+                  return rpa.getPercent() + "%";
+               }
+            }
+
+            return "";
          }
       };
-      resources.addColumn(allocCol, "Status");
+      resources.addColumn(allocCol, "Allocation");
       resources.setColumnWidth(allocCol, 10, Unit.EM);
 
       // Add a selection model to handle user selection.
@@ -110,30 +128,13 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          }
       });
 
+      initWidget(binder.createAndBindUi(this));
+   }
 
-/*
-      // Phases Times
-      Project project = Application.getInjector().getClientState().getProject();
-      if (project != null) {
-         for (final ProjectPhase phase : project.getPhases()) {
-            TextColumn<Task> timePhaseCol = new TextColumn<Task>() {
-
-               @Override
-               public String getValue(Task task) {
-                  for (TaskTimeAllocation tta : task.getTimeAllocations()) {
-                     if (tta.getPhase().getId() == phase.getId()) {
-                        return "" + tta.getTimeAllocation();
-                     }
-                  }
-                  return "";
-               }
-            };
-
-            resources.addColumn(timePhaseCol, phase.getName().substring(0, 4));
-            resources.setColumnWidth(timePhaseCol, 2, Unit.EM);
-         }
-      }
-*/
+   // UI routines
+   public void bind() {
+      menu.add(Application.getInjector().getMenuView());
+      status.add(Application.getInjector().getStatusView());
 
 
       Application.getInjector().getMyResourceService().findAllResources(new AsyncCallback<List<Resource>>() {
@@ -151,13 +152,19 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          }
       });
 
-      initWidget(binder.createAndBindUi(this));
-   }
+      Application.getInjector().getMyResourceService().findAllResourcesForProject(client.getProject(), new AsyncCallback<List<ResourceProjectAllocation>>() {
 
-   // UI routines
-   public void bind() {
-      menu.add(Application.getInjector().getMenuView());
-      status.add(Application.getInjector().getStatusView());
+         @Override
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(List<ResourceProjectAllocation> result) {
+            client.setResourceAllocations(result);
+            resources.redraw();
+         }
+      });
    }
 
    public void unbind() {

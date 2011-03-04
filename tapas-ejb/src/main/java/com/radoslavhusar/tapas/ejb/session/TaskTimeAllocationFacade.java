@@ -1,6 +1,8 @@
 package com.radoslavhusar.tapas.ejb.session;
 
+import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.TaskTimeAllocation;
+import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;

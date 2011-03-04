@@ -20,9 +20,9 @@ public class TaskTimeAllocation implements Serializable {
    private double timeAllocation;
    @Column
    private double timeCompleted;
-   @ManyToOne(fetch = FetchType.LAZY)
+   @ManyToOne(fetch = FetchType.LAZY, optional = false)
    private Task task;
-   @ManyToOne(fetch = FetchType.EAGER)
+   @ManyToOne(fetch = FetchType.EAGER, optional = false)
    private ProjectPhase phase;
 
    public long getId() {

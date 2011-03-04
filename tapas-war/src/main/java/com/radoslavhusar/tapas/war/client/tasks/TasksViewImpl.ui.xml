@@ -2,8 +2,7 @@
 <ui:UiBinder
   xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:g='urn:import:com.google.gwt.user.client.ui'
-  xmlns:c='urn:import:com.google.gwt.user.cellview.client'
-  >
+  xmlns:c='urn:import:com.google.gwt.user.cellview.client'>
 
    <g:DockLayoutPanel unit='EM' height="100%" styleName='{style.outer}'>
 
@@ -69,7 +68,6 @@
   }
 
   .table {
-<!--    table-layout: fixed;-->
     width: 100%;  	
   }
 

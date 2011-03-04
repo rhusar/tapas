@@ -4,6 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Singleton;
 import com.radoslavhusar.tapas.ejb.entity.Project;
+import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
 import java.util.List;
 
 /**
@@ -12,28 +13,22 @@ import java.util.List;
 @Singleton
 public class ClientState {
 
-   boolean synced = false;
-
    public ClientState() {
       Application.getInjector().getMyResourceService().findAllProjects(new AsyncCallback<List<Project>>() {
 
          @Override
          public void onFailure(Throwable caught) {
-            synced = true;
+            GWT.log("ClientState error fetching projects.");
          }
 
          @Override
          public void onSuccess(List<Project> result) {
             project = result.get(0);
-            synced = true;
          }
       });
-
-//      while (!synced) {
-//         GWT.log("waiting");
-//      }
    }
    private Project project;
+   private List<ResourceProjectAllocation> resourceAllocations;
 
    public Project getProject() {
       return project;
@@ -41,5 +36,16 @@ public class ClientState {
 
    public void setProject(Project project) {
       this.project = project;
+
+      resourceAllocations = null;
+   }
+
+   @SuppressWarnings("ReturnOfCollectionOrArrayField")
+   public List<ResourceProjectAllocation> getResourceAllocations() {
+      return resourceAllocations;
+   }
+
+   public void setResourceAllocations(List<ResourceProjectAllocation> resourceAllocations) {
+      this.resourceAllocations = resourceAllocations;
    }
 }

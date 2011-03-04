@@ -26,24 +26,16 @@ public class Task implements Serializable {
    private String summary;
    @ManyToOne(fetch = FetchType.LAZY)
    private Resource resource;
+   @ManyToOne(fetch = FetchType.EAGER)
+   private ResourceGroup resourceGroup;
    @Column
    private Byte priority;
-   @ManyToOne(fetch = FetchType.LAZY)
+   @ManyToOne(fetch = FetchType.LAZY, optional = false)
    private Project project;
    @OneToMany(mappedBy = "task", fetch = FetchType.EAGER)
    private List<TaskTimeAllocation> timeAllocations;
    @Column
    private TaskStatus status;
-//   @ManyToOne(fetch = FetchType.EAGER)
-//   @JoinColumn
-//   private ResourceGroup resourceGroup;
-//   public Resource getAssignee() {
-//      return assignee;
-//   }
-//
-//   public void setAssignee(Resource assignee) {
-//      this.assignee = assignee;
-//   }
 
    public long getId() {
       return id;
@@ -108,6 +100,14 @@ public class Task implements Serializable {
 
    public void setResource(Resource resource) {
       this.resource = resource;
+   }
+
+   public ResourceGroup getResourceGroup() {
+      return resourceGroup;
+   }
+
+   public void setResourceGroup(ResourceGroup resourceGroup) {
+      this.resourceGroup = resourceGroup;
    }
 
    @Override

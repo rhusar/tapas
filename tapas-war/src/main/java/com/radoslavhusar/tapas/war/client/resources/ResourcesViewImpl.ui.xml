@@ -14,10 +14,10 @@
          <g:ScrollPanel>
 
             <g:HTMLPanel>
-               <div style="text-align: right;">
-                  <g:Anchor ui:field='addResource'>Allocate resource</g:Anchor>
+               <div style="text-align: left;">
+                  <g:Anchor ui:field='addResource'>+ Allocate new resource</g:Anchor>
                </div>
-               <c:CellTable ui:field='resources' />
+               <c:CellTable ui:field='resources' styleName='{style.table}' />
             </g:HTMLPanel>
 
          </g:ScrollPanel>
@@ -35,6 +35,10 @@
     border-bottom: 1px solid #999;
     cursor: pointer;
     cursor: hand;
+  }
+
+  .table {
+    width: 100%;
   }
    </ui:style>
    
