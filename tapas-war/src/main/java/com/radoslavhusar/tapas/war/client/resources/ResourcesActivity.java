@@ -1,27 +1,20 @@
-package com.radoslavhusar.tapas.war.client.tasks;
+package com.radoslavhusar.tapas.war.client.resources;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.radoslavhusar.tapas.war.client.app.Application;
-import com.radoslavhusar.tapas.war.client.task.edit.TaskEditPlace;
 
-public class TasksActivity extends AbstractActivity implements TasksView.Presenter {
+public class ResourcesActivity extends AbstractActivity implements ResourcesView.Presenter {
 
-   TasksViewImpl view;
+   ResourcesViewImpl view;
 
    @Override
    public void start(AcceptsOneWidget panel, EventBus eventBus) {
-      view = Application.getInjector().getTaskListView();
+      view = Application.getInjector().getResourcesView();
       view.setPresenter(this);
       view.bind();
-
       panel.setWidget(view.asWidget());
-   }
-
-   @Override
-   public void goToEdit(String someId) {
-      Application.getInjector().getPlaceController().goTo(new TaskEditPlace(someId));
    }
 
    @Override

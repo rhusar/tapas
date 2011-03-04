@@ -2,9 +2,11 @@ package com.radoslavhusar.tapas.war.server.services;
 
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
+import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.session.ProjectFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.ProjectPhaseFacadeLocal;
+import com.radoslavhusar.tapas.ejb.session.ResourceFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskFacadeLocal;
 import com.radoslavhusar.tapas.war.shared.services.MyResourceService;
 import java.util.List;
@@ -29,6 +31,8 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
    private ProjectFacadeLocal projects;
    @EJB
    private ProjectPhaseFacadeLocal phases;
+   @EJB
+   private ResourceFacadeLocal resources;
 
    public MyResourceServiceImpl() {
       EntityManagerFactory emf = null;
@@ -94,5 +98,10 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
    @Override
    public List<Project> findAllProjects() {
       return projects.findAll();
+   }
+
+   @Override
+   public List<Resource> findAllResources() {
+      return resources.findAll();
    }
 }

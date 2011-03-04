@@ -131,14 +131,14 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       table.setColumnWidth(statusCol, 10, Unit.EM);
 
       // Name
-      TextColumn<Task> namecol = new TextColumn<Task>() {
+      TextColumn<Task> nameCol = new TextColumn<Task>() {
 
          @Override
          public String getValue(Task task) {
             return task.getName();
          }
       };
-      table.addColumn(namecol, "Summary");
+      table.addColumn(nameCol, "Summary");
 
       // Resource
       TextColumn<Task> resourceCol = new TextColumn<Task>() {

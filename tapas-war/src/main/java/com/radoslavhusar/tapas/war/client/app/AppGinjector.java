@@ -5,6 +5,8 @@ import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import com.radoslavhusar.tapas.war.client.overview.OverviewActivity;
 import com.radoslavhusar.tapas.war.client.overview.OverviewViewImpl;
+import com.radoslavhusar.tapas.war.client.resources.ResourcesActivity;
+import com.radoslavhusar.tapas.war.client.resources.ResourcesViewImpl;
 import com.radoslavhusar.tapas.war.client.ui.MenuPresenter;
 import com.radoslavhusar.tapas.war.client.ui.MenuViewImpl;
 import com.radoslavhusar.tapas.war.client.ui.StatusViewImpl;
@@ -33,7 +35,9 @@ public interface AppGinjector extends Ginjector {
 
    OverviewActivity getOverviewActivity();
 
+   ResourcesActivity getResourcesActivity();
    // Views
+
    MenuViewImpl getMenuView();
 
    StatusViewImpl getStatusView();
@@ -43,6 +47,8 @@ public interface AppGinjector extends Ginjector {
    TasksViewImpl getTaskListView();
 
    TaskEditViewImpl getTaskEditView();
+
+   ResourcesViewImpl getResourcesView();
 
    // Services - must be defined in Application.gwt.xml and web.xml
    MyResourceServiceAsync getMyResourceService();

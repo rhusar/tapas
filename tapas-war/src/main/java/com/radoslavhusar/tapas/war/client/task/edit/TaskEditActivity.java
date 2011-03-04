@@ -9,7 +9,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.war.client.app.Application;
-import com.radoslavhusar.tapas.war.shared.services.TaskListDummySource;
 import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
 
 public class TaskEditActivity extends AbstractActivity implements TaskEditView.Presenter {
