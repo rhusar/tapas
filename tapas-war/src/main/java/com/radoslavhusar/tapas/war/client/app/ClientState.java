@@ -5,6 +5,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Singleton;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class ClientState {
       });
    }
    private Project project;
-   private List<ResourceProjectAllocation> resourceAllocations;
+   private List<ResourceProjectAllocation> resourceAllocations = new ArrayList<ResourceProjectAllocation>();
 
    public Project getProject() {
       return project;

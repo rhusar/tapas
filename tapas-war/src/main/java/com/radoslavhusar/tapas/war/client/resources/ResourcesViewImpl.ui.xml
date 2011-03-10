@@ -14,7 +14,7 @@
          <g:ScrollPanel>
 
             <g:HTMLPanel>
-               <div style="text-align: left;">
+               <div style="text-align: right;">
                   <g:Anchor ui:field='addResource'>+ Allocate new resource</g:Anchor>
                </div>
                <c:CellTable ui:field='resources' styleName='{style.table}' />

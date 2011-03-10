@@ -57,6 +57,13 @@
          <scope>provided</scope>
       </dependency>
 
+      <!-- data visualization @ http://code.google.com/p/gwt-google-apis/ -->
+      <dependency>
+         <groupId>com.google.gwt.google-apis</groupId>
+         <artifactId>gwt-visualization</artifactId>
+         <version>1.1.1</version> <!-- current is 1.1.1 but not in repo -->
+      </dependency>
+
       <!-- GXT @ http://www.sencha.com/products/extgwt/ -->
       <!--
       <dependency>
@@ -168,11 +175,15 @@
       <repository>
          <id>codehaus-maven-repo</id>
          <name>Codehaus repo</name>
-         <url>http://repository.codehaus.org/org/codehaus/mojo/</url>
+         <url>http://repository.codehaus.org/org/codehaus/mojo</url>
       </repository>
       <repository>
          <id>gilead</id>
          <url>http://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo</url>
+      </repository>
+      <repository>
+         <id>radoslavhusar.com-fake-repo</id>
+         <url>http://repo1.radoslavhusar.com/maven2</url>
       </repository>
    </repositories>
 

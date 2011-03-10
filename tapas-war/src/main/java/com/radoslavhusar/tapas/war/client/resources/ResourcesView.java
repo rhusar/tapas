@@ -7,5 +7,7 @@ public interface ResourcesView extends IsWidget {
    void setPresenter(Presenter presenter);
 
    public interface Presenter {
+
+      public void setUnsaved(boolean b);
    }
 }

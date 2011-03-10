@@ -8,6 +8,7 @@ import com.radoslavhusar.tapas.war.client.app.Application;
 public class ResourcesActivity extends AbstractActivity implements ResourcesView.Presenter {
 
    ResourcesViewImpl view;
+   private boolean isUnsaved = false;
 
    @Override
    public void start(AcceptsOneWidget panel, EventBus eventBus) {
@@ -18,7 +19,21 @@ public class ResourcesActivity extends AbstractActivity implements ResourcesView
    }
 
    @Override
+   public String mayStop() {
+      if (isUnsaved) {
+         return "Unsaved changes will be lost - do you want to continue?";
+      }
+
+      return null;
+   }
+
+   @Override
    public void onStop() {
       view.unbind();
+   }
+
+   @Override
+   public void setUnsaved(boolean b) {
+      isUnsaved = true;
    }
 }

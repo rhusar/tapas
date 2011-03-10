@@ -11,6 +11,9 @@
    <!-- Gilead entities -->
    <inherits name="net.sf.gilead.Gilead4Gwt" />
 
+   <!-- Charts -->
+   <inherits name="com.google.gwt.visualization.Visualization"/>
+     
    <!-- inherit css based theme -->
    <inherits name='com.google.gwt.user.theme.chrome.Chrome'/>
       <!--   <inherits name='com.google.gwt.user.theme.standard.Standard'/>-->
@@ -21,6 +24,7 @@
 
    <!-- Specify the app entry point class, which is this one. -->
    <entry-point class="com.radoslavhusar.tapas.war.client.app.Application"/>
+<!--  <entry-point class="com.radoslavhusar.tapas.war.client.app.VisualizationDemo"/>-->
 
    <!-- Specify the application specific style sheet. -->
    <!--   <stylesheet src="Application.css"/>-->

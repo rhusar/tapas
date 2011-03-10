@@ -157,7 +157,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       propToday.setText(dateFormat.format(new Date()));
       propStart.setText(dateFormat.format(project.getStartDate()));
       propTarget.setText(dateFormat.format(project.getTargetDate()));
-      double days = project.getTargetDate().getTime() - project.getStartDate().getTime();
+      double days = Math.round(project.getTargetDate().getTime() - (new Date()).getTime());
       days /= 86400000;
       propDays.setText("" + days);
 
@@ -165,7 +165,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       projectName.setText(project.getName());
 
       if (project.getPhases() == null) {
-         phases.setRowData(new ArrayList());
+         phases.setRowCount(0);
       } else {
          Collections.sort(project.getPhases());
          phases.setRowData(project.getPhases());

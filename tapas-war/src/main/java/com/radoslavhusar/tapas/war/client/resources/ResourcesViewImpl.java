@@ -2,8 +2,10 @@ package com.radoslavhusar.tapas.war.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.SimplePager;
@@ -16,10 +18,10 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
 import com.radoslavhusar.tapas.war.client.app.Application;
-import com.radoslavhusar.tapas.ejb.entity.TaskTimeAllocation;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
 import java.util.List;
 
@@ -42,9 +44,10 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
    @UiField
    Anchor addResource;
 
-   public ResourcesViewImpl() {
+   @Inject
+   public ResourcesViewImpl(final ClientState client) {
       // Client
-      client = Application.getInjector().getClientState();
+      this.client = client;
 
       // Not automatically bound items
       provider = new ListDataProvider<Resource>();
@@ -123,7 +126,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          public void onSelectionChange(SelectionChangeEvent event) {
             Resource selected = selectionModel.getSelectedObject();
             if (selected != null) {
-               GWT.log("You selected: " + selected.getName());
+               GWT.log("Selected resource: " + selected.getName());
             }
          }
       });
@@ -135,7 +138,6 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
    public void bind() {
       menu.add(Application.getInjector().getMenuView());
       status.add(Application.getInjector().getStatusView());
-
 
       Application.getInjector().getMyResourceService().findAllResources(new AsyncCallback<List<Resource>>() {
 
@@ -170,6 +172,17 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
    public void unbind() {
       menu.clear();
       status.clear();
+   }
+
+   @UiHandler("addResource")
+   public void addResource(ClickEvent click) {
+      Resource newguy = new Resource();
+      newguy.setName("New resource");
+      provider.getList().add(newguy);
+      resources.setRowData(provider.getList());
+      resources.setRowCount(provider.getList().size());
+      resources.redraw();
+      presenter.setUnsaved(true);
    }
 
    @Override
