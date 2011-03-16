@@ -10,6 +10,7 @@ import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
 import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ public class ClientState {
    private List<Resource> resources;
    private Project project;
    private List<ResourceProjectAllocation> resourceAllocations;
-   private List<ResourceGroup> groups;
+   private List<ResourceGroup> groups = new ArrayList();
    private volatile int toSync = 2;
 
    @Inject

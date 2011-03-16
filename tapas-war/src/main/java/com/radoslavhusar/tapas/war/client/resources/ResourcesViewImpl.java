@@ -3,6 +3,7 @@ package com.radoslavhusar.tapas.war.client.resources;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -25,10 +26,12 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
+import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
 import com.radoslavhusar.tapas.war.client.app.StringConstants;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -93,43 +96,42 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          }
       });
       resources.addColumn(nameCol, "Name");
-      resources.setColumnWidth(nameCol, 10, Unit.EM);
-
 
       // Group
-//      SelectionCell groupCell = new SelectionCell();
-//
-//       // SelectionCell.
-//    List<String> options = new ArrayList<String>();
-//    for (Category category : categories) {
-//      options.add(category.getDisplayName());
-//    }
-//    addColumn(new SelectionCell(options), "Selection", new GetValue<String>() {
-//      public String getValue(ContactInfo contact) {
-//        return contact.getCategory().getDisplayName();
-//      }
-//    }, new FieldUpdater<ContactInfo, String>() {
-//      public void update(int index, ContactInfo object, String value) {
-//        for (Category category : categories) {
-//          if (category.getDisplayName().equals(value)) {
-//            pendingChanges.add(new CategoryChange(object, category));
-//            break;
-//          }
-//        }
-//      }
-//    });
-
-
-
-      TextColumn<Resource> groupCol = new TextColumn<Resource>() {
+      List<String> groupOptions = new ArrayList<String>();
+      for (ResourceGroup group : client.getGroups()) {
+         groupOptions.add(group.getName());
+      }
+      SelectionCell groupCell = new SelectionCell(groupOptions);
+      Column<Resource, String> groupCol = new Column<Resource, String>(groupCell) {
 
          @Override
          public String getValue(Resource resource) {
-            return resource.getGroup() == null ? "" : resource.getGroup().getName();
+            return "" + resource.getGroup();
          }
       };
-      resources.addColumn(groupCol, "Group");
-      resources.setColumnWidth(groupCol, 3, Unit.EM);
+      groupCol.setFieldUpdater(new FieldUpdater<Resource, String>() {
+
+         @Override
+         public void update(int index, Resource object, String value) {
+
+            for (ResourceGroup group : client.getGroups()) {
+               if (group.getName().equals(value)) {
+                  object.setGroup(group);
+               }
+            }
+         }
+      });
+
+//      TextColumn<Resource> groupCol = new TextColumn<Resource>() {
+//         @Override
+//         public String getValue(Resource resource) {
+//            return resource.getGroup() == null ? "" : resource.getGroup().getName();
+//         }
+//      };
+
+      resources.addColumn(groupCol, "Resource Group");
+      resources.setColumnWidth(groupCol, 10, Unit.EM);
 
       // Load
       Cell loadCell = new EditTextCell();
@@ -207,7 +209,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             if (alloc == 0) {
                return "";
             }
-            
+
 //            DecimalFormat df = new DecimalFormat("#.##");
             double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getLoad() / 100 / 100;
             return "" + NumberFormat.getDecimalFormat().format(res);
