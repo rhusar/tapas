@@ -33,7 +33,10 @@ public interface TaskResourceService extends RemoteService {
 
    void editProject(Project project);
 
-   public List<ResourceProjectAllocation> findAllResourcesForProject(Project project);
+   public List<ResourceProjectAllocation> findAllAllocationsForProject(Project project);
+
+   // Resource
+   public List<Resource> findAllResourcesForProject(long projectId);
 
    // Group
    public List<ResourceGroup> findAllGroups();

@@ -7,5 +7,5 @@ package com.radoslavhusar.tapas.war.client.app;
  */
 public interface StringConstants {
 
-   public static String UNSAVEDID = "NEW";
+   public static String UNSAVEDID = ""; // or "NEW"?
 }

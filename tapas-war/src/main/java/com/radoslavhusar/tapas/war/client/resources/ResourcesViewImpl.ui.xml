@@ -18,6 +18,9 @@
                   <g:Anchor ui:field='addResource'>+ Add new resource</g:Anchor>
                   <span>|</span>
                   <g:Anchor ui:field='allocateResource'>+ Allocate existing resource</g:Anchor>
+                  <span>|</span>
+                  <g:Anchor ui:field='saveResources'>Save</g:Anchor>
+                  <span>&nbsp;</span>
                </div>
                <c:CellTable ui:field='resources' styleName='{style.table}' />
             </g:HTMLPanel>

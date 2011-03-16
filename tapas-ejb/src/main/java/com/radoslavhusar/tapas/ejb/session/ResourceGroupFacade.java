@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
 @Local(ResourceGroupFacadeLocal.class)
 public class ResourceGroupFacade extends AbstractFacade<ResourceGroup> implements ResourceGroupFacadeLocal {
 
-   @PersistenceContext(unitName = "MyPersistenceUnit")
+   @PersistenceContext(unitName = "TapasPersistenceUnit")
    private EntityManager em;
 
    @Override

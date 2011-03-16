@@ -17,7 +17,7 @@ import javax.persistence.PersistenceContext;
 @Local(ResourceProjectAllocationFacadeLocal.class)
 public class ResourceProjectAllocationFacade extends AbstractFacade<ResourceProjectAllocation> implements ResourceProjectAllocationFacadeLocal {
 
-   @PersistenceContext(unitName = "MyPersistenceUnit")
+   @PersistenceContext(unitName = "TapasPersistenceUnit")
    private EntityManager em;
 
    @Override

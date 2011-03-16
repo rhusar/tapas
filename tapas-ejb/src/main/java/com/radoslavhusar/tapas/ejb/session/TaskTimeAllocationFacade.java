@@ -17,7 +17,7 @@ import javax.persistence.PersistenceContext;
 @Local(TaskTimeAllocationFacadeLocal.class)
 public class TaskTimeAllocationFacade extends AbstractFacade<TaskTimeAllocation> implements TaskTimeAllocationFacadeLocal {
 
-   @PersistenceContext(unitName = "MyPersistenceUnit")
+   @PersistenceContext(unitName = "TapasPersistenceUnit")
    private EntityManager em;
 
    @Override

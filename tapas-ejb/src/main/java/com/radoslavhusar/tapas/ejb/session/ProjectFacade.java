@@ -15,9 +15,10 @@ import javax.persistence.PersistenceContext;
 @Local(ProjectFacadeLocal.class)
 public class ProjectFacade extends AbstractFacade<Project> implements ProjectFacadeLocal {
 
-   @PersistenceContext(unitName = "MyPersistenceUnit")
+   @PersistenceContext(unitName = "TapasPersistenceUnit")
    private EntityManager em;
 
+   @Override
    protected EntityManager getEntityManager() {
       return em;
    }

@@ -41,7 +41,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    @EJB
    private TaskTimeAllocationFacadeLocal taskTime;
    @EJB
-   private ResourceProjectAllocationFacadeLocal resourceProject;
+   private ResourceProjectAllocationFacadeLocal allocations;
    @EJB
    private ResourceGroupFacadeLocal resourceGroup;
 
@@ -117,12 +117,17 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    }
 
    @Override
-   public List<ResourceProjectAllocation> findAllResourcesForProject(Project project) {
-      return resourceProject.findAllForProject(project);
+   public List<ResourceProjectAllocation> findAllAllocationsForProject(Project project) {
+      return allocations.findAllForProject(project);
    }
 
    @Override
    public List<ResourceGroup> findAllGroups() {
       return resourceGroup.findAll();
+   }
+
+   @Override
+   public List<Resource> findAllResourcesForProject(long projectId) {
+      return resources.findAllForProject(projectId);
    }
 }

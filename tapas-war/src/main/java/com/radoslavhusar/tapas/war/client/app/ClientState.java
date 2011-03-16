@@ -21,7 +21,7 @@ public class ClientState {
 
    private List<Resource> resources;
    private Project project;
-   private List<ResourceProjectAllocation> resourceAllocations;
+   private List<ResourceProjectAllocation> resourceAllocations = new ArrayList();
    private List<ResourceGroup> groups = new ArrayList();
    private volatile int toSync = 2;
 
@@ -73,7 +73,7 @@ public class ClientState {
    public void setProject(Project project) {
       this.project = project;
 
-      resourceAllocations = null;
+      resourceAllocations = new ArrayList();
    }
 
    @SuppressWarnings("ReturnOfCollectionOrArrayField")

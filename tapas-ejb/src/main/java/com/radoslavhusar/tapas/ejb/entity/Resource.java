@@ -23,11 +23,11 @@ public class Resource implements Serializable {
    @Column
    private String name;
    @Column
-   private byte load;
+   private byte contract;
    @ManyToOne
    private ResourceGroup group;
-//   @OneToMany(mappedBy = "resource", fetch = FetchType.LAZY)
-//   private List<ResourceProjectAllocation> resourceProjectAllocations;
+   @OneToMany(fetch = FetchType.LAZY)
+   private List<ResourceProjectAllocation> resourceProjectAllocations;
 
    public ResourceGroup getGroup() {
       return group;
@@ -45,12 +45,12 @@ public class Resource implements Serializable {
       this.id = id;
    }
 
-   public byte getLoad() {
-      return load;
+   public byte getContract() {
+      return contract;
    }
 
-   public void setLoad(byte load) {
-      this.load = load;
+   public void setContract(byte contact) {
+      this.contract = contact;
    }
 
    public String getName() {
@@ -59,5 +59,13 @@ public class Resource implements Serializable {
 
    public void setName(String name) {
       this.name = name;
+   }
+
+   public List<ResourceProjectAllocation> getResourceProjectAllocations() {
+      return resourceProjectAllocations;
+   }
+
+   public void setResourceProjectAllocations(List<ResourceProjectAllocation> resourceProjectAllocations) {
+      this.resourceProjectAllocations = resourceProjectAllocations;
    }
 }

@@ -35,7 +35,7 @@ import javax.persistence.PersistenceContext;
 @Local(TaskFacadeLocal.class)
 public class TaskFacade extends AbstractFacade<Task> implements TaskFacadeLocal {
 
-   @PersistenceContext(unitName = "MyPersistenceUnit")
+   @PersistenceContext(unitName = "TapasPersistenceUnit")
    private EntityManager em;
 
    @Override

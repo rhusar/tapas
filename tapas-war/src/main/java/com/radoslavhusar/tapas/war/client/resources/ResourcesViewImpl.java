@@ -18,6 +18,8 @@ import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.DecoratedPopupPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -55,11 +57,16 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
    Anchor addResource;
    @UiField
    Anchor allocateResource;
+   final DecoratedPopupPanel simplePopup = new DecoratedPopupPanel(true);
 
    @Inject
    public ResourcesViewImpl(final ClientState client) {
       // Client
       this.client = client;
+
+      simplePopup.setWidth("200px");
+      simplePopup.setWidget(new HTML("All resources are now shown. If you want to allocate new resource to the project, "
+              + "just change the project allocation to a percentage."));
 
       // Not automatically bound items
       provider = new ListDataProvider<Resource>();
@@ -95,10 +102,12 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             object.setName(value);
          }
       });
-      resources.addColumn(nameCol, "Name");
+      resources.addColumn(nameCol, "Resource Name");
+      resources.setColumnWidth(nameCol, 10, Unit.EM);
 
       // Group
       List<String> groupOptions = new ArrayList<String>();
+      groupOptions.add("");
       for (ResourceGroup group : client.getGroups()) {
          groupOptions.add(group.getName());
       }
@@ -107,51 +116,47 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public String getValue(Resource resource) {
-            return "" + resource.getGroup();
+            return "" + (resource.getGroup() != null ? resource.getGroup().getName() : "");
          }
       };
       groupCol.setFieldUpdater(new FieldUpdater<Resource, String>() {
 
          @Override
          public void update(int index, Resource object, String value) {
-
+            if (value.isEmpty()) {
+               object.setGroup(null);
+               return;
+            }
             for (ResourceGroup group : client.getGroups()) {
                if (group.getName().equals(value)) {
                   object.setGroup(group);
+                  return;
                }
             }
          }
       });
-
-//      TextColumn<Resource> groupCol = new TextColumn<Resource>() {
-//         @Override
-//         public String getValue(Resource resource) {
-//            return resource.getGroup() == null ? "" : resource.getGroup().getName();
-//         }
-//      };
-
       resources.addColumn(groupCol, "Resource Group");
       resources.setColumnWidth(groupCol, 10, Unit.EM);
 
       // Load
-      Cell loadCell = new EditTextCell();
-      Column<Resource, String> loadCol = new Column<Resource, String>(loadCell) {
+      Cell contractCell = new EditTextCell();
+      Column<Resource, String> contractCol = new Column<Resource, String>(contractCell) {
 
          @Override
          public String getValue(Resource resource) {
-            return resource.getLoad() + "%";
+            return resource.getContract() + "%";
          }
       };
-      loadCol.setFieldUpdater(new FieldUpdater<Resource, String>() {
+      contractCol.setFieldUpdater(new FieldUpdater<Resource, String>() {
 
          @Override
          public void update(int index, Resource object, String value) {
-            object.setLoad(Byte.parseByte(value.replace('%', ' ')));
+            object.setContract(Byte.parseByte(value.replace('%', ' ').trim()));
             resources.redraw();
          }
       });
-      resources.addColumn(loadCol, "Load");
-      resources.setColumnWidth(loadCol, 1, Unit.EM);
+      resources.addColumn(contractCol, "Contract");
+      resources.setColumnWidth(contractCol, 1, Unit.EM);
 
       // Allocation
       Cell allocCell = new EditTextCell();
@@ -190,8 +195,10 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             GWT.log("New allocation created: " + newrpa);
          }
       });
-      resources.addColumn(allocCol, "Allocation");
+      resources.addColumn(allocCol, "Project Allocation");
       resources.setColumnWidth(allocCol, 10, Unit.EM);
+
+      // TODO: Update to http://google-web-toolkit.googlecode.com/svn/javadoc/2.2/com/google/gwt/cell/client/NumberCell.html
 
       // Remaining days
       TextColumn<Resource> daysCol = new TextColumn<Resource>() {
@@ -210,13 +217,127 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
                return "";
             }
 
-//            DecimalFormat df = new DecimalFormat("#.##");
-            double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getLoad() / 100 / 100;
+            double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
             return "" + NumberFormat.getDecimalFormat().format(res);
          }
       };
       resources.addColumn(daysCol, "Remaining days");
       resources.setColumnWidth(daysCol, 5, Unit.EM);
+
+      // Clean Remaining days
+      TextColumn<Resource> cleanDaysCol = new TextColumn<Resource>() {
+
+         @Override
+         public String getValue(Resource resource) {
+            return "N/I";
+         }
+      };
+      resources.addColumn(cleanDaysCol, "Days less PTO/Tax");
+      resources.setColumnWidth(cleanDaysCol, 5, Unit.EM);
+
+      // Assigned P1
+      TextColumn<Resource> assignedP1Col = new TextColumn<Resource>() {
+
+         @Override
+         public String getValue(Resource resource) {
+            return "N/I";
+         }
+      };
+      resources.addColumn(assignedP1Col, "Days P1 Assigned");
+      resources.setColumnWidth(assignedP1Col, 5, Unit.EM);
+
+      // Remaining P1
+      TextColumn<Resource> remainingP1Col = new TextColumn<Resource>() {
+
+         @Override
+         public String getValue(Resource resource) {
+            return "N/I";
+         }
+      };
+      resources.addColumn(remainingP1Col, "Days P1 Remaining");
+      resources.setColumnWidth(remainingP1Col, 5, Unit.EM);
+
+      // Assigned P2
+      TextColumn<Resource> assignedP2Col = new TextColumn<Resource>() {
+
+         @Override
+         public String getValue(Resource resource) {
+            return "N/I";
+         }
+      };
+      resources.addColumn(assignedP2Col, "Days P2 Assigned");
+      resources.setColumnWidth(assignedP2Col, 5, Unit.EM);
+
+      // Assigned P3
+      TextColumn<Resource> assignedP3Col = new TextColumn<Resource>() {
+
+         @Override
+         public String getValue(Resource resource) {
+            return "N/I";
+         }
+      };
+      resources.addColumn(assignedP3Col, "Days P3 Assigned");
+      resources.setColumnWidth(assignedP3Col, 5, Unit.EM);
+
+
+      // Assigned total
+      TextColumn<Resource> assignedTotal = new TextColumn<Resource>() {
+
+         @Override
+         public String getValue(Resource resource) {
+            return "N/I";
+         }
+      };
+      resources.addColumn(assignedTotal, "Days less PTO/Tax");
+      resources.setColumnWidth(assignedTotal, 5, Unit.EM);
+
+      // Remaining total
+      TextColumn<Resource> remainingTotal = new TextColumn<Resource>() {
+
+         @Override
+         public String getValue(Resource resource) {
+            return "N/I";
+         }
+      };
+      resources.addColumn(remainingTotal, "Days less PTO/Tax");
+      resources.setColumnWidth(remainingTotal, 5, Unit.EM);
+
+      // Load %
+      TextColumn<Resource> loadCol = new TextColumn<Resource>() {
+
+         @Override
+         public String getValue(Resource resource) {
+            return "N/I";
+         }
+      };
+      resources.addColumn(loadCol, "Total Load");
+      resources.setColumnWidth(loadCol, 5, Unit.EM);
+
+      // Load P1 %
+      TextColumn<Resource> loadP1Col = new TextColumn<Resource>() {
+
+         @Override
+         public String getValue(Resource resource) {
+            return "N/I";
+         }
+      };
+      resources.addColumn(loadP1Col, "P1 Load");
+      resources.setColumnWidth(loadP1Col, 5, Unit.EM);
+
+      /*
+      // =Spacer=
+      TextColumn<Resource> spacerCol = new TextColumn<Resource>() {
+
+      @Override
+      public String getValue(Resource resource) {
+      return "";
+      }
+      };
+      resources.addColumn(spacerCol, ""); // No width!!
+       */
+
+
+
 
       // Add a selection model to handle user selection.
       final SingleSelectionModel<Resource> selectionModel = new SingleSelectionModel<Resource>();
@@ -241,8 +362,39 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       menu.add(Application.getInjector().getMenuView());
       status.add(Application.getInjector().getStatusView());
 
+      /*if (client.getResources() == null || client.getResourceAllocations() == null) {
+      Application.getInjector().getMyResourceService().findAllResources(new AsyncCallback<List<Resource>>() {
+
+      @Override
+      public void onFailure(Throwable caught) {
+      throw new UnsupportedOperationException("Not supported yet.");
+      }
+
+      @Override
+      public void onSuccess(List<Resource> result) {
+      client.setResources(result);
+      provider.setList(result);
+      resources.setRowCount(result.size(), true);
+      resources.setRowData(0, result);
+      }
+      });
+
+      Application.getInjector().getMyResourceService().findAllResourcesForProject(client.getProject(), new AsyncCallback<List<ResourceProjectAllocation>>() {
+
+      @Override
+      public void onFailure(Throwable caught) {
+      throw new UnsupportedOperationException("Not supported yet.");
+      }
+
+      @Override
+      public void onSuccess(List<ResourceProjectAllocation> result) {
+      client.setResourceAllocations(result);
+      resources.redraw();
+      }
+      });*/
+
       if (client.getResources() == null || client.getResourceAllocations() == null) {
-         Application.getInjector().getMyResourceService().findAllResources(new AsyncCallback<List<Resource>>() {
+         Application.getInjector().getMyResourceService().findAllResourcesForProject(client.getProject().getId(), new AsyncCallback<List<Resource>>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -258,19 +410,6 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             }
          });
 
-         Application.getInjector().getMyResourceService().findAllResourcesForProject(client.getProject(), new AsyncCallback<List<ResourceProjectAllocation>>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-               throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public void onSuccess(List<ResourceProjectAllocation> result) {
-               client.setResourceAllocations(result);
-               resources.redraw();
-            }
-         });
       } else {
          provider.setList(client.getResources());
          resources.setRowCount(client.getResources().size(), true);
@@ -296,7 +435,20 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
    }
 
    @UiHandler("allocateResource")
-   public void allocateResource(ClickEvent click) {
+   public void allocateResource(ClickEvent event) {
+      // Reposition the popup relative to the link
+      Widget source = (Widget) event.getSource();
+      int left = source.getAbsoluteLeft() + 10;
+      int top = source.getAbsoluteTop() + 10;
+      simplePopup.setPopupPosition(left, top);
+
+      // Show the popup
+      simplePopup.show();
+   }
+
+   @UiHandler("saveResources")
+   public void saveResources(ClickEvent click) {
+      GWT.log("Saving resources: ");
    }
 
    @Override
