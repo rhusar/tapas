@@ -15,7 +15,9 @@
 
             <g:HTMLPanel>
                <div style="text-align: right;">
-                  <g:Anchor ui:field='addResource'>+ Allocate new resource</g:Anchor>
+                  <g:Anchor ui:field='addResource'>+ Add new resource</g:Anchor>
+                  <span>|</span>
+                  <g:Anchor ui:field='allocateResource'>+ Allocate existing resource</g:Anchor>
                </div>
                <c:CellTable ui:field='resources' styleName='{style.table}' />
             </g:HTMLPanel>

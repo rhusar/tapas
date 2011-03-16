@@ -3,15 +3,17 @@ package com.radoslavhusar.tapas.war.server.services;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
+import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.session.ProjectFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.ProjectPhaseFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.ResourceFacadeLocal;
+import com.radoslavhusar.tapas.ejb.session.ResourceGroupFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.ResourceProjectAllocationFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskTimeAllocationFacadeLocal;
-import com.radoslavhusar.tapas.war.shared.services.MyResourceService;
+import com.radoslavhusar.tapas.war.shared.services.TaskResourceService;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.naming.InitialContext;
@@ -22,11 +24,11 @@ import net.sf.gilead.gwt.PersistentRemoteService;
 import net.sf.gilead.core.hibernate.jboss.HibernateJBossUtil;
 import org.jboss.logging.Logger;
 
-public class MyResourceServiceImpl extends PersistentRemoteService implements MyResourceService {
+public class TaskResourceServiceImpl extends PersistentRemoteService implements TaskResourceService {
 
    private static final long serialVersionUID = 1L;
    // Using jboss Logger via log4j
-   private static final Logger log = Logger.getLogger(MyResourceServiceImpl.class.getName());
+   private static final Logger log = Logger.getLogger(TaskResourceServiceImpl.class.getName());
    // Workaround for injection https://issues.jboss.org/browse/JBAS-5646
    @EJB
    private TaskFacadeLocal tasks;
@@ -37,11 +39,13 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
    @EJB
    private ResourceFacadeLocal resources;
    @EJB
-   private TaskTimeAllocationFacadeLocal tasktime;
+   private TaskTimeAllocationFacadeLocal taskTime;
    @EJB
-   private ResourceProjectAllocationFacadeLocal resourceproject;
+   private ResourceProjectAllocationFacadeLocal resourceProject;
+   @EJB
+   private ResourceGroupFacadeLocal resourceGroup;
 
-   public MyResourceServiceImpl() {
+   public TaskResourceServiceImpl() {
       EntityManagerFactory emf = null;
       try {
          InitialContext ic = new InitialContext();
@@ -114,6 +118,11 @@ public class MyResourceServiceImpl extends PersistentRemoteService implements My
 
    @Override
    public List<ResourceProjectAllocation> findAllResourcesForProject(Project project) {
-      return resourceproject.findAllForProject(project);
+      return resourceProject.findAllForProject(project);
+   }
+
+   @Override
+   public List<ResourceGroup> findAllGroups() {
+      return resourceGroup.findAll();
    }
 }

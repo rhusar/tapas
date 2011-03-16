@@ -1,12 +1,15 @@
 package com.radoslavhusar.tapas.ejb.entity;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -23,6 +26,8 @@ public class Resource implements Serializable {
    private byte load;
    @ManyToOne
    private ResourceGroup group;
+//   @OneToMany(mappedBy = "resource", fetch = FetchType.LAZY)
+//   private List<ResourceProjectAllocation> resourceProjectAllocations;
 
    public ResourceGroup getGroup() {
       return group;

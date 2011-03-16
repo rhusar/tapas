@@ -13,7 +13,7 @@ import javax.persistence.Table;
 @Table(name = "RESOURCE_PROJECT_ALLOCATION")
 public class ResourceProjectAllocation implements Serializable {
 
-   private static final long serialVersionUID = 2L;
+   private static final long serialVersionUID = 3L;
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
    private long id;
@@ -55,5 +55,10 @@ public class ResourceProjectAllocation implements Serializable {
 
    public void setResource(Resource resource) {
       this.resource = resource;
+   }
+
+   @Override
+   public String toString() {
+      return "ResourceProjectAllocation{id=" + (id == 0 ? "NEW" : id) + ",resource=" + resource.getId() + ",project=" + project.getId() + ",percent=" + percent + '}';
    }
 }

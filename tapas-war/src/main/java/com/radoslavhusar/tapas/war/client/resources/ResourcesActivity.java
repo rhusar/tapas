@@ -21,7 +21,7 @@ public class ResourcesActivity extends AbstractActivity implements ResourcesView
    @Override
    public String mayStop() {
       if (isUnsaved) {
-         return "Unsaved changes will be lost - do you want to continue?";
+         //return "Unsaved changes will be lost - do you want to continue?";
       }
 
       return null;

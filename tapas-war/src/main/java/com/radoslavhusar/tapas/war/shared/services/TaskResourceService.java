@@ -4,13 +4,15 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
+import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import java.util.List;
 
 @RemoteServiceRelativePath("res")
-public interface MyResourceService extends RemoteService {
+public interface TaskResourceService extends RemoteService {
 
+   // Project
    List<Project> findAllProjects();
 
    List<Resource> findAllResources();
@@ -32,4 +34,7 @@ public interface MyResourceService extends RemoteService {
    void editProject(Project project);
 
    public List<ResourceProjectAllocation> findAllResourcesForProject(Project project);
+
+   // Group
+   public List<ResourceGroup> findAllGroups();
 }

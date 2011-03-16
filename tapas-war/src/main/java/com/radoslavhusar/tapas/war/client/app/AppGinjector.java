@@ -14,7 +14,7 @@ import com.radoslavhusar.tapas.war.client.tasks.TasksActivity;
 import com.radoslavhusar.tapas.war.client.tasks.TasksViewImpl;
 import com.radoslavhusar.tapas.war.client.task.edit.TaskEditViewImpl;
 import com.radoslavhusar.tapas.war.client.ui.StatusPresenter;
-import com.radoslavhusar.tapas.war.shared.services.MyResourceServiceAsync;
+import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 
 @GinModules(GinClientModule.class)
 public interface AppGinjector extends Ginjector {
@@ -51,5 +51,5 @@ public interface AppGinjector extends Ginjector {
    ResourcesViewImpl getResourcesView();
 
    // Services - must be defined in Application.gwt.xml and web.xml
-   MyResourceServiceAsync getMyResourceService();
+   TaskResourceServiceAsync getMyResourceService();
 }

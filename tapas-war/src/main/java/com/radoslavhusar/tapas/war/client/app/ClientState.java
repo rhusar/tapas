@@ -2,10 +2,14 @@ package com.radoslavhusar.tapas.war.client.app;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.radoslavhusar.tapas.ejb.entity.Project;
+import com.radoslavhusar.tapas.ejb.entity.Resource;
+import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
-import java.util.ArrayList;
+import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
+import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.List;
 
 /**
@@ -14,22 +18,52 @@ import java.util.List;
 @Singleton
 public class ClientState {
 
-   public ClientState() {
-      Application.getInjector().getMyResourceService().findAllProjects(new AsyncCallback<List<Project>>() {
+   private List<Resource> resources;
+   private Project project;
+   private List<ResourceProjectAllocation> resourceAllocations;
+   private List<ResourceGroup> groups;
+   private volatile int toSync = 2;
+
+   @Inject
+   public ClientState(TaskResourceServiceAsync res) {
+
+      res.findAllProjects(new AsyncCallback<List<Project>>() {
 
          @Override
          public void onFailure(Throwable caught) {
-            GWT.log("ClientState error fetching projects.");
+            GWT.log("ClientState error fetching Project.");
          }
 
          @Override
          public void onSuccess(List<Project> result) {
             project = result.get(0);
+            doSync();
+         }
+      });
+
+      res.findAllGroups(new AsyncCallback<List<ResourceGroup>>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            GWT.log("ClientState error fetching ResourceGroup.");
+         }
+
+         @Override
+         public void onSuccess(List<ResourceGroup> result) {
+            groups = result;
+            doSync();
          }
       });
    }
-   private Project project;
-   private List<ResourceProjectAllocation> resourceAllocations = new ArrayList<ResourceProjectAllocation>();
+
+   public void doSync() {
+      toSync--;
+      GWT.log("Initial loading services to synchronize remaining: " + toSync);
+
+      if (toSync == 0) {
+         Application.getInjector().getPlaceController().goTo(new TasksPlace());
+      }
+   }
 
    public Project getProject() {
       return project;
@@ -48,5 +82,23 @@ public class ClientState {
 
    public void setResourceAllocations(List<ResourceProjectAllocation> resourceAllocations) {
       this.resourceAllocations = resourceAllocations;
+   }
+
+   public void setResources(List<Resource> resources) {
+      this.resources = resources;
+   }
+
+   @SuppressWarnings("ReturnOfCollectionOrArrayField")
+   public List<Resource> getResources() {
+      return resources;
+   }
+
+   @SuppressWarnings("ReturnOfCollectionOrArrayField")
+   public List<ResourceGroup> getGroups() {
+      return groups;
+   }
+
+   public void setGroups(List<ResourceGroup> groups) {
+      this.groups = groups;
    }
 }

@@ -21,7 +21,7 @@ import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.overview.OverviewPlace;
 import com.radoslavhusar.tapas.war.client.resources.ResourcesPlace;
 import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
-import com.radoslavhusar.tapas.war.shared.services.MyResourceServiceAsync;
+import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.List;
 
 public class MenuViewImpl extends Composite implements MenuView {
@@ -48,7 +48,7 @@ public class MenuViewImpl extends Composite implements MenuView {
    Button tasks;
 
    @Inject
-   public MenuViewImpl(MyResourceServiceAsync res) {
+   public MenuViewImpl(TaskResourceServiceAsync res) {
       this.presenter = Application.getInjector().getMenuPresenter();
 
       initWidget(binder.createAndBindUi(this));
