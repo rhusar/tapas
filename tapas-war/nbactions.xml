@@ -73,6 +73,14 @@
          <maven.compile.src.set>src/com/radoslavhusar/tapas/war/server</maven.compile.src.set>
       </properties>
    </action>
+<action>
+            <actionName>CUSTOM-clean gwt:generateAsync</actionName>
+            <displayName>clean gwt:generateAsync</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>gwt:generateAsync</goal>
+            </goals>
+        </action>
 <!--        <action>
             <actionName>run</actionName>
             <goals>

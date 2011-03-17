@@ -33,4 +33,6 @@ public interface ResourceFacadeLocal {
    List<Resource> findAllForProject(long projectId);
 
    Double[] statForProject(Resource resource, long projectId);
+
+   Double[] statForProject(long resourceId, long projectId);
 }

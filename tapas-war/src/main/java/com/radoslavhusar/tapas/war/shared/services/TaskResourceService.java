@@ -8,6 +8,7 @@ import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import java.util.List;
+import java.util.Map;
 
 @RemoteServiceRelativePath("res")
 public interface TaskResourceService extends RemoteService {
@@ -15,7 +16,7 @@ public interface TaskResourceService extends RemoteService {
    // Project
    List<Project> findAllProjects();
 
-   List<Resource> findAllResources();
+//   List<Resource> findAllResources();
 
    int getCount() throws Exception;
 
@@ -36,8 +37,11 @@ public interface TaskResourceService extends RemoteService {
    public List<ResourceProjectAllocation> findAllAllocationsForProject(Project project);
 
    // Resource
-   public List<Resource> findAllResourcesForProject(long projectId);
+//   public List<Resource> findAllResourcesForProject(long projectId);
 
+   public Map<Resource, Double[]> findAllResourceStatsForProject(long projectId);
+
+//   public List<ResourceWrap> findAllResourceWrapsForProject(long projectId);
    // Group
    public List<ResourceGroup> findAllGroups();
 }

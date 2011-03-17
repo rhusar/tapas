@@ -14,7 +14,9 @@ import com.radoslavhusar.tapas.ejb.session.ResourceProjectAllocationFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskTimeAllocationFacadeLocal;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceService;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -111,10 +113,10 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
       return projects.findAll();
    }
 
-   @Override
-   public List<Resource> findAllResources() {
-      return resources.findAll();
-   }
+//   @Override
+//   public List<Resource> findAllResources() {
+//      return resources.findAll();
+//   }
 
    @Override
    public List<ResourceProjectAllocation> findAllAllocationsForProject(Project project) {
@@ -126,8 +128,44 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
       return resourceGroup.findAll();
    }
 
+//   @Override
+//   public List<Resource> findAllResourcesForProject(long projectId) {
+//      return resources.findAllForProject(projectId);
+//   }
+//
+//   @Override
+//   public Map<Long, Double[]> findAllResourceStatsForProject(long projectId) {
+//      List<Resource> list = resources.findAllForProject(projectId);
+//      Map<Long, Double[]> result = new HashMap<Long, Double[]>();
+//
+//      for (Resource r : list) {
+//         Double[] stats = resources.statForProject(r.getId(), projectId);
+//         result.put(r.getId(), stats);
+//      }
+//
+//      return result;
+//   }
    @Override
-   public List<Resource> findAllResourcesForProject(long projectId) {
-      return resources.findAllForProject(projectId);
+   public Map<Resource, Double[]> findAllResourceStatsForProject(long projectId) {
+      List<Resource> list = resources.findAllForProject(projectId);
+      HashMap<Resource, Double[]> result = new HashMap<Resource, Double[]>();
+
+      for (Resource r : list) {
+         Double[] stats = resources.statForProject(r.getId(), projectId);
+         result.put(r, stats);
+      }
+
+      return result;
    }
+//   @Override
+//   public List<ResourceWrap> findAllResourceWrapsForProject(long projectId) {
+//      List<Resource> list = resources.findAllForProject(projectId);
+//      List<ResourceWrap> result = new ArrayList<ResourceWrap>();
+//
+//      for (Resource r : list) {
+//         result.add(new ResourceWrap(r, resources.statForProject(r.getId(), projectId)));
+//      }
+//
+//      return result;
+//   }
 }

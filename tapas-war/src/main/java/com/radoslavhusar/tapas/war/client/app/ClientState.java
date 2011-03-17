@@ -12,6 +12,7 @@ import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Singleton which controls state and cache of the application.
@@ -19,7 +20,8 @@ import java.util.List;
 @Singleton
 public class ClientState {
 
-   private List<Resource> resources;
+//   private List<Resource> resources;
+   private Map<Resource, Double[]> resorces;
    private Project project;
    private List<ResourceProjectAllocation> resourceAllocations = new ArrayList();
    private List<ResourceGroup> groups = new ArrayList();
@@ -85,15 +87,22 @@ public class ClientState {
       this.resourceAllocations = resourceAllocations;
    }
 
-   public void setResources(List<Resource> resources) {
-      this.resources = resources;
+   public Map<Resource, Double[]> getResources() {
+      return resorces;
    }
 
-   @SuppressWarnings("ReturnOfCollectionOrArrayField")
-   public List<Resource> getResources() {
-      return resources;
+   public void setResources(Map<Resource, Double[]> resorces) {
+      this.resorces = resorces;
    }
 
+//   public void setResources(List<Resource> resources) {
+//      this.resources = resources;
+//   }
+//
+//   @SuppressWarnings("ReturnOfCollectionOrArrayField")
+//   public List<Resource> getResources() {
+//      return resources;
+//   }
    @SuppressWarnings("ReturnOfCollectionOrArrayField")
    public List<ResourceGroup> getGroups() {
       return groups;

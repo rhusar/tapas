@@ -36,6 +36,7 @@ import com.radoslavhusar.tapas.war.client.app.StringConstants;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class ResourcesViewImpl extends ResizeComposite implements ResourcesView {
 
@@ -45,6 +46,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
    interface Binder extends UiBinder<Widget, ResourcesViewImpl> {
    }
    ClientState client;
+   Map<Resource, Double[]> map;
    @UiField
    SimplePanel menu;
    @UiField
@@ -240,7 +242,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public String getValue(Resource resource) {
-            return "N/I";
+            return "" + (map.get(resource) == null ? "" : map.get(resource)[0]);
          }
       };
       resources.addColumn(assignedP1Col, "Days P1 Assigned");
@@ -251,7 +253,11 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public String getValue(Resource resource) {
-            return "N/I";
+            if (map.get(resource) == null) {
+               return "";
+            } else {
+               return "" + (map.get(resource)[0] - map.get(resource)[1]);
+            }
          }
       };
       resources.addColumn(remainingP1Col, "Days P1 Remaining");
@@ -394,7 +400,23 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       });*/
 
       if (client.getResources() == null || client.getResourceAllocations() == null) {
-         Application.getInjector().getMyResourceService().findAllResourcesForProject(client.getProject().getId(), new AsyncCallback<List<Resource>>() {
+//         Application.getInjector().getMyResourceService().findAllResourcesForProject(client.getProject().getId(), new AsyncCallback<List<Resource>>() {
+//
+//            @Override
+//            public void onFailure(Throwable caught) {
+//               throw new UnsupportedOperationException("Not supported yet.");
+//            }
+//
+//            @Override
+//            public void onSuccess(List<Resource> result) {
+//               client.setResources(result);
+//               provider.setList(result);
+//               resources.setRowCount(result.size(), true);
+//               resources.setRowData(0, result);
+//            }
+//         });
+
+         Application.getInjector().getMyResourceService().findAllResourceStatsForProject(client.getProject().getId(), new AsyncCallback<Map<Resource, Double[]>>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -402,19 +424,20 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             }
 
             @Override
-            public void onSuccess(List<Resource> result) {
+            public void onSuccess(Map<Resource, Double[]> result) {
+               List<Resource> asList = new ArrayList(result.keySet());
                client.setResources(result);
-               provider.setList(result);
-               resources.setRowCount(result.size(), true);
-               resources.setRowData(0, result);
+               provider.setList(asList);
+               resources.setRowCount(asList.size(), true);
+               resources.setRowData(0, asList);
+               map = result;
             }
          });
-
       } else {
-         provider.setList(client.getResources());
-         resources.setRowCount(client.getResources().size(), true);
-         resources.setRowData(0, client.getResources());
-         resources.redraw();
+//         provider.setList(client.getResources());
+//         resources.setRowCount(client.getResources().size(), true);
+//         resources.setRowData(0, client.getResources());
+//         resources.redraw();
       }
    }
 
