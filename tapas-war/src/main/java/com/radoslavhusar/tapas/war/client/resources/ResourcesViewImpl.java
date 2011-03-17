@@ -3,6 +3,7 @@ package com.radoslavhusar.tapas.war.client.resources;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.NumberCell;
 import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -42,6 +43,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
    private Presenter presenter;
    private static Binder binder = GWT.create(Binder.class);
+   public static final int NUMBER_COL_EM = 8;
 
    interface Binder extends UiBinder<Widget, ResourcesViewImpl> {
    }
@@ -67,8 +69,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       this.client = client;
 
       simplePopup.setWidth("200px");
-      simplePopup.setWidget(new HTML("All resources are now shown. If you want to allocate new resource to the project, "
-              + "just change the project allocation to a percentage."));
+      simplePopup.setWidget(new HTML(StringConstants.RESOURCE_ALLOCATION));
 
       // Not automatically bound items
       provider = new ListDataProvider<Resource>();
@@ -105,7 +106,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          }
       });
       resources.addColumn(nameCol, "Resource Name");
-      resources.setColumnWidth(nameCol, 10, Unit.EM);
+//      resources.setColumnWidth(nameCol, 10, Unit.EM);
 
       // Group
       List<String> groupOptions = new ArrayList<String>();
@@ -201,6 +202,9 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       resources.setColumnWidth(allocCol, 10, Unit.EM);
 
       // TODO: Update to http://google-web-toolkit.googlecode.com/svn/javadoc/2.2/com/google/gwt/cell/client/NumberCell.html
+      // Number cells
+      NumberCell daysNumberCell = new NumberCell(NumberFormat.getFormat("0.00"));
+      NumberCell percentageNumberCell = new NumberCell(NumberFormat.getPercentFormat());
 
       // Remaining days
       TextColumn<Resource> daysCol = new TextColumn<Resource>() {
@@ -235,89 +239,133 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          }
       };
       resources.addColumn(cleanDaysCol, "Days less PTO/Tax");
-      resources.setColumnWidth(cleanDaysCol, 5, Unit.EM);
+      resources.setColumnWidth(cleanDaysCol, NUMBER_COL_EM, Unit.EM);
 
       // Assigned P1
-      TextColumn<Resource> assignedP1Col = new TextColumn<Resource>() {
+      Column<Resource, Number> assignedP1Col = new Column<Resource, Number>(daysNumberCell) {
 
          @Override
-         public String getValue(Resource resource) {
-            return "" + (map.get(resource) == null ? "" : map.get(resource)[0]);
-         }
-      };
-      resources.addColumn(assignedP1Col, "Days P1 Assigned");
-      resources.setColumnWidth(assignedP1Col, 5, Unit.EM);
-
-      // Remaining P1
-      TextColumn<Resource> remainingP1Col = new TextColumn<Resource>() {
-
-         @Override
-         public String getValue(Resource resource) {
+         public Number getValue(Resource resource) {
             if (map.get(resource) == null) {
-               return "";
+               return null;
             } else {
-               return "" + (map.get(resource)[0] - map.get(resource)[1]);
+               return map.get(resource)[0];
             }
          }
       };
-      resources.addColumn(remainingP1Col, "Days P1 Remaining");
-      resources.setColumnWidth(remainingP1Col, 5, Unit.EM);
+      resources.addColumn(assignedP1Col, "P1 Assigned");
+      resources.setColumnWidth(assignedP1Col, NUMBER_COL_EM, Unit.EM);
+
+
+      // Remaining P1
+      Column<Resource, Number> remainingP1Col = new Column<Resource, Number>(daysNumberCell) {
+
+         @Override
+         public Number getValue(Resource resource) {
+            if (map.get(resource) == null) {
+               return null;
+            } else {
+               return map.get(resource)[0] - map.get(resource)[1];
+            }
+         }
+      };
+      resources.addColumn(remainingP1Col, "P1 Remaining");
+      resources.setColumnWidth(remainingP1Col, NUMBER_COL_EM, Unit.EM);
 
       // Assigned P2
-      TextColumn<Resource> assignedP2Col = new TextColumn<Resource>() {
+      Column<Resource, Number> assignedP2Col = new Column<Resource, Number>(daysNumberCell) {
 
          @Override
-         public String getValue(Resource resource) {
-            return "N/I";
+         public Number getValue(Resource resource) {
+            if (map.get(resource) == null) {
+               return null;
+            } else {
+               return map.get(resource)[2];
+            }
          }
       };
-      resources.addColumn(assignedP2Col, "Days P2 Assigned");
-      resources.setColumnWidth(assignedP2Col, 5, Unit.EM);
+      resources.addColumn(assignedP2Col, "P2 Assigned");
+      resources.setColumnWidth(assignedP2Col, NUMBER_COL_EM, Unit.EM);
 
       // Assigned P3
-      TextColumn<Resource> assignedP3Col = new TextColumn<Resource>() {
+      Column<Resource, Number> assignedP3Col = new Column<Resource, Number>(daysNumberCell) {
 
          @Override
-         public String getValue(Resource resource) {
-            return "N/I";
+         public Number getValue(Resource resource) {
+            if (map.get(resource) == null) {
+               return null;
+            } else {
+               return map.get(resource)[3] - map.get(resource)[2];
+            }
          }
       };
-      resources.addColumn(assignedP3Col, "Days P3 Assigned");
-      resources.setColumnWidth(assignedP3Col, 5, Unit.EM);
-
+      resources.addColumn(assignedP3Col, "P3 Assigned");
+      resources.setColumnWidth(assignedP3Col, NUMBER_COL_EM, Unit.EM);
 
       // Assigned total
-      TextColumn<Resource> assignedTotal = new TextColumn<Resource>() {
+      Column<Resource, Number> assignedTotal = new Column<Resource, Number>(daysNumberCell) {
 
          @Override
-         public String getValue(Resource resource) {
-            return "N/I";
+         public Number getValue(Resource resource) {
+            if (map.get(resource) == null) {
+               return null;
+            } else {
+               // Sum of P1,P2,P3,PX
+               return map.get(resource)[0] + map.get(resource)[2] + map.get(resource)[4] + map.get(resource)[6];
+            }
          }
       };
-      resources.addColumn(assignedTotal, "Days less PTO/Tax");
-      resources.setColumnWidth(assignedTotal, 5, Unit.EM);
+      resources.addColumn(assignedTotal, "Total Assigned");
+      resources.setColumnWidth(assignedTotal, NUMBER_COL_EM, Unit.EM);
 
       // Remaining total
-      TextColumn<Resource> remainingTotal = new TextColumn<Resource>() {
+      Column<Resource, Number> remainingTotal = new Column<Resource, Number>(daysNumberCell) {
 
          @Override
-         public String getValue(Resource resource) {
-            return "N/I";
+         public Number getValue(Resource resource) {
+            if (map.get(resource) == null) {
+               return null;
+            } else {
+               // Difference of assigned - sum of done [P1,P2,P3,PX]
+               return map.get(resource)[0] + map.get(resource)[2] + map.get(resource)[4] + map.get(resource)[6]
+                       - (map.get(resource)[1] + map.get(resource)[3] + map.get(resource)[5] + map.get(resource)[7]);
+            }
          }
       };
-      resources.addColumn(remainingTotal, "Days less PTO/Tax");
-      resources.setColumnWidth(remainingTotal, 5, Unit.EM);
+      resources.addColumn(remainingTotal, "Total Remaining");
+      resources.setColumnWidth(remainingTotal, NUMBER_COL_EM, Unit.EM);
 
       // Load %
-      TextColumn<Resource> loadCol = new TextColumn<Resource>() {
+      Column<Resource, Number> loadCol = new Column<Resource, Number>(percentageNumberCell) {
 
          @Override
-         public String getValue(Resource resource) {
-            return "N/I";
+         public Number getValue(Resource resource) {
+            if (map.get(resource) == null) {
+               return null;
+            } else {
+               // Fraction of assigned - sum of done [P1,P2,P3,PX]
+               // DOTO: Make this cleaner
+               byte alloc = 0;
+
+               for (ResourceProjectAllocation rpa : client.getResourceAllocations()) {
+                  if (rpa.getResource().equals(resource)) {
+                     alloc = rpa.getPercent();
+                  }
+               }
+
+               if (alloc == 0) {
+                  return null;
+               }
+
+               double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
+
+               return (map.get(resource)[0] + map.get(resource)[2] + map.get(resource)[4] + map.get(resource)[6]
+                       - (map.get(resource)[1] + map.get(resource)[3] + map.get(resource)[5] + map.get(resource)[7])) / (res);
+            }
          }
       };
       resources.addColumn(loadCol, "Total Load");
-      resources.setColumnWidth(loadCol, 5, Unit.EM);
+      resources.setColumnWidth(loadCol, NUMBER_COL_EM, Unit.EM);
 
       // Load P1 %
       TextColumn<Resource> loadP1Col = new TextColumn<Resource>() {
@@ -328,20 +376,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          }
       };
       resources.addColumn(loadP1Col, "P1 Load");
-      resources.setColumnWidth(loadP1Col, 5, Unit.EM);
-
-      /*
-      // =Spacer=
-      TextColumn<Resource> spacerCol = new TextColumn<Resource>() {
-
-      @Override
-      public String getValue(Resource resource) {
-      return "";
-      }
-      };
-      resources.addColumn(spacerCol, ""); // No width!!
-       */
-
+      resources.setColumnWidth(loadP1Col, NUMBER_COL_EM, Unit.EM);
 
 
 
@@ -416,7 +451,10 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 //            }
 //         });
 
-         Application.getInjector().getMyResourceService().findAllResourceStatsForProject(client.getProject().getId(), new AsyncCallback<Map<Resource, Double[]>>() {
+
+         // FIXME: Application.getInjector().getMyResourceService().findAllResourceStatsForProject(client.getProject().getId(), new AsyncCallback<Map<Resource, Double[]>>() {
+
+         Application.getInjector().getMyResourceService().findAllResourceStatsForProject(1, new AsyncCallback<Map<Resource, Double[]>>() {
 
             @Override
             public void onFailure(Throwable caught) {

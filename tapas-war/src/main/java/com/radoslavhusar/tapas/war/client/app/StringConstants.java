@@ -7,5 +7,7 @@ package com.radoslavhusar.tapas.war.client.app;
  */
 public interface StringConstants {
 
-   public static String UNSAVEDID = ""; // or "NEW"?
+   public static final String UNSAVEDID = ""; // was "NEW"
+   public static final String RESOURCE_ALLOCATION = "All resources are now listed. If you want to allocate new resource to the project, "
+           + "just change the project allocation to a percentage.";
 }
