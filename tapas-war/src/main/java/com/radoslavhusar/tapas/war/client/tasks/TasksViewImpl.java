@@ -171,7 +171,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       table.setPageSize(Integer.MAX_VALUE - 1);
 
 
-      Application.getInjector().getMyResourceService().findAll(new AsyncCallback<List<Task>>() {
+      Application.getInjector().getService().findAll(new AsyncCallback<List<Task>>() {
 
          @Override
          public void onFailure(Throwable caught) {

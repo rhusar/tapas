@@ -19,7 +19,7 @@ import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 @GinModules(GinClientModule.class)
 public interface AppGinjector extends Ginjector {
 
-   // Shared components
+   // Shared basic components
    EventBus getEventBus();
 
    PlaceControllerGin getPlaceController();
@@ -36,12 +36,13 @@ public interface AppGinjector extends Ginjector {
    OverviewActivity getOverviewActivity();
 
    ResourcesActivity getResourcesActivity();
-   // Views
 
+   // Views - UI
    MenuViewImpl getMenuView();
 
    StatusViewImpl getStatusView();
 
+   // Views - activities
    OverviewViewImpl getOverviewView();
 
    TasksViewImpl getTaskListView();
@@ -50,6 +51,6 @@ public interface AppGinjector extends Ginjector {
 
    ResourcesViewImpl getResourcesView();
 
-   // Services - must be defined in Application.gwt.xml and web.xml
-   TaskResourceServiceAsync getMyResourceService();
+   // Services - must be also defined in Application.gwt.xml and web.xml
+   TaskResourceServiceAsync getService();
 }

@@ -20,8 +20,7 @@ import java.util.Map;
 @Singleton
 public class ClientState {
 
-//   private List<Resource> resources;
-   private Map<Resource, Double[]> resorces;
+   private Map<Resource, Double[]> resources;
    private Project project;
    private List<ResourceProjectAllocation> resourceAllocations = new ArrayList();
    private List<ResourceGroup> groups = new ArrayList();
@@ -88,21 +87,13 @@ public class ClientState {
    }
 
    public Map<Resource, Double[]> getResources() {
-      return resorces;
+      return resources;
    }
 
    public void setResources(Map<Resource, Double[]> resorces) {
-      this.resorces = resorces;
+      this.resources = resorces;
    }
 
-//   public void setResources(List<Resource> resources) {
-//      this.resources = resources;
-//   }
-//
-//   @SuppressWarnings("ReturnOfCollectionOrArrayField")
-//   public List<Resource> getResources() {
-//      return resources;
-//   }
    @SuppressWarnings("ReturnOfCollectionOrArrayField")
    public List<ResourceGroup> getGroups() {
       return groups;

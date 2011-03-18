@@ -70,7 +70,7 @@ public class Application implements EntryPoint {
       });
 
 
-      injector.getMyResourceService().getCount(new AsyncCallback<Integer>() {
+      injector.getService().getCount(new AsyncCallback<Integer>() {
 
       @Override
       public void onFailure(Throwable caught) {

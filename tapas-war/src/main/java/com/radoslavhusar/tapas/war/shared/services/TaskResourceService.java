@@ -7,16 +7,12 @@ import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
 import com.radoslavhusar.tapas.ejb.entity.Task;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 @RemoteServiceRelativePath("res")
 public interface TaskResourceService extends RemoteService {
-
-   // Project
-   List<Project> findAllProjects();
-
-//   List<Resource> findAllResources();
 
    int getCount() throws Exception;
 
@@ -32,16 +28,20 @@ public interface TaskResourceService extends RemoteService {
 
    List<Task> findRange(int[] range);
 
+   // Project
+   List<Project> findAllProjects();
+
    void editProject(Project project);
 
-   public List<ResourceProjectAllocation> findAllAllocationsForProject(Project project);
+   // Group
+   public List<ResourceGroup> findAllGroups();
 
    // Resource
-//   public List<Resource> findAllResourcesForProject(long projectId);
+   public List<Resource> findAllResourcesForProject(long projectId);
+
+   public List<ResourceProjectAllocation> findAllAllocationsForProject(long projectId);
 
    public Map<Resource, Double[]> findAllResourceStatsForProject(long projectId);
 
-//   public List<ResourceWrap> findAllResourceWrapsForProject(long projectId);
-   // Group
-   public List<ResourceGroup> findAllGroups();
+   public void editResourcesForProject(long projectId, Collection<Resource> resources);
 }

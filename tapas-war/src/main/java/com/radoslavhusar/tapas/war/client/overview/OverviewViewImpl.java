@@ -210,7 +210,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
 
    @UiHandler("phaseSave")
    public void phaseSaveClick(ClickEvent event) {
-      Application.getInjector().getMyResourceService().editProject(project, new AsyncCallback<Void>() {
+      Application.getInjector().getService().editProject(project, new AsyncCallback<Void>() {
 
          @Override
          public void onFailure(Throwable caught) {

@@ -2,11 +2,8 @@ package com.radoslavhusar.tapas.ejb.entity;
 
 import java.io.Serializable;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -14,23 +11,18 @@ import javax.persistence.Table;
 public class ResourceProjectAllocation implements Serializable {
 
    private static final long serialVersionUID = 3L;
-   @Id
-   @GeneratedValue(strategy = GenerationType.AUTO)
-   private long id;
-   @ManyToOne
-   private Resource resource;
-   @ManyToOne
-   private Project project;
+   @EmbeddedId
+   private ResourceProjectAllocationPK key;
    // In spread called "Availability Rate"
    @Column
    private Byte percent;
 
-   public long getId() {
-      return id;
+   public ResourceProjectAllocationPK getKey() {
+      return key;
    }
 
-   public void setId(long id) {
-      this.id = id;
+   public void setKey(ResourceProjectAllocationPK key) {
+      this.key = key;
    }
 
    public Byte getPercent() {
@@ -40,25 +32,8 @@ public class ResourceProjectAllocation implements Serializable {
    public void setPercent(Byte percent) {
       this.percent = percent;
    }
-
-   public Project getProject() {
-      return project;
-   }
-
-   public void setProject(Project project) {
-      this.project = project;
-   }
-
-   public Resource getResource() {
-      return resource;
-   }
-
-   public void setResource(Resource resource) {
-      this.resource = resource;
-   }
-
-   @Override
-   public String toString() {
-      return "ResourceProjectAllocation{id=" + (id == 0 ? "NEW" : id) + ",resource=" + resource.getId() + ",project=" + project.getId() + ",percent=" + percent + '}';
-   }
+//   @Override
+//   public String toString() {
+//      return "ResourceProjectAllocation{id=" + (id == 0 ? "NEW" : id) + ",resource=" + resource.getId() + ",project=" + project.getId() + ",percent=" + percent + '}';
+//   }
 }

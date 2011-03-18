@@ -28,4 +28,6 @@ public interface ResourceProjectAllocationFacadeLocal {
 
    // NON-CRUD
    List<ResourceProjectAllocation> findAllForProject(Project project);
+
+   List<ResourceProjectAllocation> findAllForProject(long projectId);
 }

@@ -14,6 +14,7 @@ import com.radoslavhusar.tapas.ejb.session.ResourceProjectAllocationFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskTimeAllocationFacadeLocal;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceService;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    @EJB
    private ProjectPhaseFacadeLocal phases;
    @EJB
-   private ResourceFacadeLocal resources;
+   private ResourceFacadeLocal resourceBean;
    @EJB
    private TaskTimeAllocationFacadeLocal taskTime;
    @EJB
@@ -113,59 +114,75 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
       return projects.findAll();
    }
 
-//   @Override
-//   public List<Resource> findAllResources() {
-//      return resources.findAll();
-//   }
-
-   @Override
-   public List<ResourceProjectAllocation> findAllAllocationsForProject(Project project) {
-      return allocations.findAllForProject(project);
-   }
-
    @Override
    public List<ResourceGroup> findAllGroups() {
       return resourceGroup.findAll();
    }
 
-//   @Override
-//   public List<Resource> findAllResourcesForProject(long projectId) {
-//      return resources.findAllForProject(projectId);
-//   }
-//
-//   @Override
-//   public Map<Long, Double[]> findAllResourceStatsForProject(long projectId) {
-//      List<Resource> list = resources.findAllForProject(projectId);
-//      Map<Long, Double[]> result = new HashMap<Long, Double[]>();
-//
-//      for (Resource r : list) {
-//         Double[] stats = resources.statForProject(r.getId(), projectId);
-//         result.put(r.getId(), stats);
-//      }
-//
-//      return result;
-//   }
    @Override
    public Map<Resource, Double[]> findAllResourceStatsForProject(long projectId) {
-      List<Resource> list = resources.findAllForProject(projectId);
+      List<Resource> list = resourceBean.findAllForProject(projectId);
       HashMap<Resource, Double[]> result = new HashMap<Resource, Double[]>();
 
       for (Resource r : list) {
-         Double[] stats = resources.statForProject(r.getId(), projectId);
+         Double[] stats = resourceBean.statForProject(r.getId(), projectId);
          result.put(r, stats);
       }
 
       return result;
    }
-//   @Override
-//   public List<ResourceWrap> findAllResourceWrapsForProject(long projectId) {
-//      List<Resource> list = resources.findAllForProject(projectId);
-//      List<ResourceWrap> result = new ArrayList<ResourceWrap>();
-//
-//      for (Resource r : list) {
-//         result.add(new ResourceWrap(r, resources.statForProject(r.getId(), projectId)));
-//      }
-//
-//      return result;
-//   }
+
+   @Override
+   public List<ResourceProjectAllocation> findAllAllocationsForProject(long projectId) {
+      return allocations.findAllForProject(projectId);
+   }
+
+   @Override
+   public List<Resource> findAllResourcesForProject(long projectId) {
+      throw new UnsupportedOperationException("Not supported yet.");
+   }
+
+   @Override
+   public void editResourcesForProject(long projectId, Collection<Resource> resources) {
+      for (Resource res : resources) {
+         if (res.getId() == 0) {
+            // its a new resource, persist it
+            resourceBean.create(res);
+
+            // now persist the NEW allocation
+            for (ResourceProjectAllocation rpa : res.getResourceProjectAllocations()) {
+               if (rpa.getPercent() != 0) {
+                  // dont save if allocated to 0%
+                  allocations.create(rpa);
+               }
+            }
+         } else {
+            // resource is not new, save changes
+
+            // allocations changed?
+            for (ResourceProjectAllocation rpa : res.getResourceProjectAllocations()) {
+               /*if (rpa.getId() == 0) {
+               // persist it
+               if (rpa.getPercent() != 0) {
+               // dont save if allocated to 0%
+               allocations.create(rpa);
+               }
+               } else {
+                */ if (rpa.getPercent() == 0) {
+                  // remove if allocated to 0%
+                  allocations.remove(rpa);
+               } else {
+                  // update it
+                  allocations.edit(rpa);
+               }
+               /*}*/
+
+            }
+
+            // secondly - so that references are already persisted
+            res.setResourceProjectAllocations(null);
+            resourceBean.edit(res);
+         }
+      }
+   }
 }

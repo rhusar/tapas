@@ -69,7 +69,7 @@ public class TaskEditActivity extends AbstractActivity implements TaskEditView.P
       GWT.log("Saving task: " + t.toString());
 
       //Application.getInjector().getEventBus().fireEvent(new TaskEditEvent(t));
-      Application.getInjector().getMyResourceService().edit(t, new AsyncCallback<Void>() {
+      Application.getInjector().getService().edit(t, new AsyncCallback<Void>() {
 
          @Override
          public void onFailure(Throwable caught) {

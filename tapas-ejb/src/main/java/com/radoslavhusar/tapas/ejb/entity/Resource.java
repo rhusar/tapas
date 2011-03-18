@@ -26,7 +26,7 @@ public class Resource implements Serializable {
    private byte contract;
    @ManyToOne
    private ResourceGroup group;
-   @OneToMany(fetch = FetchType.LAZY)
+   @OneToMany(mappedBy = "key.resource", fetch = FetchType.LAZY)
    private List<ResourceProjectAllocation> resourceProjectAllocations;
    @OneToMany(mappedBy = "resource", fetch = FetchType.LAZY)
    private List<Task> tasks;

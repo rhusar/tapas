@@ -33,8 +33,6 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
    TextBox name;
    @UiField
    TextBox summary;
-//   @UiField
-//   CheckBox white;
    @UiField
    Anchor cancel;
    @UiField(provided = true)
@@ -54,7 +52,7 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
       menu.add(Application.getInjector().getMenuView());
       status.add(Application.getInjector().getStatusView());
 
-//      Application.getInjector().getMyResourceService().getResourcesForProject(null, new AsyncCallback<List<Employee>>() {
+//      Application.getInjector().getService().getResourcesForProject(null, new AsyncCallback<List<Employee>>() {
 //
 //         @Override
 //         public void onFailure(Throwable caught) {
@@ -87,7 +85,7 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
 
       submit.setEnabled(false);
       // Now preload the data
-      Application.getInjector().getMyResourceService().find(taskId, new AsyncCallback<Task>() {
+      Application.getInjector().getService().find(taskId, new AsyncCallback<Task>() {
 
          @Override
          public void onFailure(Throwable caught) {

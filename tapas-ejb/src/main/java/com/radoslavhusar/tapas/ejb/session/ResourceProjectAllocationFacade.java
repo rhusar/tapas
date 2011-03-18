@@ -2,6 +2,7 @@ package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -32,12 +33,17 @@ public class ResourceProjectAllocationFacade extends AbstractFacade<ResourceProj
    @Override
    public List<ResourceProjectAllocation> findAllForProject(Project project) {
       if (project == null) {
-         return null;
+         return new ArrayList<ResourceProjectAllocation>();
       }
 
+      return findAllForProject(project.getId());
+   }
+
+   @Override
+   public List<ResourceProjectAllocation> findAllForProject(long projectId) {
       return getEntityManager().
-              createQuery("select object(o) from " + ResourceProjectAllocation.class.getSimpleName() + " as o where o.project.id = :projectid").
-              setParameter("projectid", project.getId() ).
+              createQuery("select object(o) from " + ResourceProjectAllocation.class.getSimpleName() + " as o where o.key.project.id = :projectid").
+              setParameter("projectid", projectId).
               getResultList();
    }
 }

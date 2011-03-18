@@ -11,8 +11,6 @@ import com.radoslavhusar.tapas.war.client.task.edit.TaskEditPlace;
 
 public class AppActivityMapper implements ActivityMapper {
 
-   boolean doneInitialRedir = false;
-
    /**
     * Maps each Place to its corresponding Activity.
     *
@@ -27,7 +25,7 @@ public class AppActivityMapper implements ActivityMapper {
       } else if (place instanceof TasksPlace) {
          return Application.getInjector().getTaskListActivity();
       } else if (place instanceof TaskEditPlace) {
-         // Dont make this singleton..
+         // Dont make this singleton.. or?
          return new TaskEditActivity(place);
       } else if (place instanceof ResourcesPlace) {
          return Application.getInjector().getResourcesActivity();

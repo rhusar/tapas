@@ -2,6 +2,7 @@ package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
+import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.TaskTimeAllocation;
 import java.util.Arrays;
@@ -35,12 +36,25 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
    @Override
    public List<Resource> findAllForProject(long projectId) {
       // Do an inner join - fetch only assigned to the project.
-      return getEntityManager().
+      List<Resource> l =  getEntityManager().
               createQuery("select object(o) from " + Resource.class.getSimpleName() + " as o "
               + "inner join o.resourceProjectAllocations as a "
-              + " where a.project.id = :projectid").
+              + " where a.key.project.id = :projectid").
               setParameter("projectid", projectId).
               getResultList();
+
+      // Actually, just fetch that one assignement for the project
+      for (Resource r : l ) {
+         for (ResourceProjectAllocation pa : r.getResourceProjectAllocations()) {
+            if (pa.getKey().getProject().getId() == projectId) {
+               r.getResourceProjectAllocations().clear();
+               r.getResourceProjectAllocations().add(pa);
+               break;
+            }
+         }
+      }
+
+      return l;
    }
 
    @Override

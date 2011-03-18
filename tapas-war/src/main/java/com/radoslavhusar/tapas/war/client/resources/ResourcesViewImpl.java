@@ -31,13 +31,16 @@ import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
+import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocationPK;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
 import com.radoslavhusar.tapas.war.client.app.StringConstants;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ResourcesViewImpl extends ResizeComposite implements ResourcesView {
 
@@ -49,6 +52,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
    }
    ClientState client;
    Map<Resource, Double[]> map;
+   private Set<Resource> changed;
    @UiField
    SimplePanel menu;
    @UiField
@@ -103,6 +107,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          @Override
          public void update(int index, Resource object, String value) {
             object.setName(value);
+            changed.add(object);
          }
       });
       resources.addColumn(nameCol, "Resource Name");
@@ -126,6 +131,8 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public void update(int index, Resource object, String value) {
+            changed.add(object);
+
             if (value.isEmpty()) {
                object.setGroup(null);
                return;
@@ -154,8 +161,8 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public void update(int index, Resource object, String value) {
+            changed.add(object);
             object.setContract(Byte.parseByte(value.replace('%', ' ').trim()));
-            resources.redraw();
          }
       });
       resources.addColumn(contractCol, "Contract");
@@ -167,23 +174,29 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public String getValue(Resource resource) {
-            for (ResourceProjectAllocation rpa : client.getResourceAllocations()) {
-               if (rpa.getResource().equals(resource)) {
-                  return rpa.getPercent() + "%";
-               }
-            }
-
-            return "";
+//            for (ResourceProjectAllocation rpa : client.getResourceAllocations()) {
+//               if (rpa.getKey().getResource().getId() == resource.getId()) {
+//                  return rpa.getPercent() + "%";
+//               }
+//            }
+//
+//            return "";
+            return ""+resource.getResourceProjectAllocations().get(0).getPercent();
          }
       };
       allocCol.setFieldUpdater(new FieldUpdater<Resource, String>() {
 
          @Override
          public void update(int index, Resource object, String value) {
+            changed.add(object);
+
             for (ResourceProjectAllocation rpa : client.getResourceAllocations()) {
-               if (rpa.getResource().equals(object)) {
+               if (rpa.getKey().getResource().equals(object)) {
                   // Just update this allocation
                   rpa.setPercent(Byte.parseByte(value.replace('%', ' ').trim()));
+                  List newa = new ArrayList();
+                  newa.add(rpa);
+                  object.setResourceProjectAllocations(newa);
                   GWT.log("Allocation updated: " + rpa);
                   return;
                }
@@ -191,9 +204,11 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
             // None existing, create new one
             ResourceProjectAllocation newrpa = new ResourceProjectAllocation();
-            newrpa.setProject(client.getProject());
-            newrpa.setResource(object);
+            newrpa.setKey(new ResourceProjectAllocationPK(client.getProject(), object));
             newrpa.setPercent(Byte.parseByte(value.replace('%', ' ').trim()));
+            List newa = new ArrayList();
+            newa.add(newrpa);
+            object.setResourceProjectAllocations(newa);
             client.getResourceAllocations().add(newrpa);
             GWT.log("New allocation created: " + newrpa);
          }
@@ -214,7 +229,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             byte alloc = 0;
 
             for (ResourceProjectAllocation rpa : client.getResourceAllocations()) {
-               if (rpa.getResource().equals(resource)) {
+               if (rpa.getKey().getResource().equals(resource)) {
                   alloc = rpa.getPercent();
                }
             }
@@ -348,7 +363,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
                byte alloc = 0;
 
                for (ResourceProjectAllocation rpa : client.getResourceAllocations()) {
-                  if (rpa.getResource().equals(resource)) {
+                  if (rpa.getKey().getResource().equals(resource)) {
                      alloc = rpa.getPercent();
                   }
                }
@@ -403,80 +418,64 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       menu.add(Application.getInjector().getMenuView());
       status.add(Application.getInjector().getStatusView());
 
-      /*if (client.getResources() == null || client.getResourceAllocations() == null) {
-      Application.getInjector().getMyResourceService().findAllResources(new AsyncCallback<List<Resource>>() {
+      changed = new HashSet<Resource>();
 
-      @Override
-      public void onFailure(Throwable caught) {
-      throw new UnsupportedOperationException("Not supported yet.");
+      // Logic; if client cache is full, dont reload
+
+      if (client.getResources() != null && client.getResourceAllocations() != null) {
+         renderResources();
+         return;
       }
 
-      @Override
-      public void onSuccess(List<Resource> result) {
-      client.setResources(result);
-      provider.setList(result);
-      resources.setRowCount(result.size(), true);
-      resources.setRowData(0, result);
-      }
+      // Otherwise - reload
+
+      toSync = 2;
+
+      Application.getInjector().getService().findAllAllocationsForProject(client.getProject().getId(), new AsyncCallback<List<ResourceProjectAllocation>>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(List<ResourceProjectAllocation> result) {
+            client.setResourceAllocations(result);
+            toSyncRender();
+         }
       });
 
-      Application.getInjector().getMyResourceService().findAllResourcesForProject(client.getProject(), new AsyncCallback<List<ResourceProjectAllocation>>() {
+      Application.getInjector().getService().findAllResourceStatsForProject(client.getProject().getId(), new AsyncCallback<Map<Resource, Double[]>>() {
 
-      @Override
-      public void onFailure(Throwable caught) {
-      throw new UnsupportedOperationException("Not supported yet.");
+         @Override
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(Map<Resource, Double[]> result) {
+            client.setResources(result);
+            toSyncRender();
+         }
+      });
+   }
+   private int toSync;
+
+   private void toSyncRender() {
+      toSync--;
+
+      if (toSync == 0) {
+         renderResources();
       }
+   }
 
-      @Override
-      public void onSuccess(List<ResourceProjectAllocation> result) {
-      client.setResourceAllocations(result);
+   private void renderResources() {
+      map = client.getResources();
+      List<Resource> asList = new ArrayList(client.getResources().keySet());
+      provider.setList(asList);
+      resources.setRowCount(asList.size(), true);
+      resources.setRowData(0, asList);
       resources.redraw();
-      }
-      });*/
-
-      if (client.getResources() == null || client.getResourceAllocations() == null) {
-//         Application.getInjector().getMyResourceService().findAllResourcesForProject(client.getProject().getId(), new AsyncCallback<List<Resource>>() {
-//
-//            @Override
-//            public void onFailure(Throwable caught) {
-//               throw new UnsupportedOperationException("Not supported yet.");
-//            }
-//
-//            @Override
-//            public void onSuccess(List<Resource> result) {
-//               client.setResources(result);
-//               provider.setList(result);
-//               resources.setRowCount(result.size(), true);
-//               resources.setRowData(0, result);
-//            }
-//         });
-
-
-         // FIXME: Application.getInjector().getMyResourceService().findAllResourceStatsForProject(client.getProject().getId(), new AsyncCallback<Map<Resource, Double[]>>() {
-
-         Application.getInjector().getMyResourceService().findAllResourceStatsForProject(1, new AsyncCallback<Map<Resource, Double[]>>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-               throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public void onSuccess(Map<Resource, Double[]> result) {
-               List<Resource> asList = new ArrayList(result.keySet());
-               client.setResources(result);
-               provider.setList(asList);
-               resources.setRowCount(asList.size(), true);
-               resources.setRowData(0, asList);
-               map = result;
-            }
-         });
-      } else {
-//         provider.setList(client.getResources());
-//         resources.setRowCount(client.getResources().size(), true);
-//         resources.setRowData(0, client.getResources());
-//         resources.redraw();
-      }
    }
 
    public void unbind() {
@@ -487,7 +486,14 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
    @UiHandler("addResource")
    public void addResource(ClickEvent click) {
       Resource newguy = new Resource();
+      changed.add(newguy);
       newguy.setName("New resource");
+      ResourceProjectAllocation fullAllocation = new ResourceProjectAllocation();
+      fullAllocation.setPercent(new Byte("100"));
+      fullAllocation.setKey(new ResourceProjectAllocationPK(client.getProject(), newguy));
+      List allodcs = new ArrayList();
+      allodcs.add(fullAllocation);
+      newguy.setResourceProjectAllocations(allodcs);
       provider.getList().add(newguy);
       resources.setRowData(provider.getList());
       resources.setRowCount(provider.getList().size());
@@ -509,7 +515,19 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
    @UiHandler("saveResources")
    public void saveResources(ClickEvent click) {
-      GWT.log("Saving resources: ");
+      GWT.log("Saving resources: " + changed);
+      Application.getInjector().getService().editResourcesForProject(client.getProject().getId(), changed, new AsyncCallback<Void>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(Void result) {
+            changed.clear();
+         }
+      });
    }
 
    @Override
@@ -517,3 +535,4 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       this.presenter = presenter;
    }
 }
+;
