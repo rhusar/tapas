@@ -154,7 +154,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public String getValue(Resource resource) {
-            return resource.getContract() + "%";
+            return ""+resource.getContract();// + "%";
          }
       };
       contractCol.setFieldUpdater(new FieldUpdater<Resource, String>() {
@@ -163,9 +163,10 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          public void update(int index, Resource object, String value) {
             changed.add(object);
             object.setContract(Byte.parseByte(value.replace('%', ' ').trim()));
+            resources.redraw();
          }
       });
-      resources.addColumn(contractCol, "Contract");
+      resources.addColumn(contractCol, "Contract %");
       resources.setColumnWidth(contractCol, 1, Unit.EM);
 
       // Allocation
@@ -213,7 +214,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             GWT.log("New allocation created: " + newrpa);
          }
       });
-      resources.addColumn(allocCol, "Project Allocation");
+      resources.addColumn(allocCol, "Project Allocation %");
       resources.setColumnWidth(allocCol, 10, Unit.EM);
 
       // TODO: Update to http://google-web-toolkit.googlecode.com/svn/javadoc/2.2/com/google/gwt/cell/client/NumberCell.html
@@ -226,18 +227,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public String getValue(Resource resource) {
-            byte alloc = 0;
-
-            for (ResourceProjectAllocation rpa : client.getResourceAllocations()) {
-               if (rpa.getKey().getResource().equals(resource)) {
-                  alloc = rpa.getPercent();
-               }
-            }
-
-            if (alloc == 0) {
-               return "";
-            }
-
+            byte alloc = resource.getResourceProjectAllocations().get(0).getPercent();
             double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
             return "" + NumberFormat.getDecimalFormat().format(res);
          }
@@ -360,19 +350,23 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             } else {
                // Fraction of assigned - sum of done [P1,P2,P3,PX]
                // DOTO: Make this cleaner
-               byte alloc = 0;
+//               byte alloc = 0;
+//
+//               for (ResourceProjectAllocation rpa : client.getResourceAllocations()) {
+//                  if (rpa.getKey().getResource().equals(resource)) {
+//                     alloc = rpa.getPercent();
+//                  }
+//               }
+//
+//               if (alloc == 0) {
+//                  return null;
+//               }
 
-               for (ResourceProjectAllocation rpa : client.getResourceAllocations()) {
-                  if (rpa.getKey().getResource().equals(resource)) {
-                     alloc = rpa.getPercent();
-                  }
-               }
+               // FIXME: code repetition
+               //double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
+            byte alloc = resource.getResourceProjectAllocations().get(0).getPercent();
+            double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
 
-               if (alloc == 0) {
-                  return null;
-               }
-
-               double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
 
                return (map.get(resource)[0] + map.get(resource)[2] + map.get(resource)[4] + map.get(resource)[6]
                        - (map.get(resource)[1] + map.get(resource)[3] + map.get(resource)[5] + map.get(resource)[7])) / (res);

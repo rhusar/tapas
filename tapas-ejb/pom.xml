@@ -15,6 +15,11 @@
    <name>${project.artifactId} ${project.version}</name>
    <url>http://maven.apache.org</url>
 
+
+   <properties>
+      <arquillian.version>1.0.0.Alpha5</arquillian.version>
+   </properties>
+
    <dependencies>
       <dependency>
          <groupId>org.jboss.jbossas</groupId>
@@ -24,14 +29,20 @@
          <scope>provided</scope>
       </dependency>
 
-      <!-- test dependencies -->
+      <!-- Test dependencies -->
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
-         <version>4.7</version>
+         <version>4.8.2</version>
          <scope>test</scope>
       </dependency>
-
+      <dependency>
+         <groupId>org.jboss.arquillian</groupId>
+         <artifactId>arquillian-junit</artifactId>
+         <version>1.0.0.Alpha5</version>
+         <scope>test</scope>
+      </dependency>
+      
    </dependencies>
 
    <repositories>
@@ -84,4 +95,73 @@
          </plugin>
       </plugins>
    </build>
+
+
+   <profiles>
+
+      <profile>
+         <id>jbossas-remote-5.1</id>
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.arquillian.container</groupId>
+               <artifactId>arquillian-jbossas-remote-5.1</artifactId>
+               <version>1.0.0.Alpha5</version>
+            </dependency>
+            <dependency>
+               <groupId>org.jboss.jbossas</groupId>
+               <artifactId>jboss-as-client</artifactId>
+               <version>5.1.0.GA</version>
+               <type>pom</type>
+            </dependency>
+         </dependencies>
+      </profile>
+
+
+<profile>
+
+    <id>jbossas-managed-5.1</id>
+
+    <dependencies>
+
+        <dependency>
+
+            <groupId>org.jboss.arquillian.container</groupId>
+
+            <artifactId>arquillian-jbossas-managed-5.1</artifactId>
+
+            <version>1.0.0.Alpha5</version>
+
+        </dependency>
+
+        <dependency>
+
+            <groupId>org.jboss.jbossas</groupId>
+
+            <artifactId>jboss-server-manager</artifactId>
+
+            <version>1.0.3.GA</version>
+
+        </dependency>
+
+        <dependency>
+
+            <groupId>org.jboss.jbossas</groupId>
+
+            <artifactId>jboss-as-client</artifactId>
+
+            <version>5.1.0.GA</version>
+
+            <type>pom</type>
+
+        </dependency>
+
+    </dependencies>
+
+</profile>
+
+
+   </profiles>
+
+
+
 </project>
