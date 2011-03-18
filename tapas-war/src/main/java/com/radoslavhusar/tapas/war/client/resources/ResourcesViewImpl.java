@@ -154,7 +154,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public String getValue(Resource resource) {
-            return ""+resource.getContract();// + "%";
+            return "" + resource.getContract();// + "%";
          }
       };
       contractCol.setFieldUpdater(new FieldUpdater<Resource, String>() {
@@ -182,7 +182,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 //            }
 //
 //            return "";
-            return ""+resource.getResourceProjectAllocations().get(0).getPercent();
+            return "" + resource.getResourceProjectAllocations().get(0).getPercent();
          }
       };
       allocCol.setFieldUpdater(new FieldUpdater<Resource, String>() {
@@ -199,6 +199,8 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
                   newa.add(rpa);
                   object.setResourceProjectAllocations(newa);
                   GWT.log("Allocation updated: " + rpa);
+
+                  resources.redraw();
                   return;
                }
             }
@@ -212,6 +214,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             object.setResourceProjectAllocations(newa);
             client.getResourceAllocations().add(newrpa);
             GWT.log("New allocation created: " + newrpa);
+            resources.redraw();
          }
       });
       resources.addColumn(allocCol, "Project Allocation %");
@@ -364,8 +367,8 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
                // FIXME: code repetition
                //double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
-            byte alloc = resource.getResourceProjectAllocations().get(0).getPercent();
-            double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
+               byte alloc = resource.getResourceProjectAllocations().get(0).getPercent();
+               double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
 
 
                return (map.get(resource)[0] + map.get(resource)[2] + map.get(resource)[4] + map.get(resource)[6]
@@ -373,18 +376,22 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             }
          }
       };
-      resources.addColumn(loadCol, "Total Load");
+      resources.addColumn(loadCol, "Total Load %");
       resources.setColumnWidth(loadCol, NUMBER_COL_EM, Unit.EM);
 
       // Load P1 %
-      TextColumn<Resource> loadP1Col = new TextColumn<Resource>() {
+      Column<Resource, Number> loadP1Col = new Column<Resource, Number>(percentageNumberCell) {
 
          @Override
-         public String getValue(Resource resource) {
-            return "N/I";
+         public Number getValue(Resource resource) {
+            // FIXME: code repetition
+            byte alloc = resource.getResourceProjectAllocations().get(0).getPercent();
+            double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
+
+            return (map.get(resource)[0] - map.get(resource)[1]) / res;
          }
       };
-      resources.addColumn(loadP1Col, "P1 Load");
+      resources.addColumn(loadP1Col, "P1 Load %");
       resources.setColumnWidth(loadP1Col, NUMBER_COL_EM, Unit.EM);
 
 
@@ -528,5 +535,4 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
    public void setPresenter(Presenter presenter) {
       this.presenter = presenter;
    }
-}
-;
+};
