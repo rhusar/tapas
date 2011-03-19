@@ -21,10 +21,12 @@ public class Task implements Serializable {
    @GeneratedValue(strategy = GenerationType.AUTO)
    private long id;
    @Column
+   private String unifiedId;
+   @Column
    private String name;
    @Column
    private String summary;
-   @ManyToOne(fetch = FetchType.LAZY)
+   @ManyToOne(fetch = FetchType.EAGER)
    private Resource resource;
    @ManyToOne(fetch = FetchType.EAGER)
    private ResourceGroup resourceGroup;
@@ -43,6 +45,14 @@ public class Task implements Serializable {
 
    public void setId(long id) {
       this.id = id;
+   }
+
+   public String getUnifiedId() {
+      return unifiedId;
+   }
+
+   public void setUnifiedId(String unifiedId) {
+      this.unifiedId = unifiedId;
    }
 
    public String getName() {
@@ -112,12 +122,10 @@ public class Task implements Serializable {
 
    @Override
    public String toString() {
-      return "Task{id=" + id;
-//      return "Task{id=" + id + ",name=" + name + ",summary=" + summary + ",assignee=" + assignee + '}';
+      return "Task{id=" + id + "|" + unifiedId + ",name=" + name + ",summary=" + summary + ",assignee=" + resource.getName() + '}';
    }
 
    public static String formatState(TaskStatus state) {
-
       return state == null ? "" : state.toString().substring(0, 1).toUpperCase() + state.toString().substring(1).toLowerCase();
    }
 }

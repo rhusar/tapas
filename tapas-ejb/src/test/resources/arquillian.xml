@@ -6,8 +6,8 @@
    <container qualifier="jbossas" default="true">
 
       <configuration>
-         <property name="jbossHome">/home/rhusar/Download/jboss-5.1.0.GA</property>
-         <property name="providerUrl">jnp://localhost:1099</property>
+<!--         <property name="jbossHome">/home/rhusar/Download/jboss-5.1.0.GA</property>-->
+<!--         <property name="providerUrl">jnp://localhost:1099</property>-->
       </configuration>
 
       <!--
