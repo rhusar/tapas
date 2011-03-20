@@ -4,7 +4,7 @@ import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
 import com.radoslavhusar.tapas.ejb.entity.Task;
-import com.radoslavhusar.tapas.ejb.entity.TaskTimeAllocation;
+import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
 import java.util.Arrays;
 import java.util.List;
 import javax.ejb.Local;
@@ -36,7 +36,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
    @Override
    public List<Resource> findAllForProject(long projectId) {
       // Do an inner join - fetch only assigned to the project.
-      List<Resource> l =  getEntityManager().
+      List<Resource> l = getEntityManager().
               createQuery("select object(o) from " + Resource.class.getSimpleName() + " as o "
               + "inner join o.resourceProjectAllocations as a "
               + " where a.key.project.id = :projectid").
@@ -44,7 +44,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
               getResultList();
 
       // Actually, just fetch that one assignement for the project
-      for (Resource r : l ) {
+      for (Resource r : l) {
          for (ResourceProjectAllocation pa : r.getResourceProjectAllocations()) {
             if (pa.getKey().getProject().getId() == projectId) {
                r.getResourceProjectAllocations().clear();
@@ -82,7 +82,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
 //              setParameter("resourceid", resource.getId()).
 //              getResultList();
 
-      // FIXME: WORST UGLIEST HACK EVER
+      // FIXME: WORST MAYBE UGLIEST HACK EVER
       Double[] result = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
       // Fetch all users task - done by lazy loading
@@ -91,13 +91,13 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
       for (Task t : find(resourceId).getTasks()) {
          System.out.println(t);
          if (t.getProject().getId() == projectId) {
-            for (TaskTimeAllocation tta : t.getTimeAllocations()) {
+            for (TimeAllocation tta : t.getTimeAllocations()) {
                if (t.getPriority() >= 1 && t.getPriority() <= 3) {
-                  result[(t.getPriority() - 1) * 2] += tta.getTimeAllocation();
-                  result[(t.getPriority() - 1) * 2 + 1] += tta.getTimeCompleted();
+                  result[(t.getPriority() - 1) * 2] += tta.getAllocation();
+                  result[(t.getPriority() - 1) * 2 + 1] += tta.getCompleted();
                } else {
-                  result[6] += tta.getTimeAllocation();
-                  result[7] += tta.getTimeCompleted();
+                  result[6] += tta.getAllocation();
+                  result[7] += tta.getCompleted();
                }
             }
          }

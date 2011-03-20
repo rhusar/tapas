@@ -14,18 +14,25 @@ import java.util.Map;
 @RemoteServiceRelativePath("res")
 public interface TaskResourceService extends RemoteService {
 
+   @Deprecated
    int getCount() throws Exception;
 
+   @Deprecated
    void create(Task task);
 
+   @Deprecated
    void edit(Task task);
 
+   @Deprecated
    void remove(Task task);
 
+   @Deprecated
    Task find(long id);
 
+   @Deprecated
    List<Task> findAll();
 
+   @Deprecated
    List<Task> findRange(int[] range);
 
    // Project
@@ -33,15 +40,23 @@ public interface TaskResourceService extends RemoteService {
 
    void editProject(Project project);
 
+   // Task
+   void editTasks(Collection<Task> tasks);
+
+   List<Task> findAllTasksForProject(long projectId);
+
+   @Deprecated
+   void editTasksForProject(long projectId, Collection<Task> tasks);
+
    // Group
-   public List<ResourceGroup> findAllGroups();
+   List<ResourceGroup> findAllGroups();
 
    // Resource
-   public List<Resource> findAllResourcesForProject(long projectId);
+   List<Resource> findAllResourcesForProject(long projectId);
 
-   public List<ResourceProjectAllocation> findAllAllocationsForProject(long projectId);
+   List<ResourceProjectAllocation> findAllAllocationsForProject(long projectId);
 
-   public Map<Resource, Double[]> findAllResourceStatsForProject(long projectId);
+   Map<Resource, Double[]> findAllResourceStatsForProject(long projectId);
 
-   public void editResourcesForProject(long projectId, Collection<Resource> resources);
+   void editResourcesForProject(long projectId, Collection<Resource> resources);
 }

@@ -1,15 +1,25 @@
 package com.radoslavhusar.tapas.war.client.tasks;
 
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.EditTextCell;
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.NumberCell;
+import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -19,13 +29,22 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.ejb.entity.Task;
-import com.radoslavhusar.tapas.ejb.entity.TaskTimeAllocation;
+import com.radoslavhusar.tapas.ejb.entity.TaskStatus;
+import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
+import com.radoslavhusar.tapas.war.client.app.ClientState;
+import com.radoslavhusar.tapas.war.client.app.Constants;
+import com.radoslavhusar.tapas.war.client.components.DynamicSelectionCell;
+import com.radoslavhusar.tapas.war.client.components.NumberEditTextCell;
+import com.radoslavhusar.tapas.war.client.components.PriorityEditTextCell;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TasksViewImpl extends ResizeComposite implements TasksView {
 
@@ -34,50 +53,56 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
 
    interface Binder extends UiBinder<Widget, TasksViewImpl> {
    }
-   @UiField(provided = true)
-   CellTable table = new CellTable<Task>();
    @UiField
    SimplePanel menu;
    @UiField
    SimplePanel status;
+   @UiField(provided = true)
+   CellTable tasks = new CellTable<Task>();
    @UiField
    TextBox filter;
-   ListDataProvider<Task> provider;
-   SimplePager pager;
+   private ListDataProvider<Task> provider;
+   private Set<Task> changed = new HashSet<Task>();
+   SimplePager filterPager;
+   private ClientState client;
 
-   public TasksViewImpl() {
+   @Inject
+   public TasksViewImpl(ClientState client) {
+      this.client = client;
+
       provider = new ListDataProvider<Task>() {
 
+         // FIXME: Work around to display data onRangeChanged.
          @Override
-         /**
-          * Work around...
-          */
          public void refresh() {
             super.refresh();
-            this.onRangeChanged(table);
+            this.onRangeChanged(tasks);
          }
 
          @Override
          protected void onRangeChanged(HasData<Task> display) {
-            if (filter.getText().isEmpty()) {
+            String filterBy = filter.getText();
+
+            if (filterBy.isEmpty()) {
                display.setVisibleRange(0, this.getList().size());
                display.setRowData(0, this.getList());
             } else {
                ArrayList<Task> filteredlist = new ArrayList<Task>();
 
-               for (Task t : this.getList()) {
-                  if (t.getSummary().contains(filter.getText()) || t.getName().contains(filter.getText())) {
-                     filteredlist.add(t);
+               for (Task task : this.getList()) {
+                  if ((task.getSummary() != null && task.getSummary().contains(filterBy))
+                          || (task.getName() != null && task.getName().contains(filterBy))) {
+                     filteredlist.add(task);
                   }
                }
 
                display.setRowCount(filteredlist.size());
                display.setRowData(0, filteredlist);
-               GWT.log("Filtered by " + filter.getText());
+               GWT.log("Filtered by " + filter.getText() + ".");
             }
          }
       };
-      table = new CellTable<Task>(provider);
+      tasks = new CellTable<Task>(provider);
 
       initWidget(binder.createAndBindUi(this));
 
@@ -95,80 +120,170 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
          }
       });
 
-      table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+      tasks.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 
-      // ID
+      // ID (readonly)
       TextColumn<Task> idCol = new TextColumn<Task>() {
 
          @Override
          public String getValue(Task task) {
-            return "" + task.getId();
+            return "" + (task.getId() == 0 ? "" : task.getId());
          }
       };
-      table.addColumn(idCol, "ID");
-      table.setColumnWidth(idCol, 2, Unit.EM);
+      tasks.addColumn(idCol, "ID");
+      tasks.setColumnWidth(idCol, 2, Unit.EM);
 
-      // Priority
-      TextColumn<Task> prioCol = new TextColumn<Task>() {
+      // Unified ID
+      Cell unifIdCell = new EditTextCell();
+      Column<Task, String> unifiedIdCol = new Column<Task, String>(unifIdCell) {
 
          @Override
          public String getValue(Task task) {
-            return "P" + task.getPriority();
+            return "" + (task.getUnifiedId() == null ? "" : task.getUnifiedId());
          }
       };
-      table.addColumn(prioCol, "Prio");
-      table.setColumnWidth(prioCol, 1, Unit.EM);
+      unifiedIdCol.setFieldUpdater(new FieldUpdater<Task, String>() {
+
+         @Override
+         public void update(int index, Task object, String value) {
+            changed.add(object);
+
+            object.setUnifiedId(value);
+         }
+      });
+      tasks.addColumn(unifiedIdCol, "UID");
+      tasks.setColumnWidth(unifiedIdCol, 2, Unit.EM);
+
+      // Priority
+      Cell prioEditCell = new PriorityEditTextCell();
+      Column<Task, String> prioCol = new Column<Task, String>(prioEditCell) {
+
+         @Override
+         public String getValue(Task task) {
+            return task.getPriority() == null ? "TBD" : "P" + task.getPriority();
+         }
+      };
+      prioCol.setFieldUpdater(new FieldUpdater<Task, String>() {
+
+         @Override
+         public void update(int index, Task object, String value) {
+            if (value.equalsIgnoreCase("TBD")) {
+               object.setPriority(null);
+               return;
+            }
+            String input = value.replaceAll("P", "").replaceAll("p", "");
+            Byte num = 1;
+
+            try {
+               num = Byte.parseByte(input);
+               if (!(num >= 1 && num <= 3)) {
+                  throw new NumberFormatException();
+               }
+            } catch (NumberFormatException nfo) {
+               Window.alert("Wrong priority number.");
+               tasks.redraw();
+            }
+
+            object.setPriority(num);
+         }
+      });
+      tasks.addColumn(prioCol, "Prio");
+      tasks.setColumnWidth(prioCol, 1, Unit.EM);
 
       // Status
-      TextColumn<Task> statusCol = new TextColumn<Task>() {
+      List<String> statusOptions = new ArrayList<String>();
+      statusOptions.add(""); // The null value
+      for (TaskStatus ts : TaskStatus.values()) {
+         statusOptions.add(Task.formatState(ts));
+      }
+      SelectionCell statusCell = new SelectionCell(statusOptions);
+      Column<Task, String> statusCol = new Column<Task, String>(statusCell) {
 
          @Override
          public String getValue(Task task) {
             return Task.formatState(task.getStatus());
          }
       };
-      table.addColumn(statusCol, "Status");
-      table.setColumnWidth(statusCol, 10, Unit.EM);
+      statusCol.setFieldUpdater(new FieldUpdater<Task, String>() {
+
+         @Override
+         public void update(int index, Task object, String value) {
+            changed.add(object);
+
+            if (value.isEmpty()) {
+               object.setStatus(null);
+               return;
+            }
+
+            for (TaskStatus ts : TaskStatus.values()) {
+               if (Task.formatState(ts).equals(value)) {
+                  object.setStatus(ts);
+                  return;
+               }
+            }
+         }
+      });
+      tasks.addColumn(statusCol, "Status");
+      tasks.setColumnWidth(statusCol, 10, Unit.EM);
 
       // Name
-      TextColumn<Task> nameCol = new TextColumn<Task>() {
+      Cell<String> nameCell = new EditTextCell();
+      Column<Task, String> nameCol = new Column<Task, String>(nameCell) {
 
          @Override
          public String getValue(Task task) {
-            return task.getName();
+            return "" + task.getName();
          }
       };
-      table.addColumn(nameCol, "Summary");
+      nameCol.setFieldUpdater(new FieldUpdater<Task, String>() {
+
+         @Override
+         public void update(int index, Task object, String value) {
+            changed.add(object);
+
+            object.setName(value);
+         }
+      });
+      tasks.addColumn(nameCol, "Name");
 
       // Resource
-      TextColumn<Task> resourceCol = new TextColumn<Task>() {
+      List<String> opts = new ArrayList<String>();
+      opts.add(Constants.UNASSIGNED);
+      DynamicSelectionCell resourceCell = new DynamicSelectionCell(opts);
+      Column<Task, String> resourceCol = new Column<Task, String>(resourceCell) {
 
          @Override
          public String getValue(Task task) {
-            return "Unassigned";
+            return Constants.UNASSIGNED;
          }
       };
-      table.addColumn(resourceCol, "Resource");
-      table.setColumnWidth(resourceCol, 10, Unit.EM);
+      resourceCol.setFieldUpdater(new FieldUpdater<Task, String>() {
 
+         @Override
+         public void update(int index, Task object, String value) {
+            GWT.log("Updating assignee, value: " + value);
+         }
+      });
+      tasks.addColumn(resourceCol, "Resource");
+      tasks.setColumnWidth(resourceCol, 10, Unit.EM);
 
 
       // Add a selection model to handle user selection.
       final SingleSelectionModel<Task> selectionModel = new SingleSelectionModel<Task>();
-      table.setSelectionModel(selectionModel);
+      tasks.setSelectionModel(selectionModel);
       selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 
          @Override
          public void onSelectionChange(SelectionChangeEvent event) {
             Task selected = selectionModel.getSelectedObject();
             if (selected != null) {
-               // Window.alert("You selected: " + selected.getTaskId());
-               presenter.goToEdit("" + selected.getId());
+               //Window.alert("You selected: " + selected.getId());
+               //presenter.goToEdit("" + selected.getId());
             }
          }
       });
 
-      table.setPageSize(Integer.MAX_VALUE - 1);
+      tasks.setPageSize(Integer.MAX_VALUE - 1);
 
 
       Application.getInjector().getService().findAll(new AsyncCallback<List<Task>>() {
@@ -180,22 +295,22 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
 
          @Override
          public void onSuccess(List<Task> result) {
-//            List<Task> s = new ArrayList(result);
+            // List<Task> s = new ArrayList(result);
             provider.setList(result);
 
             // Set the total row count. This isn't strictly necessary, but it affects
             // paging calculations, so its good habit to keep the row count up to date.
-            table.setRowCount(result.size(), true);
+            tasks.setRowCount(result.size(), true);
 
             // Push the data into the widget.
-            table.setRowData(0, result);
+            tasks.setRowData(0, result);
          }
       });
 
-//   @UiHandler("table")
+//   @UiHandler("tasks")
 //   void onxclick(ClickEvent ce) {
-//      Cell c = table.getCellForEvent(ce);
-//      String id = table.getText(c.getRowIndex(), 0);
+//      Cell c = tasks.getCellForEvent(ce);
+//      String id = tasks.getText(c.getRowIndex(), 0);
 //      presenter.goToEdit(id);
 //   }
 
@@ -205,46 +320,84 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
    public void bind() {
       menu.add(Application.getInjector().getMenuView());
       status.add(Application.getInjector().getStatusView());
+      changed.clear();
 
       // Phases Times
       Project project = Application.getInjector().getClientState().getProject();
       if (project != null) {
          for (final ProjectPhase phase : project.getPhases()) {
-            TextColumn<Task> timePhaseCol = new TextColumn<Task>() {
+            Cell<String> timeCell = new NumberEditTextCell();
+            Column<Task, String> timePhaseCol = new Column<Task, String>(timeCell) {
 
                @Override
-               public String getValue(Task task) {
-                  for (TaskTimeAllocation tta : task.getTimeAllocations()) {
+               public String getValue(Task object) {
+                  for (TimeAllocation tta : object.getTimeAllocations()) {
                      if (tta.getPhase().getId() == phase.getId()) {
-                        return "" + tta.getTimeAllocation();
+                        return "" + tta.getAllocation();
                      }
                   }
                   return "";
                }
             };
+            timePhaseCol.setFieldUpdater(new FieldUpdater<Task, String>() {
 
-            table.addColumn(timePhaseCol, phase.getName().substring(0, 4));
-            table.setColumnWidth(timePhaseCol, 2, Unit.EM);
+               @Override
+               public void update(int index, Task object, String value) {
+                  // Is the number valid anyway?
+                  double doubleValue;
+                  try {
+                     doubleValue = Double.parseDouble(value);
+                  } catch (NumberFormatException nfe) {
+                     GWT.log("Could not parse input value ignoring.", nfe);
+                     return;
+                  }
+
+                  changed.add(object);
+
+                  for (TimeAllocation tta : object.getTimeAllocations()) {
+                     // FIXME: needs comparing IDs which is safe, but should be done .equal but doesnt work
+                     if (tta.getPhase().getId() == phase.getId()) {
+                        tta.setAllocation(index);
+                        GWT.log("Updating allocation: " + tta);
+                        tasks.redraw();
+                        return;
+                     }
+                  }
+
+                  // No Allocation found? Create a new one
+                  TimeAllocation tta = new TimeAllocation();
+                  tta.setTask(object);
+                  tta.setPhase(phase);
+                  tta.setAllocation(doubleValue);
+                  object.getTimeAllocations().add(tta);
+                  GWT.log("Creating allocation: " + tta);
+                  tasks.redraw();
+               }
+            });
+
+            tasks.addColumn(timePhaseCol, phase.getName().substring(0, 4));
+            tasks.setColumnWidth(timePhaseCol, 2, Unit.EM);
          }
       }
 
       // Total
-      TextColumn<Task> timeTotalCol = new TextColumn<Task>() {
+      NumberCell allocNumberCell = new NumberCell(NumberFormat.getFormat(Constants.ALLOC_FORMAT));
+      Column<Task, Number> timeTotalCol = new Column<Task, Number>(allocNumberCell) {
 
          @Override
-         public String getValue(Task task) {
+         public Number getValue(Task task) {
             double total = 0;
 
-            for (TaskTimeAllocation tta : task.getTimeAllocations()) {
-               total += tta.getTimeAllocation();
+            for (TimeAllocation tta : task.getTimeAllocations()) {
+               total += tta.getAllocation();
             }
 
-            return "" + total;
+            return total;
          }
       };
 
-      table.addColumn(timeTotalCol, "Total");
-      table.setColumnWidth(timeTotalCol, 2, Unit.EM);
+      tasks.addColumn(timeTotalCol, "Total");
+      tasks.setColumnWidth(timeTotalCol, 2, Unit.EM);
    }
 
    public void unbind() {
@@ -255,5 +408,34 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
    @Override
    public void setPresenter(Presenter presenter) {
       this.presenter = presenter;
+   }
+
+   @UiHandler("addTask")
+   public void addSomeTasks(ClickEvent event) {
+      Task task = new Task();
+      task.setTimeAllocations(new ArrayList());
+      task.setProject(null);
+
+      provider.getList().add(task);
+      provider.refresh();
+   }
+
+   @UiHandler("saveTasks")
+   public void saveSomeTasks(ClickEvent event) {
+      GWT.log("Saving " + changed.size() + " tasks: " + changed + ".");
+
+      Application.getInjector().getService().editTasks(changed, new AsyncCallback<Void>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            GWT.log("Saving tasks failed: ", caught);
+         }
+
+         @Override
+         public void onSuccess(Void result) {
+            GWT.log("Tasks saved!");
+            changed.clear();
+         }
+      });
    }
 }

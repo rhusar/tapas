@@ -15,9 +15,9 @@
 
             <g:HTMLPanel>
                <div style="text-align: right;">
-                  <g:Anchor ui:field='addResource'>+ Add new resource</g:Anchor>
+                  <g:Anchor ui:field='addResource'>+ New Resource</g:Anchor>
                   <span>|</span>
-                  <g:Anchor ui:field='allocateResource'>+ Allocate existing resource</g:Anchor>
+                  <g:Anchor ui:field='allocateResource'>+ Allocate Resource</g:Anchor>
                   <span>|</span>
                   <g:Anchor ui:field='saveResources'>Save</g:Anchor>
                   <span>&nbsp;</span>

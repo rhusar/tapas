@@ -9,7 +9,7 @@ import java.util.List;
  * @author <a href="mailto:me@radoslavhusar.com">Radoslav Husar</a>
  * @version 2011
  */
-public interface ResourceProjectAllocationFacadeLocal {
+public interface ResourceAllocationFacadeLocal {
 
    // CRUD
    void create(ResourceProjectAllocation resourceProjectAllocation);

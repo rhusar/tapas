@@ -6,13 +6,14 @@ import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
 import com.radoslavhusar.tapas.ejb.entity.Task;
+import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
 import com.radoslavhusar.tapas.ejb.session.ProjectFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.ProjectPhaseFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.ResourceFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.ResourceGroupFacadeLocal;
-import com.radoslavhusar.tapas.ejb.session.ResourceProjectAllocationFacadeLocal;
+import com.radoslavhusar.tapas.ejb.session.ResourceAllocationFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskFacadeLocal;
-import com.radoslavhusar.tapas.ejb.session.TaskTimeAllocationFacadeLocal;
+import com.radoslavhusar.tapas.ejb.session.TimeAllocationFacadeLocal;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceService;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    private static final Logger log = Logger.getLogger(TaskResourceServiceImpl.class.getName());
    // Workaround for injection https://issues.jboss.org/browse/JBAS-5646
    @EJB
-   private TaskFacadeLocal tasks;
+   private TaskFacadeLocal taskBean;
    @EJB
    private ProjectFacadeLocal projects;
    @EJB
@@ -42,9 +43,9 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    @EJB
    private ResourceFacadeLocal resourceBean;
    @EJB
-   private TaskTimeAllocationFacadeLocal taskTime;
+   private TimeAllocationFacadeLocal timeAllocationBean;
    @EJB
-   private ResourceProjectAllocationFacadeLocal allocations;
+   private ResourceAllocationFacadeLocal allocations;
    @EJB
    private ResourceGroupFacadeLocal resourceGroup;
 
@@ -63,22 +64,22 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
 
    @Override
    public int getCount() throws Exception {
-      return tasks.count();
+      return taskBean.count();
    }
 
    @Override
    public List<Task> findAll() {
-      return tasks.findAll();
+      return taskBean.findAll();
    }
 
    @Override
    public void create(Task task) {
-      tasks.create(task);
+      taskBean.create(task);
    }
 
    @Override
    public void edit(Task task) {
-      tasks.edit(task);
+      taskBean.edit(task);
    }
 
    @Override
@@ -101,7 +102,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
 
    @Override
    public Task find(long id) {
-      return tasks.find(id);
+      return taskBean.find(id);
    }
 
    @Override
@@ -184,5 +185,51 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
             resourceBean.edit(res);
          }
       }
+   }
+
+   @Override
+   public void editTasks(Collection<Task> tasks) {
+      for (Task t : tasks) {
+         if (t.getId() == 0) {
+            // its is new, persist it
+            taskBean.create(t);
+
+            // now persist the NEW time alloc
+            for (TimeAllocation ta : t.getTimeAllocations()) {
+               if (ta.getAllocation() != 0 || ta.getCompleted() != 0) {
+                  // dont save if allocated to 0%
+                  timeAllocationBean.create(ta);
+               }
+            }
+         } else {
+            // it is not new, only merge changes
+
+            // allocations changed?
+            for (TimeAllocation ta : t.getTimeAllocations()) {
+
+               if (ta.getAllocation() != 0 || ta.getCompleted() != 0) {
+                  timeAllocationBean.edit(ta);
+               } else {
+                  // remove if its zero
+                  timeAllocationBean.remove(ta);
+               }
+
+            }
+
+            // secondly - so that references are already persisted
+            t.setTimeAllocations(null);
+            taskBean.edit(t);
+         }
+      }
+   }
+
+   @Override
+   public void editTasksForProject(long projectId, Collection<Task> tasks) {
+      throw new UnsupportedOperationException("Not supported yet.");
+   }
+
+   @Override
+   public List<Task> findAllTasksForProject(long projectId) {
+      return taskBean.findAllForProject(projectId);
    }
 }

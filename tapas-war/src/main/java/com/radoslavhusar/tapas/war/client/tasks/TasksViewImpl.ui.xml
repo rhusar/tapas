@@ -15,11 +15,15 @@
 
             <g:HTMLPanel>
                <div styleName='{style.filter}' style="text-align: right;">
+                  <g:Anchor ui:field='addTask'>+ New Task</g:Anchor>
+                  <span>|</span>
+                  <g:Anchor ui:field='saveTasks'>Save</g:Anchor>
+                  <span>|</span>
                   <span title="Press ESC to clear.">Task Filter</span>
                   <g:TextBox ui:field='filter' />
                   <span>&nbsp;</span>
                </div>
-               <c:CellTable ui:field='table'  styleName='{style.table}' />
+               <c:CellTable ui:field='tasks' styleName='{style.table}' />
             </g:HTMLPanel>
 
          </g:ScrollPanel>
@@ -77,25 +81,5 @@
     padding: 2px 0 2px 10px;
   }
    </ui:style>
-
-<!--   <ui:style field='selectionStyle'
-    type='com.google.gwt.sample.mail.client.MailList.SelectionStyle'>
-
-  .selectedRow {
-    background: #adcce7;
-  }
-
-  .selectedRow td {
-    border-top: 1px solid #88a4d6;
-    border-bottom: 1px solid #7b97d0;
-  }
-   </ui:style>-->
-
-<!--<g:AbsolutePanel>-->
-
- 
-
-
-
    
 </ui:UiBinder>

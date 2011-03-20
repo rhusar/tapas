@@ -31,6 +31,7 @@ import java.util.List;
 //@Local
 public interface TaskFacadeLocal {
 
+   // CRUD
    void create(Task task);
 
    void edit(Task task);
@@ -44,4 +45,7 @@ public interface TaskFacadeLocal {
    List<Task> findRange(int[] range);
 
    int count();
+
+   // NON-CRUD
+   public List<Task> findAllForProject(long projectId);
 }

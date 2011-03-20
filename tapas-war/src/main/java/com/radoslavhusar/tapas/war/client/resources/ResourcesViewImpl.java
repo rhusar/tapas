@@ -34,7 +34,7 @@ import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
 import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocationPK;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
-import com.radoslavhusar.tapas.war.client.app.StringConstants;
+import com.radoslavhusar.tapas.war.client.app.Constants;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -50,13 +50,13 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
    interface Binder extends UiBinder<Widget, ResourcesViewImpl> {
    }
-   ClientState client;
-   Map<Resource, Double[]> map;
-   private Set<Resource> changed;
    @UiField
    SimplePanel menu;
    @UiField
    SimplePanel status;
+   ClientState client;
+   Map<Resource, Double[]> map;
+   private Set<Resource> changed;
    @UiField(provided = true)
    CellTable<Resource> resources = new CellTable<Resource>();
    ListDataProvider<Resource> provider;
@@ -73,7 +73,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       this.client = client;
 
       simplePopup.setWidth("200px");
-      simplePopup.setWidget(new HTML(StringConstants.RESOURCE_ALLOCATION));
+      simplePopup.setWidget(new HTML(Constants.RESOURCE_ALLOCATION));
 
       // Not automatically bound items
       provider = new ListDataProvider<Resource>();
@@ -87,7 +87,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public String getValue(Resource resource) {
-            return resource.getId() == 0 ? StringConstants.UNSAVEDID : "" + resource.getId();
+            return resource.getId() == 0 ? Constants.UNSAVEDID : "" + resource.getId();
          }
       };
       resources.addColumn(idCol, "ID");
@@ -111,7 +111,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          }
       });
       resources.addColumn(nameCol, "Resource Name");
-//      resources.setColumnWidth(nameCol, 10, Unit.EM);
+      // resources.setColumnWidth(nameCol, 10, Unit.EM);
 
       // Group
       List<String> groupOptions = new ArrayList<String>();

@@ -11,21 +11,29 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "TASK_TIME_ALLOCATION")
-public class TaskTimeAllocation implements Serializable {
+@Table(name = "TIME_ALLOCATION")
+public class TimeAllocation implements Serializable {
 
    private static final long serialVersionUID = 1L;
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
    private long id;
    @Column
-   private double timeAllocation;
+   private double allocation;
    @Column
-   private double timeCompleted;
+   private double completed;
    @ManyToOne(fetch = FetchType.LAZY, optional = false)
    private Task task;
    @ManyToOne(fetch = FetchType.EAGER, optional = false)
    private ProjectPhase phase;
+
+   public TimeAllocation() {
+   }
+
+   public TimeAllocation(Task task, ProjectPhase phase) {
+      this.task = task;
+      this.phase = phase;
+   }
 
    public long getId() {
       return id;
@@ -51,19 +59,19 @@ public class TaskTimeAllocation implements Serializable {
       this.task = task;
    }
 
-   public double getTimeAllocation() {
-      return timeAllocation;
+   public double getAllocation() {
+      return allocation;
    }
 
-   public void setTimeAllocation(double timeAllocation) {
-      this.timeAllocation = timeAllocation;
+   public void setAllocation(double allocation) {
+      this.allocation = allocation;
    }
 
-   public double getTimeCompleted() {
-      return timeCompleted;
+   public double getCompleted() {
+      return completed;
    }
 
-   public void setTimeCompleted(double timeCompleted) {
-      this.timeCompleted = timeCompleted;
+   public void setCompleted(double completed) {
+      this.completed = completed;
    }
 }

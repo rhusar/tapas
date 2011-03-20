@@ -32,10 +32,11 @@ public class Task implements Serializable {
    private ResourceGroup resourceGroup;
    @Column
    private Byte priority;
+   // Fetch lazilly, we have typically the instance already looked up.
    @ManyToOne(fetch = FetchType.LAZY, optional = false)
    private Project project;
    @OneToMany(mappedBy = "task", fetch = FetchType.EAGER)
-   private List<TaskTimeAllocation> timeAllocations;
+   private List<TimeAllocation> timeAllocations;
    @Column
    private TaskStatus status;
 
@@ -88,12 +89,12 @@ public class Task implements Serializable {
    }
 
    @SuppressWarnings("ReturnOfCollectionOrArrayField")
-   public List<TaskTimeAllocation> getTimeAllocations() {
+   public List<TimeAllocation> getTimeAllocations() {
       return timeAllocations;
    }
 
-   public void setTimeAllocations(List<TaskTimeAllocation> taskTimeAllocations) {
-      this.timeAllocations = taskTimeAllocations;
+   public void setTimeAllocations(List<TimeAllocation> timeAllocations) {
+      this.timeAllocations = timeAllocations;
    }
 
    public Project getProject() {
@@ -122,7 +123,7 @@ public class Task implements Serializable {
 
    @Override
    public String toString() {
-      return "Task{id=" + id + "|" + unifiedId + ",name=" + name + ",summary=" + summary + ",assignee=" + resource.getName() + '}';
+      return "Task{id=" + id + "|" + unifiedId + ",name=" + name + ",summary=" + summary + ",assignee=" + (resource == null ? "null" : resource.getName()) + '}';
    }
 
    public static String formatState(TaskStatus state) {

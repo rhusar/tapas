@@ -6,6 +6,10 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+
+// RENAME TO RESOURCEALLOCATION
+
+
 @Entity
 @Table(name = "RESOURCE_PROJECT_ALLOCATION")
 public class ResourceProjectAllocation implements Serializable {

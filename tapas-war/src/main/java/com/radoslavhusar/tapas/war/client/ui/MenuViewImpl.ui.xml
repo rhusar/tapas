@@ -29,6 +29,7 @@
             <g:Button ui:field="resources">Resources</g:Button>
             <g:Button>Planning</g:Button>
             <g:Button>Reports</g:Button>
+            <g:Button>Export</g:Button>
          </div>
 
          <div class="{style.menuBarRight}">

@@ -1,8 +1,6 @@
 package com.radoslavhusar.tapas.ejb.session;
 
-import com.radoslavhusar.tapas.ejb.entity.Project;
-import com.radoslavhusar.tapas.ejb.entity.TaskTimeAllocation;
-import java.util.List;
+import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -14,8 +12,8 @@ import javax.persistence.PersistenceContext;
  * @version 2011
  */
 @Stateless
-@Local(TaskTimeAllocationFacadeLocal.class)
-public class TaskTimeAllocationFacade extends AbstractFacade<TaskTimeAllocation> implements TaskTimeAllocationFacadeLocal {
+@Local(TimeAllocationFacadeLocal.class)
+public class TimeAllocationFacade extends AbstractFacade<TimeAllocation> implements TimeAllocationFacadeLocal {
 
    @PersistenceContext(unitName = "TapasPersistenceUnit")
    private EntityManager em;
@@ -25,7 +23,7 @@ public class TaskTimeAllocationFacade extends AbstractFacade<TaskTimeAllocation>
       return em;
    }
 
-   public TaskTimeAllocationFacade() {
-      super(TaskTimeAllocation.class);
+   public TimeAllocationFacade() {
+      super(TimeAllocation.class);
    }
 }

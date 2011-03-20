@@ -22,6 +22,7 @@
 package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Task;
+import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -45,5 +46,13 @@ public class TaskFacade extends AbstractFacade<Task> implements TaskFacadeLocal 
 
    public TaskFacade() {
       super(Task.class);
+   }
+
+   @Override
+   public List<Task> findAllForProject(long projectId) {
+      return getEntityManager().
+              createQuery("select object(o) from " + Task.class.getSimpleName() + " as o where o.project.id = :projectid").
+              setParameter("projectid", projectId).
+              getResultList();
    }
 }

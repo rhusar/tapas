@@ -4,6 +4,10 @@ import java.io.Serializable;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 
+
+// RENAME TO RESOURCEALLOCATION
+
+
 @Embeddable
 public class ResourceProjectAllocationPK implements Serializable {
 
@@ -46,10 +50,10 @@ public class ResourceProjectAllocationPK implements Serializable {
          return false;
       }
       final ResourceProjectAllocationPK other = (ResourceProjectAllocationPK) obj;
-      if (this.resource != other.resource && (this.resource == null || !this.resource.equals(other.resource))) {
+      if (this.resource != other.getResource() && (this.resource == null || !this.resource.equals(other.getResource()))) {
          return false;
       }
-      if (this.project != other.project && (this.project == null || !this.project.equals(other.project))) {
+      if (this.project != other.getProject() && (this.project == null || !this.project.equals(other.getProject()))) {
          return false;
       }
       return true;
