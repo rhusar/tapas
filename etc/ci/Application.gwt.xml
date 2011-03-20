@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "//gwt-module/" "http://google-web-toolkit.googlecode.com/svn/tags/2.2.0/distro-source/core/src/gwt-module.dtd">
+<module>
+   <!-- Inherit the core Web Toolkit stuff. -->
+   <inherits name="com.google.gwt.user.User"/>
+   <inherits name="com.google.gwt.inject.Inject"/>
+   <!-- MVP -->
+   <inherits name="com.google.gwt.activity.Activity"/>
+   <inherits name="com.google.gwt.place.Place"/>
+
+   <!-- Gilead entities -->
+   <inherits name="net.sf.gilead.Gilead4Gwt" />
+
+   <!-- Charts -->
+   <inherits name="com.google.gwt.visualization.Visualization"/>
+     
+   <!-- inherit css based theme -->
+   <inherits name='com.google.gwt.user.theme.chrome.Chrome'/>
+      <!--   <inherits name='com.google.gwt.user.theme.standard.Standard'/>-->
+      <!--   <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
+
+   <!-- include shadow package for entities -->
+   <inherits name="com.radoslavhusar.tapas.ejb.Entity"/>
+
+   <!-- Specify the app entry point class, which is this one. -->
+   <entry-point class="com.radoslavhusar.tapas.war.client.app.Application"/>
+   <!--  <entry-point class="com.radoslavhusar.tapas.war.client.app.VisualizationDemo"/>-->
+
+   <!-- Specify the application specific style sheet. -->
+   <!--   <stylesheet src="Application.css"/>-->
+   
+   <source path="client"/>
+   <source path="shared"/>
+
+   <!-- automatically mapped to web.xml from here -->
+   <servlet class="com.radoslavhusar.tapas.war.server.services.TaskResourceServiceImpl" path="/res" />
+
+</module>
