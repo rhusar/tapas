@@ -75,5 +75,20 @@
          </plugin>
       </plugins>
    </build>
+   
+   <repositories>
+      <!-- JBoss.org repositories -->
+      <repository>
+         <id>jboss-public-repository-group</id>
+         <name>JBoss Public Maven Repository Group</name>
+         <url>https://repository.jboss.org/nexus/content/groups/public-jboss</url>
+      </repository>
+      <repository>
+         <id>jboss-public-repository-devel-group</id>
+         <name>JBoss Public Maven Repository Devel Group</name>
+         <url>https://repository.jboss.org/nexus/content/groups/developer/</url>
+         <layout>default</layout>
+      </repository>
+   </repositories>
 
 </project>
