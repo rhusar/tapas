@@ -19,17 +19,25 @@ public class Resource implements Serializable {
    private static final long serialVersionUID = 1L;
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
-   private long id;
+   private Long id;
    @Column
    private String name;
    @Column
-   private byte contract;
+   private Byte contract;
    @ManyToOne
    private ResourceGroup group;
    @OneToMany(mappedBy = "key.resource", fetch = FetchType.LAZY)
    private List<ResourceAllocation> allocations;
    @OneToMany(mappedBy = "resource", fetch = FetchType.LAZY)
    private List<Task> tasks;
+
+   public Long getId() {
+      return id;
+   }
+
+   public void setId(Long id) {
+      this.id = id;
+   }
 
    public ResourceGroup getGroup() {
       return group;
@@ -39,19 +47,11 @@ public class Resource implements Serializable {
       this.group = group;
    }
 
-   public long getId() {
-      return id;
-   }
-
-   public void setId(long id) {
-      this.id = id;
-   }
-
-   public byte getContract() {
+   public Byte getContract() {
       return contract;
    }
 
-   public void setContract(byte contact) {
+   public void setContract(Byte contact) {
       this.contract = contact;
    }
 
@@ -77,5 +77,10 @@ public class Resource implements Serializable {
 
    public void setTasks(List<Task> tasks) {
       this.tasks = tasks;
+   }
+
+   @Override
+   public String toString() {
+      return "Resource{id=" + id + ", name=" + name + ", contract=" + contract + '}';
    }
 }

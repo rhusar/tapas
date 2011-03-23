@@ -3,7 +3,6 @@ package com.radoslavhusar.tapas.ejb.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,7 +20,7 @@ public class Project implements Serializable {
    private static final long serialVersionUID = 1L;
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
-   private long id;
+   private Long id;
    @Column
    private String name;
    @Column
@@ -30,16 +29,16 @@ public class Project implements Serializable {
    @Column
    @Temporal(javax.persistence.TemporalType.DATE)
    private Date targetDate;
-   @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "project")
+   @OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
    private List<ProjectPhase> phases;
-   @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
+   @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
    private List<Task> tasks;
 
-   public long getId() {
+   public Long getId() {
       return id;
    }
 
-   public void setId(long id) {
+   public void setId(Long id) {
       this.id = id;
    }
 
@@ -83,5 +82,13 @@ public class Project implements Serializable {
 
    public void setTasks(List<Task> tasks) {
       this.tasks = tasks;
+   }
+
+   @Override
+   public String toString() {
+      return "Project{id=" + id
+              + ", name=" + name
+              + ", startDate=" + startDate
+              + ", targetDate=" + targetDate + "}";
    }
 }

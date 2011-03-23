@@ -17,7 +17,7 @@ public class TimeAllocation implements Serializable {
    private static final long serialVersionUID = 1L;
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
-   private long id;
+   private Long id;
    @Column
    private double allocation;
    @Column
@@ -35,11 +35,11 @@ public class TimeAllocation implements Serializable {
       this.phase = phase;
    }
 
-   public long getId() {
+   public Long getId() {
       return id;
    }
 
-   public void setId(long id) {
+   public void setId(Long id) {
       this.id = id;
    }
 
@@ -73,5 +73,15 @@ public class TimeAllocation implements Serializable {
 
    public void setCompleted(double completed) {
       this.completed = completed;
+   }
+
+   @Override
+   public String toString() {
+      return "TimeAllocation{id=" + id
+              + ", allocation=" + allocation
+              + ", completed=" + completed
+              + ", task=" + task == null ? null : task.getId()
+              + ", phase=" + phase == null ? null : phase.getId()
+              + "}";
    }
 }

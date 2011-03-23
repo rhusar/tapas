@@ -15,20 +15,20 @@ import javax.persistence.Table;
 @Table(name = "RESOURCE_GROUP")
 public class ResourceGroup implements Serializable {
 
-   private static final long serialVersionUID = 7440297955003302414L;
+   private static final long serialVersionUID = 744022345203302414L;
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
-   private long id;
+   private Long id;
    @Column
    private String name;
    @ManyToMany(fetch = FetchType.LAZY)
    private List<Resource> resources;
 
-   public long getId() {
+   public Long getId() {
       return id;
    }
 
-   public void setId(long id) {
+   public void setId(Long id) {
       this.id = id;
    }
 
@@ -47,5 +47,10 @@ public class ResourceGroup implements Serializable {
 
    public void setResources(List<Resource> resources) {
       this.resources = resources;
+   }
+
+   @Override
+   public String toString() {
+      return "ResourceGroup{id=" + id + ", name=" + name + '}';
    }
 }

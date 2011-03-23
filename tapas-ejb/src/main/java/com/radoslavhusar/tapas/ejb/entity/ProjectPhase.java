@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "PROJECT_PHASE")
@@ -19,23 +20,23 @@ public class ProjectPhase implements Serializable, Comparable {
    private static final long serialVersionUID = 3L;
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
-   private long id;
+   private Long id;
    @Column
    private String name;
    @ManyToOne(fetch = FetchType.LAZY)
    private Project project;
    @Column
-   @Temporal(javax.persistence.TemporalType.DATE)
+   @Temporal(TemporalType.DATE)
    private Date startDate;
    @Column
-   @Temporal(javax.persistence.TemporalType.DATE)
+   @Temporal(TemporalType.DATE)
    private Date endDate;
 
-   public long getId() {
+   public Long getId() {
       return id;
    }
 
-   public void setId(long id) {
+   public void setId(Long id) {
       this.id = id;
    }
 
@@ -87,5 +88,10 @@ public class ProjectPhase implements Serializable, Comparable {
       }
 
       return 0;
+   }
+
+   @Override
+   public String toString() {
+      return "ProjectPhase{id=" + id + ", name=" + name + ", project=" + project == null ? null : project.getId() + ", startDate=" + startDate + ", endDate=" + endDate + '}';
    }
 }

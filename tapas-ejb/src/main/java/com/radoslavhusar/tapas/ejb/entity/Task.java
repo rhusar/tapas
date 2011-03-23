@@ -16,10 +16,10 @@ import javax.persistence.Table;
 @Table(name = "TASK")
 public class Task implements Serializable {
 
-   private static final long serialVersionUID = 7440297955003302414L;
+   private static final long serialVersionUID = 7440293452003302414L;
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
-   private long id;
+   private Long id;
    @Column
    private String unifiedId;
    @Column
@@ -32,19 +32,18 @@ public class Task implements Serializable {
    private ResourceGroup resourceGroup;
    @Column
    private Byte priority;
-   // Fetch lazilly, we have typically the instance already looked up.
-   @ManyToOne(fetch = FetchType.LAZY, optional = false)
+   @ManyToOne(fetch = FetchType.LAZY, optional = false) // Fetch lazilly, we have typically the instance already looked up.
    private Project project;
    @OneToMany(mappedBy = "task", fetch = FetchType.EAGER)
    private List<TimeAllocation> timeAllocations;
    @Column
    private TaskStatus status;
 
-   public long getId() {
+   public Long getId() {
       return id;
    }
 
-   public void setId(long id) {
+   public void setId(Long id) {
       this.id = id;
    }
 
@@ -123,7 +122,9 @@ public class Task implements Serializable {
 
    @Override
    public String toString() {
-      return "Task{id=" + id + "|" + unifiedId + ",name=" + name + ",summary=" + summary + ",assignee=" + (resource == null ? "null" : resource.getName()) + '}';
+      return "Task{id=" + id + "|" + unifiedId
+              + ",name=" + name
+              + ",assignee=" + resource == null ? null : resource.getName() + "}";
    }
 
    public static String formatState(TaskStatus state) {

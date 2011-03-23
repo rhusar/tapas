@@ -4,5 +4,5 @@ import java.io.Serializable;
 
 public enum TaskStatus implements Serializable {
 
-   COMMITTED, DEFERRED, UNCOMMITED, PARTIAL
+   COMMITTED, UNCOMMITED, DEFERRED, PARTIAL
 }
