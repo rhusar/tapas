@@ -4,15 +4,17 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
 	version="2.0">
 
-   <persistence-unit name="TapasPersistenceUnit">
+   <persistence-unit name="ArqTestTapasPersistenceUnit">
       <provider>org.hibernate.ejb.HibernatePersistence</provider>
-      <jta-data-source>java:/DefaultDS</jta-data-source>
+<!--      <jta-data-source>java:/DefaultDS</jta-data-source>-->
+      <jta-data-source>java:/TapasDS</jta-data-source>
+
 
       <properties>
          <property name="hibernate.hbm2ddl.auto" value="update" />
          <property name="hibernate.show_sql" value="true" />
-         <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
-         <property name="jboss.entity.manager.factory.jndi.name" value="java:/ManagerFactory"/>
+<!--         <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />-->
+         <property name="jboss.entity.manager.factory.jndi.name" value="java:/TestManagerFactory"/>
       </properties>
 
    </persistence-unit>
