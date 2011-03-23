@@ -49,6 +49,7 @@ public class MenuViewImpl extends Composite implements MenuView {
 
    @Inject
    public MenuViewImpl(TaskResourceServiceAsync res) {
+      GWT.log("MenuViewImpl created!");
       this.presenter = Application.getInjector().getMenuPresenter();
 
       initWidget(binder.createAndBindUi(this));

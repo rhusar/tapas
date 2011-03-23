@@ -2,7 +2,7 @@ package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
-import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
+import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
 import java.util.Arrays;
@@ -16,7 +16,7 @@ import javax.persistence.PersistenceContext;
 @Local(ResourceFacadeLocal.class)
 public class ResourceFacade extends AbstractFacade<Resource> implements ResourceFacadeLocal {
 
-   @PersistenceContext(unitName = "TapasPersistenceUnit")
+   @PersistenceContext
    private EntityManager em;
 
    @Override
@@ -45,10 +45,10 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
 
       // Actually, just fetch that one assignement for the project
       for (Resource r : l) {
-         for (ResourceProjectAllocation pa : r.getResourceProjectAllocations()) {
+         for (ResourceAllocation pa : r.getAllocations()) {
             if (pa.getKey().getProject().getId() == projectId) {
-               r.getResourceProjectAllocations().clear();
-               r.getResourceProjectAllocations().add(pa);
+               r.getAllocations().clear();
+               r.getAllocations().add(pa);
                break;
             }
          }
@@ -92,7 +92,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
          System.out.println(t);
          if (t.getProject().getId() == projectId) {
             for (TimeAllocation tta : t.getTimeAllocations()) {
-               if (t.getPriority() >= 1 && t.getPriority() <= 3) {
+               if (t.getPriority() != null && t.getPriority() >= 1 && t.getPriority() <= 3) {
                   result[(t.getPriority() - 1) * 2] += tta.getAllocation();
                   result[(t.getPriority() - 1) * 2 + 1] += tta.getCompleted();
                } else {

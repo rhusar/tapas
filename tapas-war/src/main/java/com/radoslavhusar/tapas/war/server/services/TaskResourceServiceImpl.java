@@ -4,7 +4,7 @@ import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
-import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
+import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
 import com.radoslavhusar.tapas.ejb.session.ProjectFacadeLocal;
@@ -134,7 +134,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    }
 
    @Override
-   public List<ResourceProjectAllocation> findAllAllocationsForProject(long projectId) {
+   public List<ResourceAllocation> findAllAllocationsForProject(long projectId) {
       return allocations.findAllForProject(projectId);
    }
 
@@ -151,7 +151,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
             resourceBean.create(res);
 
             // now persist the NEW allocation
-            for (ResourceProjectAllocation rpa : res.getResourceProjectAllocations()) {
+            for (ResourceAllocation rpa : res.getAllocations()) {
                if (rpa.getPercent() != 0) {
                   // dont save if allocated to 0%
                   allocations.create(rpa);
@@ -161,7 +161,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
             // resource is not new, save changes
 
             // allocations changed?
-            for (ResourceProjectAllocation rpa : res.getResourceProjectAllocations()) {
+            for (ResourceAllocation rpa : res.getAllocations()) {
                /*if (rpa.getId() == 0) {
                // persist it
                if (rpa.getPercent() != 0) {
@@ -181,7 +181,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
             }
 
             // secondly - so that references are already persisted
-            res.setResourceProjectAllocations(null);
+            res.setAllocations(null);
             resourceBean.edit(res);
          }
       }

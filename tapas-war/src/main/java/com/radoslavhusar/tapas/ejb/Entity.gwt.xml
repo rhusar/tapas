@@ -1,11 +1,11 @@
 <!DOCTYPE module PUBLIC "//gwt-module/" "http://google-web-toolkit.googlecode.com/svn/tags/2.1.1/distro-source/core/src/gwt-module.dtd">
-<!-- A workaround shadow package to reflect entity/domain 
-     model from the ejb module. -->
+
+<!-- A workaround shadow package to reference entity/domain model from the ejb module. -->
 <module>
    <inherits name="com.google.gwt.user.User" />
    <source path="entity" />
 
-      <!-- Gilead entities -->
+   <!-- Gilead entities -->
    <inherits name="net.sf.gilead.Gilead4Gwt" />
    
 </module>

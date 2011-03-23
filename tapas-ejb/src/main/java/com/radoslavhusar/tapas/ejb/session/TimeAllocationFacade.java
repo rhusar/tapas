@@ -6,16 +6,11 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-/**
- *
- * @author <a href="mailto:me@radoslavhusar.com">Radoslav Husar</a>
- * @version 2011
- */
 @Stateless
 @Local(TimeAllocationFacadeLocal.class)
 public class TimeAllocationFacade extends AbstractFacade<TimeAllocation> implements TimeAllocationFacadeLocal {
 
-   @PersistenceContext(unitName = "TapasPersistenceUnit")
+   @PersistenceContext
    private EntityManager em;
 
    @Override

@@ -30,8 +30,8 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
-import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
-import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocationPK;
+import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
+import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationPK;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
 import com.radoslavhusar.tapas.war.client.app.Constants;
@@ -69,6 +69,8 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
    @Inject
    public ResourcesViewImpl(final ClientState client) {
+      GWT.log("ResourcesViewImpl " + this + "is constructed!");
+      
       // Client
       this.client = client;
 
@@ -90,6 +92,20 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             return resource.getId() == 0 ? Constants.UNSAVEDID : "" + resource.getId();
          }
       };
+      /* 
+      FIXME: http://code.google.com/webtoolkit/doc/latest/DevGuideUiCellTable.html
+      
+      idCol.setSortable(true);
+      ListHandler<Resource> idColSortHandler = new ListHandler<Resource>(provider.getList());
+      idColSortHandler.setComparator(idCol, new Comparator<Resource>() {
+      
+      @Override
+      public int compare(Resource o1, Resource o2) {
+      return (int) (o1.getId() - o2.getId());
+      }
+      });
+      resources.addColumnSortHandler(idColSortHandler);
+       */
       resources.addColumn(idCol, "ID");
       resources.setColumnWidth(idCol, 2, Unit.EM);
 
@@ -110,6 +126,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             changed.add(object);
          }
       });
+      nameCol.setSortable(true);
       resources.addColumn(nameCol, "Resource Name");
       // resources.setColumnWidth(nameCol, 10, Unit.EM);
 
@@ -175,14 +192,14 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public String getValue(Resource resource) {
-//            for (ResourceProjectAllocation rpa : client.getResourceAllocations()) {
+//            for (ResourceAllocation rpa : client.getResourceAllocations()) {
 //               if (rpa.getKey().getResource().getId() == resource.getId()) {
 //                  return rpa.getPercent() + "%";
 //               }
 //            }
 //
 //            return "";
-            return "" + resource.getResourceProjectAllocations().get(0).getPercent();
+            return "" + resource.getAllocations().get(0).getPercent();
          }
       };
       allocCol.setFieldUpdater(new FieldUpdater<Resource, String>() {
@@ -191,13 +208,13 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          public void update(int index, Resource object, String value) {
             changed.add(object);
 
-            for (ResourceProjectAllocation rpa : client.getResourceAllocations()) {
+            for (ResourceAllocation rpa : client.getResourceAllocations()) {
                if (rpa.getKey().getResource().equals(object)) {
                   // Just update this allocation
                   rpa.setPercent(Byte.parseByte(value.replace('%', ' ').trim()));
                   List newa = new ArrayList();
                   newa.add(rpa);
-                  object.setResourceProjectAllocations(newa);
+                  object.setAllocations(newa);
                   GWT.log("Allocation updated: " + rpa);
 
                   resources.redraw();
@@ -206,12 +223,12 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             }
 
             // None existing, create new one
-            ResourceProjectAllocation newrpa = new ResourceProjectAllocation();
-            newrpa.setKey(new ResourceProjectAllocationPK(client.getProject(), object));
+            ResourceAllocation newrpa = new ResourceAllocation();
+            newrpa.setKey(new ResourceAllocationPK(client.getProject(), object));
             newrpa.setPercent(Byte.parseByte(value.replace('%', ' ').trim()));
             List newa = new ArrayList();
             newa.add(newrpa);
-            object.setResourceProjectAllocations(newa);
+            object.setAllocations(newa);
             client.getResourceAllocations().add(newrpa);
             GWT.log("New allocation created: " + newrpa);
             resources.redraw();
@@ -230,7 +247,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public String getValue(Resource resource) {
-            byte alloc = resource.getResourceProjectAllocations().get(0).getPercent();
+            byte alloc = resource.getAllocations().get(0).getPercent();
             double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
             return "" + NumberFormat.getDecimalFormat().format(res);
          }
@@ -355,7 +372,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
                // DOTO: Make this cleaner
 //               byte alloc = 0;
 //
-//               for (ResourceProjectAllocation rpa : client.getResourceAllocations()) {
+//               for (ResourceAllocation rpa : client.getResourceAllocations()) {
 //                  if (rpa.getKey().getResource().equals(resource)) {
 //                     alloc = rpa.getPercent();
 //                  }
@@ -367,7 +384,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
                // FIXME: code repetition
                //double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
-               byte alloc = resource.getResourceProjectAllocations().get(0).getPercent();
+               byte alloc = resource.getAllocations().get(0).getPercent();
                double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
 
 
@@ -385,10 +402,14 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          @Override
          public Number getValue(Resource resource) {
             // FIXME: code repetition
-            byte alloc = resource.getResourceProjectAllocations().get(0).getPercent();
+            byte alloc = resource.getAllocations().get(0).getPercent();
             double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
 
-            return (map.get(resource)[0] - map.get(resource)[1]) / res;
+            if (map.get(resource) == null) {
+               return null;
+            } else {
+               return (map.get(resource)[0] - map.get(resource)[1]) / res;
+            }
          }
       };
       resources.addColumn(loadP1Col, "P1 Load %");
@@ -432,7 +453,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
       toSync = 2;
 
-      Application.getInjector().getService().findAllAllocationsForProject(client.getProject().getId(), new AsyncCallback<List<ResourceProjectAllocation>>() {
+      Application.getInjector().getService().findAllAllocationsForProject(client.getProject().getId(), new AsyncCallback<List<ResourceAllocation>>() {
 
          @Override
          public void onFailure(Throwable caught) {
@@ -440,7 +461,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          }
 
          @Override
-         public void onSuccess(List<ResourceProjectAllocation> result) {
+         public void onSuccess(List<ResourceAllocation> result) {
             client.setResourceAllocations(result);
             toSyncRender();
          }
@@ -489,12 +510,12 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       Resource newguy = new Resource();
       changed.add(newguy);
       newguy.setName("New resource");
-      ResourceProjectAllocation fullAllocation = new ResourceProjectAllocation();
+      ResourceAllocation fullAllocation = new ResourceAllocation();
       fullAllocation.setPercent(new Byte("100"));
-      fullAllocation.setKey(new ResourceProjectAllocationPK(client.getProject(), newguy));
+      fullAllocation.setKey(new ResourceAllocationPK(client.getProject(), newguy));
       List allodcs = new ArrayList();
       allodcs.add(fullAllocation);
-      newguy.setResourceProjectAllocations(allodcs);
+      newguy.setAllocations(allodcs);
       provider.getList().add(newguy);
       resources.setRowData(provider.getList());
       resources.setRowCount(provider.getList().size());

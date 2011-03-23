@@ -27,7 +27,7 @@ public class Resource implements Serializable {
    @ManyToOne
    private ResourceGroup group;
    @OneToMany(mappedBy = "key.resource", fetch = FetchType.LAZY)
-   private List<ResourceProjectAllocation> resourceProjectAllocations;
+   private List<ResourceAllocation> allocations;
    @OneToMany(mappedBy = "resource", fetch = FetchType.LAZY)
    private List<Task> tasks;
 
@@ -63,12 +63,12 @@ public class Resource implements Serializable {
       this.name = name;
    }
 
-   public List<ResourceProjectAllocation> getResourceProjectAllocations() {
-      return resourceProjectAllocations;
+   public List<ResourceAllocation> getAllocations() {
+      return allocations;
    }
 
-   public void setResourceProjectAllocations(List<ResourceProjectAllocation> resourceProjectAllocations) {
-      this.resourceProjectAllocations = resourceProjectAllocations;
+   public void setAllocations(List<ResourceAllocation> allocations) {
+      this.allocations = allocations;
    }
 
    public List<Task> getTasks() {

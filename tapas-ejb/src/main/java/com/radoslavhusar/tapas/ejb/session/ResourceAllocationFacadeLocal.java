@@ -1,33 +1,28 @@
 package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Project;
-import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
+import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
 import java.util.List;
 
-/**
- *
- * @author <a href="mailto:me@radoslavhusar.com">Radoslav Husar</a>
- * @version 2011
- */
 public interface ResourceAllocationFacadeLocal {
 
    // CRUD
-   void create(ResourceProjectAllocation resourceProjectAllocation);
+   void create(ResourceAllocation resourceProjectAllocation);
 
-   void edit(ResourceProjectAllocation resourceProjectAllocation);
+   void edit(ResourceAllocation resourceProjectAllocation);
 
-   void remove(ResourceProjectAllocation resourceProjectAllocation);
+   void remove(ResourceAllocation resourceProjectAllocation);
 
-   ResourceProjectAllocation find(Object id);
+   ResourceAllocation find(Object id);
 
-   List<ResourceProjectAllocation> findAll();
+   List<ResourceAllocation> findAll();
 
-   List<ResourceProjectAllocation> findRange(int[] range);
+   List<ResourceAllocation> findRange(int[] range);
 
    int count();
 
    // NON-CRUD
-   List<ResourceProjectAllocation> findAllForProject(Project project);
+   List<ResourceAllocation> findAllForProject(Project project);
 
-   List<ResourceProjectAllocation> findAllForProject(long projectId);
+   List<ResourceAllocation> findAllForProject(long projectId);
 }

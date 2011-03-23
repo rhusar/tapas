@@ -4,12 +4,8 @@ import java.io.Serializable;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 
-
-// RENAME TO RESOURCEALLOCATION
-
-
 @Embeddable
-public class ResourceProjectAllocationPK implements Serializable {
+public class ResourceAllocationPK implements Serializable {
 
    private static final long serialVersionUID = 1L;
    @ManyToOne
@@ -17,10 +13,10 @@ public class ResourceProjectAllocationPK implements Serializable {
    @ManyToOne
    private Project project;
 
-   public ResourceProjectAllocationPK() {
+   public ResourceAllocationPK() {
    }
 
-   public ResourceProjectAllocationPK(Project project, Resource resource) {
+   public ResourceAllocationPK(Project project, Resource resource) {
       this.project = project;
       this.resource = resource;
    }
@@ -49,7 +45,7 @@ public class ResourceProjectAllocationPK implements Serializable {
       if (getClass() != obj.getClass()) {
          return false;
       }
-      final ResourceProjectAllocationPK other = (ResourceProjectAllocationPK) obj;
+      final ResourceAllocationPK other = (ResourceAllocationPK) obj;
       if (this.resource != other.getResource() && (this.resource == null || !this.resource.equals(other.getResource()))) {
          return false;
       }

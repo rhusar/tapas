@@ -32,6 +32,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
+import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.TaskStatus;
@@ -44,6 +45,7 @@ import com.radoslavhusar.tapas.war.client.components.PriorityEditTextCell;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class TasksViewImpl extends ResizeComposite implements TasksView {
@@ -65,9 +67,10 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
    private Set<Task> changed = new HashSet<Task>();
    SimplePager filterPager;
    private ClientState client;
+   private DynamicSelectionCell resourceCell;
 
    @Inject
-   public TasksViewImpl(ClientState client) {
+   public TasksViewImpl(final ClientState client) {
       this.client = client;
 
       provider = new ListDataProvider<Task>() {
@@ -180,11 +183,12 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                   throw new NumberFormatException();
                }
             } catch (NumberFormatException nfo) {
-               Window.alert("Wrong priority number.");
+               Window.alert("Wrong priority number. Please correct.");
                tasks.redraw();
             }
 
             object.setPriority(num);
+            tasks.redraw();
          }
       });
       tasks.addColumn(prioCol, "Prio");
@@ -249,19 +253,28 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       // Resource
       List<String> opts = new ArrayList<String>();
       opts.add(Constants.UNASSIGNED);
-      DynamicSelectionCell resourceCell = new DynamicSelectionCell(opts);
+      resourceCell = new DynamicSelectionCell(opts); // Needs to be fed data before data display - in bind().
+
       Column<Task, String> resourceCol = new Column<Task, String>(resourceCell) {
 
          @Override
          public String getValue(Task task) {
-            return Constants.UNASSIGNED;
+            return task.getResource() == null ? Constants.UNASSIGNED : task.getResource().getName();
          }
       };
       resourceCol.setFieldUpdater(new FieldUpdater<Task, String>() {
 
          @Override
          public void update(int index, Task object, String value) {
-            GWT.log("Updating assignee, value: " + value);
+            for (Resource r : client.getResources().keySet()) {
+               if (value.equals(r.getName())) {
+                  object.setResource(r);
+                  changed.add(object);
+                  GWT.log("Updating assignee, value: " + value);
+                  return;
+               }
+            }
+
          }
       });
       tasks.addColumn(resourceCol, "Resource");
@@ -283,37 +296,8 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
          }
       });
 
+      // Just show all, workaround.
       tasks.setPageSize(Integer.MAX_VALUE - 1);
-
-
-      Application.getInjector().getService().findAll(new AsyncCallback<List<Task>>() {
-
-         @Override
-         public void onFailure(Throwable caught) {
-            throw new UnsupportedOperationException("Not supported yet.");
-         }
-
-         @Override
-         public void onSuccess(List<Task> result) {
-            // List<Task> s = new ArrayList(result);
-            provider.setList(result);
-
-            // Set the total row count. This isn't strictly necessary, but it affects
-            // paging calculations, so its good habit to keep the row count up to date.
-            tasks.setRowCount(result.size(), true);
-
-            // Push the data into the widget.
-            tasks.setRowData(0, result);
-         }
-      });
-
-//   @UiHandler("tasks")
-//   void onxclick(ClickEvent ce) {
-//      Cell c = tasks.getCellForEvent(ce);
-//      String id = tasks.getText(c.getRowIndex(), 0);
-//      presenter.goToEdit(id);
-//   }
-
    }
 
    // UI routines
@@ -321,6 +305,46 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       menu.add(Application.getInjector().getMenuView());
       status.add(Application.getInjector().getStatusView());
       changed.clear();
+
+
+      Application.getInjector().getService().findAllResourceStatsForProject(1, new AsyncCallback<Map<Resource, Double[]>>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         // FIXME: in one place
+         @Override
+         public void onSuccess(Map<Resource, Double[]> result) {
+            client.setResources(result);
+            for (Resource r : client.getResources().keySet()) {
+               resourceCell.addOption(r.getName());
+            }
+
+
+            Application.getInjector().getService().findAll(new AsyncCallback<List<Task>>() {
+
+               @Override
+               public void onFailure(Throwable caught) {
+                  throw new UnsupportedOperationException("Not supported yet.");
+               }
+
+               @Override
+               public void onSuccess(List<Task> result) {
+                  // List<Task> s = new ArrayList(result);
+                  provider.setList(result);
+
+                  // Set the total row count. This isn't strictly necessary, but it affects
+                  // paging calculations, so its good habit to keep the row count up to date.
+                  tasks.setRowCount(result.size(), true);
+
+                  // Push the data into the widget.
+                  tasks.setRowData(0, result);
+               }
+            });
+         }
+      });
 
       // Phases Times
       Project project = Application.getInjector().getClientState().getProject();
@@ -355,7 +379,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                   changed.add(object);
 
                   for (TimeAllocation tta : object.getTimeAllocations()) {
-                     // FIXME: needs comparing IDs which is safe, but should be done .equal but doesnt work
+                     // TODO: needs comparing IDs which is safe, but should be done .equal but doesnt work
                      if (tta.getPhase().getId() == phase.getId()) {
                         tta.setAllocation(index);
                         GWT.log("Updating allocation: " + tta);
@@ -414,8 +438,9 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
    public void addSomeTasks(ClickEvent event) {
       Task task = new Task();
       task.setTimeAllocations(new ArrayList());
-      task.setProject(null);
-
+      task.setProject(client.getProject());
+      task.setName("New task");
+      changed.add(task);
       provider.getList().add(task);
       provider.refresh();
    }

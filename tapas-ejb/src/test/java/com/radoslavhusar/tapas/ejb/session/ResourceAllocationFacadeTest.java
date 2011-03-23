@@ -15,19 +15,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 @RunWith(Arquillian.class)
-public class ResourceProjectAllocationFacadeTest {
+public class ResourceAllocationFacadeTest {
 
-   @EJB(mappedName="test/ProjectFacade/local")
+   @EJB(mappedName = "test/ProjectFacade/local")
    ProjectFacadeLocal instance;
 
    @Deployment
    public static JavaArchive createTestArchive() {
-
-      /*return ShrinkWrap.create(JavaArchive.class, "test.jar").
-      addClasses(TemperatureConverter.class).
-      addAsManifestResource(
-      EmptyAsset.INSTANCE,
-      ArchivePaths.create("beans.xml"));*/
 
       return ShrinkWrap.create(JavaArchive.class).
               addPackage("com.radoslavhusar.tapas.ejb.entity").
@@ -35,7 +29,7 @@ public class ResourceProjectAllocationFacadeTest {
               addAsManifestResource("test-persistence.xml", ArchivePaths.create("persistence.xml"));
    }
 
-   public ResourceProjectAllocationFacadeTest() {
+   public ResourceAllocationFacadeTest() {
    }
 
    @BeforeClass
@@ -66,7 +60,7 @@ public class ResourceProjectAllocationFacadeTest {
       //fail("The test case is a prototype.");
    }
    /*
-
+   
    @Test
    public void testFindAllForProject_Project() {
    System.out.println("findAllForProject");
@@ -78,7 +72,7 @@ public class ResourceProjectAllocationFacadeTest {
    // TODO review the generated test code and remove the default call to fail.
    fail("The test case is a prototype.");
    }
-
+   
    @Test
    public void testFindAllForProject_long() {
    System.out.println("findAllForProject");

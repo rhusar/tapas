@@ -7,7 +7,7 @@ import com.google.inject.Singleton;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
-import com.radoslavhusar.tapas.ejb.entity.ResourceProjectAllocation;
+import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
 import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.ArrayList;
@@ -22,9 +22,9 @@ public class ClientState {
 
    private Map<Resource, Double[]> resources;
    private Project project;
-   private List<ResourceProjectAllocation> resourceAllocations = new ArrayList();
+   private List<ResourceAllocation> resourceAllocations = new ArrayList();
    private List<ResourceGroup> groups = new ArrayList();
-   private volatile int toSync = 2;
+   private volatile int toSync = 3;
 
    @Inject
    public ClientState(TaskResourceServiceAsync res) {
@@ -34,11 +34,27 @@ public class ClientState {
          @Override
          public void onFailure(Throwable caught) {
             GWT.log("ClientState error fetching Project.");
+            toSync = 0;
          }
 
          @Override
          public void onSuccess(List<Project> result) {
             project = result.get(0);
+
+            /*Application.getInjector().getService().findAllResourceStatsForProject(project.getId(), new AsyncCallback<Map<Resource, Double[]>>() {
+
+               @Override
+               public void onFailure(Throwable caught) {
+                  throw new UnsupportedOperationException("Not supported yet.");
+               }
+
+               @Override
+               public void onSuccess(Map<Resource, Double[]> result) {
+                  setResources(result);
+                  doSync();
+               }
+            });*/
+
             doSync();
          }
       });
@@ -48,6 +64,7 @@ public class ClientState {
          @Override
          public void onFailure(Throwable caught) {
             GWT.log("ClientState error fetching ResourceGroup.");
+            toSync = 0;
          }
 
          @Override
@@ -56,6 +73,8 @@ public class ClientState {
             doSync();
          }
       });
+
+
    }
 
    public void doSync() {
@@ -78,11 +97,11 @@ public class ClientState {
    }
 
    @SuppressWarnings("ReturnOfCollectionOrArrayField")
-   public List<ResourceProjectAllocation> getResourceAllocations() {
+   public List<ResourceAllocation> getResourceAllocations() {
       return resourceAllocations;
    }
 
-   public void setResourceAllocations(List<ResourceProjectAllocation> resourceAllocations) {
+   public void setResourceAllocations(List<ResourceAllocation> resourceAllocations) {
       this.resourceAllocations = resourceAllocations;
    }
 
