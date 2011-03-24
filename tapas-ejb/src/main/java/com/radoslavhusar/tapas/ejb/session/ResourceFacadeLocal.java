@@ -29,8 +29,11 @@ public interface ResourceFacadeLocal {
    int count();
 
    // CUSTOM
-   List<Resource> findAllForProject(Project project);
-
+   /**
+    * Initializes allocation but only for the selected project!
+    * @param projectId
+    * @return  
+    */
    List<Resource> findAllForProject(long projectId);
 
    ResourceAllocationData fetchDataForProject(long resourceId, long projectId);

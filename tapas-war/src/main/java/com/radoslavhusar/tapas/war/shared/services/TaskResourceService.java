@@ -34,7 +34,7 @@ public interface TaskResourceService extends RemoteService {
 
    /*Map<Long, ResourceAllocation> findAllAllocationsForProject(long projectId);*/
 
-   Map<Long, ResourceAllocationData> findAllResourceDataForProject(long projectId);
+   Map<Long, ResourceAllocationData> fetchAllResourceDataForProject(long projectId);
 
    void editResourcesForProject(long projectId, Collection<Resource> resources);
 

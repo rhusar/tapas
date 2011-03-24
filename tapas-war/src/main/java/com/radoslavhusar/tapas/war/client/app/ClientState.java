@@ -1,5 +1,6 @@
 package com.radoslavhusar.tapas.war.client.app;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -8,6 +9,7 @@ import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
+import com.radoslavhusar.tapas.war.client.event.DataReadyEvent;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.List;
 import java.util.Map;
@@ -20,61 +22,21 @@ import java.util.Map;
 @Singleton
 public class ClientState {
 
-   private TaskResourceServiceAsync service;
+   private final EventBus eventBus;
+   private final TaskResourceServiceAsync service;
    private Long projectId;
    private Project project;
    private List<Resource> resources;
-   private Map<Long, ResourceAllocation> resourceAllocations;
+   //private Map<Long, ResourceAllocation> resourceAllocations;
    private Map<Long, ResourceAllocationData> resourceData;
    private List<ResourceGroup> groups;
 
    //private volatile int toSync = 3;
    @Inject
-   public ClientState(TaskResourceServiceAsync service) {
+   public ClientState(EventBus bus, TaskResourceServiceAsync service) {
+      this.eventBus = bus;
       this.service = service;
-      /*
-      res.findAllProjects(new AsyncCallback<List<Project>>() {
-      
-      @Override
-      public void onFailure(Throwable caught) {
-      GWT.log("ClientState error fetching Project.");
-      toSync = 0;
-      }
-      
-      @Override
-      public void onSuccess(List<Project> result) {
-      project = result.get(0);
-      
-      Application.getInjector().getService().findAllResourceStatsForProject(project.getId(), new AsyncCallback<Map<Resource, Double[]>>() {
-      
-      @Override
-      public void onFailure(Throwable caught) {
-      throw new UnsupportedOperationException("Not supported yet.");
-      }
-      
-      @Override
-      public void onSuccess(Map<Resource, Double[]> result) {
-      setResources(result);
-      doSync();
-      }
-      });
-      
-      doSync();
-      }
-      });
-      
-      
-       */
    }
-   /*
-   public void doSync() {
-   toSync--;
-   GWT.log("Initial loading services to synchronize remaining: " + toSync);
-   
-   if (toSync == 0) {
-   Application.getInjector().getPlaceController().goTo(new TasksPlace());
-   }
-   }*/
 
    public Long getProjectId() {
       return projectId;
@@ -89,7 +51,7 @@ public class ClientState {
 
       // Now is the place for big reset
       project = null;
-      resourceAllocations = null;
+      //resourceAllocations = null;
       resources = null;
 
       // Start prefilling the cache
@@ -103,9 +65,10 @@ public class ClientState {
          @Override
          public void onSuccess(Project result) {
             project = result;
+            eventBus.fireEvent(new DataReadyEvent(DataReadyEvent.DataType.PROJECT));
          }
       });
-      service.findAllResourcesForProject(projectId, new AsyncCallback<List<Resource>>() {
+      /*service.findAllResourcesForProject(projectId, new AsyncCallback<List<Resource>>() {
 
          @Override
          public void onFailure(Throwable caught) {
@@ -115,18 +78,7 @@ public class ClientState {
          @Override
          public void onSuccess(List<Resource> result) {
             resources = result;
-         }
-      });
-      /*service.findAllAllocationsForProject(projectId, new AsyncCallback<Map<Long, ResourceAllocation>>() {
-
-         @Override
-         public void onFailure(Throwable caught) {
-            throw new UnsupportedOperationException("Not supported yet.");
-         }
-
-         @Override
-         public void onSuccess(Map<Long, ResourceAllocation> result) {
-            resourceAllocations = result;
+            eventBus.fireEvent(new DataReadyEvent(DataReadyEvent.DataType.RESOURCES));
          }
       });*/
       service.findAllGroups(new AsyncCallback<List<ResourceGroup>>() {
@@ -139,7 +91,7 @@ public class ClientState {
          @Override
          public void onSuccess(List<ResourceGroup> result) {
             groups = result;
-
+            eventBus.fireEvent(new DataReadyEvent(DataReadyEvent.DataType.GROUPS));
          }
       });
    }
@@ -157,14 +109,26 @@ public class ClientState {
       this.groups = groups;
    }
 
-   public Map<Long, ResourceAllocation> getResourceAllocations() {
-      return resourceAllocations;
+   /*public Map<Long, ResourceAllocation> getResourceAllocations() {
+   return resourceAllocations;
+   service.findAllAllocationsForProject(projectId, new AsyncCallback<Map<Long, ResourceAllocation>>() {
+   
+   @Override
+   public void onFailure(Throwable caught) {
+   throw new UnsupportedOperationException("Not supported yet.");
    }
-
+   
+   @Override
+   public void onSuccess(Map<Long, ResourceAllocation> result) {
+   resourceAllocations = result;
+   bus.fireEvent(new DataReadyEvent(DataReadyEvent.DataType.ALLOCATIONS));
+   }
+   });
+   }
+   
    public void setResourceAllocations(Map<Long, ResourceAllocation> resourceAllocations) {
-      this.resourceAllocations = resourceAllocations;
-   }
-
+   this.resourceAllocations = resourceAllocations;
+   }*/
    public Map<Long, ResourceAllocationData> getResourceData() {
       return resourceData;
    }

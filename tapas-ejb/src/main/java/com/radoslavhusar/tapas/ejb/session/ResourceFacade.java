@@ -1,11 +1,11 @@
 package com.radoslavhusar.tapas.ejb.session;
 
-import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -29,33 +29,24 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
    }
 
    @Override
-   public List<Resource> findAllForProject(Project project) {
-      return this.findAllForProject(project.getId());
-   }
-
-   @Override
    public List<Resource> findAllForProject(long projectId) {
       // Do an inner join - fetch only assigned to the project.
-      List<Resource> list = getEntityManager().
-              /*createQuery("select object(o) from " + Resource.class.getSimpleName() + " as o "
-              + "inner join o.resourceAllocations as a "
-              + " where a.key.project.id = :projectid").*/
-              createNamedQuery("resourcesForProject").
-              setParameter("projectid", projectId).
-              getResultList();
+      List<Resource> result = getEntityManager().createNamedQuery("resourcesForProject").setParameter("projectid", projectId).getResultList();
 
-      // Actually, just fetch that one assignement for the project - in PRESENTATION servlet, not here.
-      /*for (Resource res : list) {
+      // Actually, just fetch that one assignement for the project
+      // TODO: get allocation facade and do 2 lookups and the assign.
+      for (Resource res : result) {
          for (ResourceAllocation pa : res.getResourceAllocations()) {
             if (pa.getKey().getProject().getId().equals(projectId)) {
-               res.getResourceAllocations().clear();
-               res.getResourceAllocations().add(pa);
+               List<ResourceAllocation> ral = new ArrayList();
+               ral.add(pa);
+               res.setResourceAllocations(ral);
                break;
             }
          }
-      }*/ 
+      }
 
-      return list;
+      return result;
    }
 
    /**

@@ -75,18 +75,21 @@ public class MenuViewImpl extends Composite implements MenuView {
 
          @Override
          public void onSuccess(List<Project> result) {
-            // TODO: celean up this 
-            //Project defaultProject = result.get(0);
-            //Application.getInjector().getClientState().setProject(defaultProject);
-            //projectSwitch.setValue(defaultProject);
-
             // Find which one was selected
             Long current = Application.getInjector().getClientState().getProjectId();
-            for (Project p : result) {
-               if (p.getId().equals(current)) {
-                  projectSwitch.setValue(p);
-                  break;
+            if (current != null) {
+               for (Project p : result) {
+                  if (p.getId().equals(current)) {
+                     projectSwitch.setValue(p);
+                     break;
+                  }
                }
+            } else {
+               // none was selected... get the last one then 
+               // TODO this is not very happy-needs a loading screen at least
+               Project p = result.get(result.size() - 1);
+               projectSwitch.setValue(p);
+               Application.getInjector().getPlaceController().goTo(new OverviewPlace(p.getId()));
             }
 
             projectSwitch.setAcceptableValues(result);

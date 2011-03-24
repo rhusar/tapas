@@ -87,7 +87,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    }
 
    @Override
-   public Map<Long, ResourceAllocationData> findAllResourceDataForProject(long projectId) {
+   public Map<Long, ResourceAllocationData> fetchAllResourceDataForProject(long projectId) {
       List<Resource> list = resourceBean.findAllForProject(projectId);
       Map<Long, ResourceAllocationData> result = new HashMap<Long, ResourceAllocationData>();
 
@@ -101,34 +101,20 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
 
    /*@Override
    public Map<Long, ResourceAllocation> findAllAllocationsForProject(long projectId) {
-      List<ResourceAllocation> list = allocations.findAllForProject(projectId);
-
-      // Make it better presentable
-      Map<Long, ResourceAllocation> map = new HashMap<Long, ResourceAllocation>();
-
-      for (ResourceAllocation ra : list) {
-         map.put(ra.getKey().getResource().getId(), ra);
-      }
-
-      return map;
+   List<ResourceAllocation> list = allocations.findAllForProject(projectId);
+   
+   // Make it better presentable
+   Map<Long, ResourceAllocation> map = new HashMap<Long, ResourceAllocation>();
+   
+   for (ResourceAllocation ra : list) {
+   map.put(ra.getKey().getResource().getId(), ra);
+   }
+   
+   return map;
    }*/
-
    @Override
    public List<Resource> findAllResourcesForProject(long projectId) {
-      List<Resource> result = resourceBean.findAllForProject(projectId);
-
-      // Actually, just fetch that one assignement for the project we need in presentation layer
-      for (Resource res : result) {
-         for (ResourceAllocation pa : res.getResourceAllocations()) {
-            if (pa.getKey().getProject().getId().equals(projectId)) {
-               res.getResourceAllocations().clear();
-               res.getResourceAllocations().add(pa);
-               break;
-            }
-         }
-      }
-
-      return result;
+      return resourceBean.findAllForProject(projectId);
    }
 
    @Override

@@ -31,10 +31,14 @@ import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
+import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationPK;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
 import com.radoslavhusar.tapas.war.client.app.Constants;
+import com.radoslavhusar.tapas.war.client.components.DynamicSelectionCell;
+import com.radoslavhusar.tapas.war.client.util.DataUtil;
+import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -47,6 +51,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
    private Presenter presenter;
    private static Binder binder = GWT.create(Binder.class);
    public static final int NUMBER_COL_EM = 8;
+   private final TaskResourceServiceAsync service;
 
    interface Binder extends UiBinder<Widget, ResourcesViewImpl> {
    }
@@ -66,12 +71,11 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
    @UiField
    Anchor allocateResource;
    final DecoratedPopupPanel simplePopup = new DecoratedPopupPanel(true);
+   private DynamicSelectionCell groupCell;
 
    @Inject
-   public ResourcesViewImpl(final ClientState client) {
-      GWT.log("ResourcesViewImpl " + this + "is constructed!");
-
-      // Client
+   public ResourcesViewImpl(final ClientState client, TaskResourceServiceAsync service) {
+      this.service = service;
       this.client = client;
 
       simplePopup.setWidth("200px");
@@ -133,10 +137,13 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       // Group
       List<String> groupOptions = new ArrayList<String>();
       groupOptions.add("");
+      /*
       for (ResourceGroup group : client.getGroups()) {
-         groupOptions.add(group.getName());
+      groupOptions.add(group.getName());
       }
       SelectionCell groupCell = new SelectionCell(groupOptions);
+       */
+      groupCell = new DynamicSelectionCell(groupOptions);
       Column<Resource, String> groupCol = new Column<Resource, String>(groupCell) {
 
          @Override
@@ -213,7 +220,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
             // is it in the cache?
 
-            ResourceAllocation rpa = client.getResourceAllocations().get(object.getId());
+            ResourceAllocation rpa = object.getResourceAllocations().get(0); //client.getResourceAllocations().get(object.getId());
             if (rpa != null) {
                if (rpa.getKey().getResource().equals(object)) {
                   // Just update this allocation
@@ -285,26 +292,27 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public Number getValue(Resource resource) {
-            if (map.get(resource.getId()) == null) {
+            ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+            if (rad == null) {
                return null;
             } else {
-               return map.get(resource)[0];
+               return rad.getP1Allocation();
             }
          }
       };
       resources.addColumn(assignedP1Col, "P1 Assigned");
       resources.setColumnWidth(assignedP1Col, NUMBER_COL_EM, Unit.EM);
 
-
       // Remaining P1
       Column<Resource, Number> remainingP1Col = new Column<Resource, Number>(daysNumberCell) {
 
          @Override
          public Number getValue(Resource resource) {
-            if (map.get(resource) == null) {
+            ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+            if (rad == null) {
                return null;
             } else {
-               return map.get(resource)[0] - map.get(resource)[1];
+               return rad.getP1Allocation() - rad.getP1Completed();
             }
          }
       };
@@ -316,10 +324,11 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public Number getValue(Resource resource) {
-            if (map.get(resource) == null) {
+            ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+            if (rad == null) {
                return null;
             } else {
-               return map.get(resource)[2];
+               return rad.getP2Allocation();
             }
          }
       };
@@ -331,10 +340,11 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public Number getValue(Resource resource) {
-            if (map.get(resource) == null) {
+            ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+            if (rad == null) {
                return null;
             } else {
-               return map.get(resource)[3] - map.get(resource)[2];
+               return rad.getP3Allocation();
             }
          }
       };
@@ -346,11 +356,12 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public Number getValue(Resource resource) {
-            if (map.get(resource) == null) {
+            ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+            if (rad == null) {
                return null;
             } else {
-               // Sum of P1,P2,P3,PX
-               return map.get(resource)[0] + map.get(resource)[2] + map.get(resource)[4] + map.get(resource)[6];
+               // Sum of P1,P2,P3,TBD
+               return DataUtil.calculateAssigned(rad);
             }
          }
       };
@@ -362,12 +373,12 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public Number getValue(Resource resource) {
-            if (map.get(resource) == null) {
+            ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+            if (rad == null) {
                return null;
             } else {
-               // Difference of assigned - sum of done [P1,P2,P3,PX]
-               return map.get(resource)[0] + map.get(resource)[2] + map.get(resource)[4] + map.get(resource)[6]
-                       - (map.get(resource)[1] + map.get(resource)[3] + map.get(resource)[5] + map.get(resource)[7]);
+               // Sum of P1,P2,P3,TBD
+               return DataUtil.calculateRemaining(rad);
             }
          }
       };
@@ -379,35 +390,22 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public Number getValue(Resource resource) {
-            if (map.get(resource) == null) {
+            // Fraction of ALL assigned - sum of done  
+            ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+            if (rad == null) {
                return null;
-            } else {
-               // Fraction of assigned - sum of done [P1,P2,P3,PX]
-               // DOTO: Make this cleaner
-//               byte alloc = 0;
-//
-//               for (ResourceAllocation rpa : client.getResourceAllocations()) {
-//                  if (rpa.getKey().getResource().equals(resource)) {
-//                     alloc = rpa.getPercent();
-//                  }
-//               }
-//
-//               if (alloc == 0) {
-//                  return null;
-//               }
-
-               // FIXME: code repetition
-               //double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
-               byte alloc = resource.getResourceAllocations().get(0).getPercent();
-               double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
-
-
-               return (map.get(resource)[0] + map.get(resource)[2] + map.get(resource)[4] + map.get(resource)[6]
-                       - (map.get(resource)[1] + map.get(resource)[3] + map.get(resource)[5] + map.get(resource)[7])) / (res);
             }
+
+            ResourceAllocation ra = resource.getResourceAllocations().get(0);
+            if (ra == null) {
+               return null;
+            }
+
+            double resourcesRemainingTime = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * ra.getPercent() * resource.getContract() / 100 / 100;
+            return DataUtil.calculateRemaining(rad) / (resourcesRemainingTime);
          }
       };
-      resources.addColumn(loadCol, "Total Load %");
+      resources.addColumn(loadCol, "Total Load");
       resources.setColumnWidth(loadCol, NUMBER_COL_EM, Unit.EM);
 
       // Load P1 %
@@ -415,15 +413,19 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public Number getValue(Resource resource) {
-            // FIXME: code repetition
-            byte alloc = resource.getResourceAllocations().get(0).getPercent();
-            double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
-
-            if (map.get(resource) == null) {
+            // Fraction of assigned P1 - sum of done  
+            ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+            if (rad == null) {
                return null;
-            } else {
-               return (map.get(resource)[0] - map.get(resource)[1]) / res;
             }
+
+            ResourceAllocation ra = resource.getResourceAllocations().get(0);
+            if (ra == null) {
+               return null;
+            }
+
+            double resourcesRemainingTime = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * ra.getPercent() * resource.getContract() / 100 / 100;
+            return rad.getP1Allocation() / (resourcesRemainingTime);
          }
       };
       resources.addColumn(loadP1Col, "P1 Load %");
@@ -447,6 +449,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       });
 
       initWidget(binder.createAndBindUi(this));
+      GWT.log("ResourcesViewImpl is constructed!");
    }
 
    // UI routines
@@ -457,43 +460,59 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       changed = new HashSet<Resource>();
 
       // Logic; if client cache is full, dont reload
-
+      //lets disable for a while the cache
+      /* 
       if (client.getResources() != null && client.getResourceAllocations() != null) {
-         renderResources();
-         return;
+      renderResources();
+      return;
       }
+       */
 
       // Otherwise - reload
+      toSync = 3; // number of async services to sync before render
+      service.findAllResourcesForProject(client.getProjectId(), new AsyncCallback<List<Resource>>() {
 
-      toSync = 2;
-      /* FXIME!
-      Application.getInjector().getService().findAllAllocationsForProject(client.getProject().getId(), new AsyncCallback<List<ResourceAllocation>>() {
-      
-      @Override
-      public void onFailure(Throwable caught) {
-      throw new UnsupportedOperationException("Not supported yet.");
-      }
-      
-      @Override
-      public void onSuccess(List<ResourceAllocation> result) {
-      client.setResourceAllocations(result);
-      toSyncRender();
-      }
+         @Override
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(List<Resource> result) {
+            client.setResources(result);
+            toSyncRender();
+         }
       });
-      
-      Application.getInjector().getService().findAllResourceStatsForProject(client.getProject().getId(), new AsyncCallback<Map<Resource, Double[]>>() {
-      
-      @Override
-      public void onFailure(Throwable caught) {
-      throw new UnsupportedOperationException("Not supported yet.");
+      service.fetchAllResourceDataForProject(client.getProjectId(), new AsyncCallback<Map<Long, ResourceAllocationData>>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(Map<Long, ResourceAllocationData> result) {
+            client.setResourceData(result);
+            toSyncRender();
+         }
+      });
+      if (client.getGroups() == null) {
+         service.findAllGroups(new AsyncCallback<List<ResourceGroup>>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+               throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public void onSuccess(List<ResourceGroup> result) {
+               client.setGroups(result);
+               toSyncRender();
+            }
+         });
+      } else {
+         toSyncRender();
       }
-      
-      @Override
-      public void onSuccess(Map<Resource, Double[]> result) {
-      client.setResources(result);
-      toSyncRender();
-      }
-      });*/
    }
    private int toSync;
 
@@ -506,9 +525,9 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
    }
 
    private void renderResources() {
-      //map = client.getResources();
-      //List<Resource> asList = new ArrayList(client.getResources().keySet());
-
+      for (ResourceGroup group : client.getGroups()) {
+         groupCell.addOption(group.getName());
+      }
       provider.setList(client.getResources());
       resources.setRowCount(provider.getList().size(), true);
       resources.setRowData(0, provider.getList());
