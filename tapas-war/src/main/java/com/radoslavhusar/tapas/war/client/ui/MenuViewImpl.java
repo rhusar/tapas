@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.war.client.app.Application;
+import com.radoslavhusar.tapas.war.client.app.ClientState;
 import com.radoslavhusar.tapas.war.client.overview.OverviewPlace;
 import com.radoslavhusar.tapas.war.client.resources.ResourcesPlace;
 import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
@@ -28,6 +29,7 @@ public class MenuViewImpl extends Composite implements MenuView {
 
    private static Binder binder = GWT.create(Binder.class);
    private Presenter presenter;
+   private final ClientState client;
 
    public Presenter getPresenter() {
       return presenter;
@@ -48,17 +50,19 @@ public class MenuViewImpl extends Composite implements MenuView {
    Button tasks;
 
    @Inject
-   public MenuViewImpl(TaskResourceServiceAsync res) {
+   public MenuViewImpl(TaskResourceServiceAsync res, ClientState client) {
       GWT.log("MenuViewImpl created!");
+      this.client = client;
       this.presenter = Application.getInjector().getMenuPresenter();
 
       initWidget(binder.createAndBindUi(this));
 
-      // Set loading title
+      // Set loading title (woraround project since everything is data-binded)
       Project dummy = new Project();
       dummy.setName("Loading...");
       projectSwitch.setValue(dummy);
-      // Workaround for http://code.google.com/p/google-web-toolkit/issues/detail?id=6112
+
+      // Workaround for http://code.google.com/p/google-web-toolkit/issues/detail?id=6112 - disable the box
       DOM.setElementPropertyBoolean(projectSwitch.getElement(), "disabled", true);
 
 
@@ -71,9 +75,20 @@ public class MenuViewImpl extends Composite implements MenuView {
 
          @Override
          public void onSuccess(List<Project> result) {
-            Project defaultProject = result.get(0);
-            Application.getInjector().getClientState().setProject(defaultProject);
-            projectSwitch.setValue(defaultProject);
+            // TODO: celean up this 
+            //Project defaultProject = result.get(0);
+            //Application.getInjector().getClientState().setProject(defaultProject);
+            //projectSwitch.setValue(defaultProject);
+
+            // Find which one was selected
+            Long current = Application.getInjector().getClientState().getProjectId();
+            for (Project p : result) {
+               if (p.getId().equals(current)) {
+                  projectSwitch.setValue(p);
+                  break;
+               }
+            }
+
             projectSwitch.setAcceptableValues(result);
             DOM.setElementPropertyBoolean(projectSwitch.getElement(), "disabled", false);
          }
@@ -88,7 +103,6 @@ public class MenuViewImpl extends Composite implements MenuView {
             presenter.switchProject(selected);
          }
       });
-
    }
 
    @UiHandler("signOutLink")
@@ -103,12 +117,12 @@ public class MenuViewImpl extends Composite implements MenuView {
 
    @UiHandler("overview")
    void navigateOverview(ClickEvent event) {
-      Application.getInjector().getPlaceController().goTo(new OverviewPlace());
+      Application.getInjector().getPlaceController().goTo(new OverviewPlace(client.getProjectId()));
    }
 
    @UiHandler("resources")
    void navigateResources(ClickEvent event) {
-      Application.getInjector().getPlaceController().goTo(new ResourcesPlace());
+      Application.getInjector().getPlaceController().goTo(new ResourcesPlace(client.getProjectId()));
    }
 
    @Override

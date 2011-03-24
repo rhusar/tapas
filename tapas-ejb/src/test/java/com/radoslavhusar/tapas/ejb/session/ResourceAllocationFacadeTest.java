@@ -1,5 +1,6 @@
 package com.radoslavhusar.tapas.ejb.session;
 
+import com.radoslavhusar.tapas.ejb.entity.Project;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import javax.ejb.EJB;
 import org.jboss.arquillian.api.Deployment;
@@ -7,7 +8,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.runner.RunWith;
-import javax.persistence.EntityManager;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -18,7 +18,9 @@ import org.junit.Test;
 public class ResourceAllocationFacadeTest {
 
    @EJB(mappedName = "test/ProjectFacade/local")
-   ProjectFacadeLocal instance;
+   ProjectFacadeLocal projectBean;
+   @EJB(mappedName = "test/ResourceAllocationFacade/local")
+   ResourceAllocationFacadeLocal allocationBean;
 
    @Deployment
    public static JavaArchive createTestArchive() {
@@ -50,38 +52,11 @@ public class ResourceAllocationFacadeTest {
 
    @Test
    public void testGetEntityManager() {
-      System.out.println("getEntityManager");
-      //ResourceProjectAllocationFacade instance = new ResourceProjectAllocationFacade();
-      EntityManager expResult = null;
-      //EntityManager result = instance.getEntityManager();
-      System.out.println(instance.findAll());
-      //assertEquals(expResult, result);
-      // TODO review the generated test code and remove the default call to fail.
-      //fail("The test case is a prototype.");
+      System.out.println("getEntityManager test - named query test");
+
+      Project p = projectBean.findAll().get(0);
+      System.out.println("Got project: " + p);
+
+      System.out.println("Got allocations: " + allocationBean.findAllForProject(p.getId()));
    }
-   /*
-   
-   @Test
-   public void testFindAllForProject_Project() {
-   System.out.println("findAllForProject");
-   Project project = null;
-   ResourceProjectAllocationFacade instance = new ResourceProjectAllocationFacade();
-   List expResult = null;
-   List result = instance.findAllForProject(project);
-   assertEquals(expResult, result);
-   // TODO review the generated test code and remove the default call to fail.
-   fail("The test case is a prototype.");
-   }
-   
-   @Test
-   public void testFindAllForProject_long() {
-   System.out.println("findAllForProject");
-   long projectId = 0L;
-   ResourceProjectAllocationFacade instance = new ResourceProjectAllocationFacade();
-   List expResult = null;
-   List result = instance.findAllForProject(projectId);
-   assertEquals(expResult, result);
-   // TODO review the generated test code and remove the default call to fail.
-   fail("The test case is a prototype.");
-   }*/
 }

@@ -2,16 +2,10 @@ package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import java.util.List;
-import javax.ejb.Local;
 
-/**
- *
- * @author <a href="mailto:me@radoslavhusar.com">Radoslav Husar</a>
- * @version 2011
- */
-//@Local
 public interface ProjectFacadeLocal {
 
+   // CRUD
    void create(Project project);
 
    void edit(Project project);
@@ -25,4 +19,6 @@ public interface ProjectFacadeLocal {
    List<Project> findRange(int[] range);
 
    int count();
+   
+   // CUSTOM
 }

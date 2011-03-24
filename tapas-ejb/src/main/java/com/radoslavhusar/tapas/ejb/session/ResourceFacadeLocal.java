@@ -2,6 +2,7 @@ package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
+import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
 import java.util.List;
 
 /**
@@ -27,12 +28,10 @@ public interface ResourceFacadeLocal {
 
    int count();
 
-   // NON-CRUD
+   // CUSTOM
    List<Resource> findAllForProject(Project project);
 
    List<Resource> findAllForProject(long projectId);
 
-   Double[] statForProject(Resource resource, long projectId);
-
-   Double[] statForProject(long resourceId, long projectId);
+   ResourceAllocationData fetchDataForProject(long resourceId, long projectId);
 }

@@ -5,6 +5,7 @@ import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
+import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
 import com.radoslavhusar.tapas.ejb.session.ProjectFacadeLocal;
@@ -63,26 +64,6 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    }
 
    @Override
-   public int getCount() throws Exception {
-      return taskBean.count();
-   }
-
-   @Override
-   public List<Task> findAll() {
-      return taskBean.findAll();
-   }
-
-   @Override
-   public void create(Task task) {
-      taskBean.create(task);
-   }
-
-   @Override
-   public void edit(Task task) {
-      taskBean.edit(task);
-   }
-
-   @Override
    public void editProject(Project project) {
       // Persist the phases
       for (ProjectPhase p : project.getPhases()) {
@@ -96,21 +77,6 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    }
 
    @Override
-   public void remove(Task task) {
-      throw new UnsupportedOperationException("Not supported yet.");
-   }
-
-   @Override
-   public Task find(long id) {
-      return taskBean.find(id);
-   }
-
-   @Override
-   public List<Task> findRange(int[] range) {
-      throw new UnsupportedOperationException("Not supported yet.");
-   }
-
-   @Override
    public List<Project> findAllProjects() {
       return projects.findAll();
    }
@@ -121,67 +87,77 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    }
 
    @Override
-   public Map<Resource, Double[]> findAllResourceStatsForProject(long projectId) {
+   public Map<Long, ResourceAllocationData> findAllResourceDataForProject(long projectId) {
       List<Resource> list = resourceBean.findAllForProject(projectId);
-      HashMap<Resource, Double[]> result = new HashMap<Resource, Double[]>();
+      Map<Long, ResourceAllocationData> result = new HashMap<Long, ResourceAllocationData>();
 
-      for (Resource r : list) {
-         Double[] stats = resourceBean.statForProject(r.getId(), projectId);
-         result.put(r, stats);
+      // Make it better presentable
+      for (Resource res : list) {
+         result.put(res.getId(), resourceBean.fetchDataForProject(res.getId(), projectId));
+      }
+
+      return result;
+   }
+
+   /*@Override
+   public Map<Long, ResourceAllocation> findAllAllocationsForProject(long projectId) {
+      List<ResourceAllocation> list = allocations.findAllForProject(projectId);
+
+      // Make it better presentable
+      Map<Long, ResourceAllocation> map = new HashMap<Long, ResourceAllocation>();
+
+      for (ResourceAllocation ra : list) {
+         map.put(ra.getKey().getResource().getId(), ra);
+      }
+
+      return map;
+   }*/
+
+   @Override
+   public List<Resource> findAllResourcesForProject(long projectId) {
+      List<Resource> result = resourceBean.findAllForProject(projectId);
+
+      // Actually, just fetch that one assignement for the project we need in presentation layer
+      for (Resource res : result) {
+         for (ResourceAllocation pa : res.getResourceAllocations()) {
+            if (pa.getKey().getProject().getId().equals(projectId)) {
+               res.getResourceAllocations().clear();
+               res.getResourceAllocations().add(pa);
+               break;
+            }
+         }
       }
 
       return result;
    }
 
    @Override
-   public List<ResourceAllocation> findAllAllocationsForProject(long projectId) {
-      return allocations.findAllForProject(projectId);
-   }
-
-   @Override
-   public List<Resource> findAllResourcesForProject(long projectId) {
-      throw new UnsupportedOperationException("Not supported yet.");
-   }
-
-   @Override
    public void editResourcesForProject(long projectId, Collection<Resource> resources) {
       for (Resource res : resources) {
-         if (res.getId() == 0) {
+         if (res.getId() == null) {
             // its a new resource, persist it
             resourceBean.create(res);
-
             // now persist the NEW allocation
-            for (ResourceAllocation rpa : res.getAllocations()) {
-               if (rpa.getPercent() != 0) {
-                  // dont save if allocated to 0%
+            for (ResourceAllocation rpa : res.getResourceAllocations()) {
+               if (rpa.getPercent() > 0) {
+                  // save only if allocated to more than 0%
                   allocations.create(rpa);
                }
             }
          } else {
             // resource is not new, save changes
-
             // allocations changed?
-            for (ResourceAllocation rpa : res.getAllocations()) {
-               /*if (rpa.getId() == 0) {
-               // persist it
-               if (rpa.getPercent() != 0) {
-               // dont save if allocated to 0%
-               allocations.create(rpa);
-               }
-               } else {
-                */ if (rpa.getPercent() == 0) {
+            for (ResourceAllocation rpa : res.getResourceAllocations()) {
+               if (rpa.getPercent() < 0) {
                   // remove if allocated to 0%
                   allocations.remove(rpa);
                } else {
                   // update it
                   allocations.edit(rpa);
                }
-               /*}*/
-
             }
-
             // secondly - so that references are already persisted
-            res.setAllocations(null);
+            res.setResourceAllocations(null);
             resourceBean.edit(res);
          }
       }
@@ -190,32 +166,27 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    @Override
    public void editTasks(Collection<Task> tasks) {
       for (Task t : tasks) {
-         if (t.getId() == 0) {
+         if (t.getId() == null) {
             // its is new, persist it
             taskBean.create(t);
-
             // now persist the NEW time alloc
             for (TimeAllocation ta : t.getTimeAllocations()) {
-               if (ta.getAllocation() != 0 || ta.getCompleted() != 0) {
+               if (ta.getAllocation() > 0) {
                   // dont save if allocated to 0%
                   timeAllocationBean.create(ta);
                }
             }
          } else {
             // it is not new, only merge changes
-
             // allocations changed?
             for (TimeAllocation ta : t.getTimeAllocations()) {
-
-               if (ta.getAllocation() != 0 || ta.getCompleted() != 0) {
+               if (ta.getAllocation() > 0) {
                   timeAllocationBean.edit(ta);
                } else {
                   // remove if its zero
                   timeAllocationBean.remove(ta);
                }
-
             }
-
             // secondly - so that references are already persisted
             t.setTimeAllocations(null);
             taskBean.edit(t);
@@ -231,5 +202,10 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    @Override
    public List<Task> findAllTasksForProject(long projectId) {
       return taskBean.findAllForProject(projectId);
+   }
+
+   @Override
+   public Project findProject(long projectId) {
+      return projects.find(projectId);
    }
 }

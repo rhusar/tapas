@@ -9,11 +9,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "RESOURCE")
+@NamedQuery(name = "resourcesForProject", query = "select object(o) from Resource as o fetch all properties inner join o.resourceAllocations as a where a.key.project.id = :projectid")
 public class Resource implements Serializable {
 
    private static final long serialVersionUID = 1L;
@@ -23,11 +25,11 @@ public class Resource implements Serializable {
    @Column
    private String name;
    @Column
-   private Byte contract;
-   @ManyToOne
+   private byte contract;
+   @ManyToOne(fetch = FetchType.EAGER)
    private ResourceGroup group;
    @OneToMany(mappedBy = "key.resource", fetch = FetchType.LAZY)
-   private List<ResourceAllocation> allocations;
+   private List<ResourceAllocation> resourceAllocations;
    @OneToMany(mappedBy = "resource", fetch = FetchType.LAZY)
    private List<Task> tasks;
 
@@ -47,11 +49,11 @@ public class Resource implements Serializable {
       this.group = group;
    }
 
-   public Byte getContract() {
+   public byte getContract() {
       return contract;
    }
 
-   public void setContract(Byte contact) {
+   public void setContract(byte contact) {
       this.contract = contact;
    }
 
@@ -63,12 +65,12 @@ public class Resource implements Serializable {
       this.name = name;
    }
 
-   public List<ResourceAllocation> getAllocations() {
-      return allocations;
+   public List<ResourceAllocation> getResourceAllocations() {
+      return resourceAllocations;
    }
 
-   public void setAllocations(List<ResourceAllocation> allocations) {
-      this.allocations = allocations;
+   public void setResourceAllocations(List<ResourceAllocation> resourceAllocations) {
+      this.resourceAllocations = resourceAllocations;
    }
 
    public List<Task> getTasks() {
@@ -81,6 +83,6 @@ public class Resource implements Serializable {
 
    @Override
    public String toString() {
-      return "Resource{id=" + id + ", name=" + name + ", contract=" + contract + '}';
+      return "Resource{id=" + id + ", name=" + name + ", contract=" + contract + "}";
    }
 }

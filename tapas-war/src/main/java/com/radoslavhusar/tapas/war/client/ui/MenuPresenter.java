@@ -16,7 +16,7 @@ public class MenuPresenter implements MenuView.Presenter {
    @Override
    public void switchProject(Project selected) {
       GWT.log("Switched to project: " + selected.getName() + " (ID: " + selected.getId() + ")");
-      Application.getInjector().getClientState().setProject(selected);
-      Application.getInjector().getPlaceController().goTo(new OverviewPlace());
+      Application.getInjector().getClientState().setProjectId(selected.getId());
+      Application.getInjector().getPlaceController().goTo(new OverviewPlace(selected.getId()));
    }
 }

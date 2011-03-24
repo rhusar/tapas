@@ -5,17 +5,30 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 
 public class ResourcesPlace extends Place {
 
+   private Long projectId;
+
+   public ResourcesPlace(Long projectId) {
+      this.projectId = projectId;
+   }
+
+   public Long getProjectId() {
+      return projectId;
+   }
+
    public static class Tokenizer implements PlaceTokenizer<ResourcesPlace> {
 
       @Override
       public String getToken(ResourcesPlace place) {
-         return null;
+         return "" + place.getProjectId();
       }
 
       @Override
       public ResourcesPlace getPlace(String token) {
-
-         return new ResourcesPlace();
+         try {
+            return new ResourcesPlace(Long.parseLong(token));
+         } catch (NumberFormatException nfe) {
+            return new ResourcesPlace(null);
+         }
       }
    }
 }

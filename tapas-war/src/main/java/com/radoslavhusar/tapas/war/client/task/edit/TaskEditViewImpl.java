@@ -85,7 +85,7 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
 
       submit.setEnabled(false);
       // Now preload the data
-      Application.getInjector().getService().find(taskId, new AsyncCallback<Task>() {
+      /*Application.getInjector().getService().find(taskId, new AsyncCallback<Task>() {
 
          @Override
          public void onFailure(Throwable caught) {
@@ -98,7 +98,7 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
             summary.setText(result.getSummary());
             submit.setEnabled(true);
          }
-      });
+      });*/
       
    }
 

@@ -6,6 +6,7 @@ import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
+import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import java.util.Collection;
 import java.util.List;
@@ -14,28 +15,9 @@ import java.util.Map;
 @RemoteServiceRelativePath("res")
 public interface TaskResourceService extends RemoteService {
 
-   @Deprecated
-   int getCount() throws Exception;
-
-   @Deprecated
-   void create(Task task);
-
-   @Deprecated
-   void edit(Task task);
-
-   @Deprecated
-   void remove(Task task);
-
-   @Deprecated
-   Task find(long id);
-
-   @Deprecated
-   List<Task> findAll();
-
-   @Deprecated
-   List<Task> findRange(int[] range);
-
    // Project
+   Project findProject(long projectId);
+
    List<Project> findAllProjects();
 
    void editProject(Project project);
@@ -45,18 +27,17 @@ public interface TaskResourceService extends RemoteService {
 
    List<Task> findAllTasksForProject(long projectId);
 
-   @Deprecated
    void editTasksForProject(long projectId, Collection<Task> tasks);
-
-   // Group
-   List<ResourceGroup> findAllGroups();
 
    // Resource
    List<Resource> findAllResourcesForProject(long projectId);
 
-   List<ResourceAllocation> findAllAllocationsForProject(long projectId);
+   /*Map<Long, ResourceAllocation> findAllAllocationsForProject(long projectId);*/
 
-   Map<Resource, Double[]> findAllResourceStatsForProject(long projectId);
+   Map<Long, ResourceAllocationData> findAllResourceDataForProject(long projectId);
 
    void editResourcesForProject(long projectId, Collection<Resource> resources);
+
+   // Group
+   List<ResourceGroup> findAllGroups();
 }

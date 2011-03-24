@@ -3,9 +3,9 @@ package com.radoslavhusar.tapas.ejb.session;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
+import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
-import java.util.Arrays;
 import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -36,30 +36,26 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
    @Override
    public List<Resource> findAllForProject(long projectId) {
       // Do an inner join - fetch only assigned to the project.
-      List<Resource> l = getEntityManager().
-              createQuery("select object(o) from " + Resource.class.getSimpleName() + " as o "
-              + "inner join o.resourceProjectAllocations as a "
-              + " where a.key.project.id = :projectid").
+      List<Resource> list = getEntityManager().
+              /*createQuery("select object(o) from " + Resource.class.getSimpleName() + " as o "
+              + "inner join o.resourceAllocations as a "
+              + " where a.key.project.id = :projectid").*/
+              createNamedQuery("resourcesForProject").
               setParameter("projectid", projectId).
               getResultList();
 
-      // Actually, just fetch that one assignement for the project
-      for (Resource r : l) {
-         for (ResourceAllocation pa : r.getAllocations()) {
-            if (pa.getKey().getProject().getId() == projectId) {
-               r.getAllocations().clear();
-               r.getAllocations().add(pa);
+      // Actually, just fetch that one assignement for the project - in PRESENTATION servlet, not here.
+      /*for (Resource res : list) {
+         for (ResourceAllocation pa : res.getResourceAllocations()) {
+            if (pa.getKey().getProject().getId().equals(projectId)) {
+               res.getResourceAllocations().clear();
+               res.getResourceAllocations().add(pa);
                break;
             }
          }
-      }
+      }*/ 
 
-      return l;
-   }
-
-   @Override
-   public Double[] statForProject(Resource resource, long projectId) {
-      return statForProject(resource.getId(), projectId);
+      return list;
    }
 
    /**
@@ -69,7 +65,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
     * @return array of P1 Ass, P1 Done, P2 Ass, P2 Done, P3 Ass, P3 Done, PX Ass, PX Done
     */
    @Override
-   public Double[] statForProject(long resourceId, long projectId) {
+   public ResourceAllocationData fetchDataForProject(long resourceId, long projectId) {
       // TODO: get this to work, aggregate via Hibernate
 //       List l = getEntityManager().
 //              createQuery("select sum(a.timeAllocation) from " + Resource.class.getSimpleName() + " as o "
@@ -103,8 +99,9 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
          }
       }
 
-      System.out.println(Arrays.toString(result));
+      ResourceAllocationData ras = new ResourceAllocationData(resourceId, projectId, result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7]);
+      System.out.println(ras.toString());
 
-      return result;
+      return ras;
    }
 }

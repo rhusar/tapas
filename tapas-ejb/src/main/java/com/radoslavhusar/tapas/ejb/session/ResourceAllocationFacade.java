@@ -36,9 +36,6 @@ public class ResourceAllocationFacade extends AbstractFacade<ResourceAllocation>
 
    @Override
    public List<ResourceAllocation> findAllForProject(long projectId) {
-      return getEntityManager().
-              createQuery("select object(o) from " + ResourceAllocation.class.getSimpleName() + " as o where o.key.project.id = :projectid").
-              setParameter("projectid", projectId).
-              getResultList();
+      return getEntityManager().createNamedQuery("resourceAllocationsForProject").setParameter("projectid", projectId).getResultList();
    }
 }

@@ -21,7 +21,7 @@ public class ResourceGroup implements Serializable {
    private Long id;
    @Column
    private String name;
-   @ManyToMany(fetch = FetchType.LAZY)
+   @ManyToMany(mappedBy = "group", fetch = FetchType.LAZY)
    private List<Resource> resources;
 
    public Long getId() {

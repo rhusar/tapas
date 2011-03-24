@@ -266,7 +266,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
 
          @Override
          public void update(int index, Task object, String value) {
-            for (Resource r : client.getResources().keySet()) {
+            for (Resource r : client.getResources()) {
                if (value.equals(r.getName())) {
                   object.setResource(r);
                   changed.add(object);
@@ -307,7 +307,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       changed.clear();
 
 
-      Application.getInjector().getService().findAllResourceStatsForProject(1, new AsyncCallback<Map<Resource, Double[]>>() {
+      /* CLEANUP Application.getInjector().getService().findAllResourceStatsForProject(client.getProjectId(), new AsyncCallback<Map<Resource, Double[]>>() {
 
          @Override
          public void onFailure(Throwable caught) {
@@ -323,7 +323,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
             }
 
 
-            Application.getInjector().getService().findAll(new AsyncCallback<List<Task>>() {
+            Application.getInjector().getService().findAllTasksForProject(client.getProject().getId(), new AsyncCallback<List<Task>>() {
 
                @Override
                public void onFailure(Throwable caught) {
@@ -344,7 +344,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                }
             });
          }
-      });
+      });*/
 
       // Phases Times
       Project project = Application.getInjector().getClientState().getProject();
