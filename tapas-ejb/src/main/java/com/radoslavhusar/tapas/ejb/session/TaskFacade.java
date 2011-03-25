@@ -26,7 +26,7 @@ public class TaskFacade extends AbstractFacade<Task> implements TaskFacadeLocal 
    @Override
    public List<Task> findAllForProject(long projectId) {
       return getEntityManager().
-              createQuery("select object(o) from " + Task.class.getSimpleName() + " as o where o.project.id = :projectid").
+              createNamedQuery("tasksForProject").
               setParameter("projectid", projectId).
               getResultList();
    }

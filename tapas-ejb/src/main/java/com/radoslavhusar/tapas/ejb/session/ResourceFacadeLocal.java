@@ -1,16 +1,9 @@
 package com.radoslavhusar.tapas.ejb.session;
 
-import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
 import java.util.List;
 
-/**
- *
- * @author <a href="mailto:me@radoslavhusar.com">Radoslav Husar</a>
- * @version 2011
- */
-//@Local
 public interface ResourceFacadeLocal {
 
    // CRUD

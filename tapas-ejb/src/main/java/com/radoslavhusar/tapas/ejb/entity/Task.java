@@ -9,11 +9,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "TASK")
+@NamedQuery(name = "tasksForProject", query = "select object(o) from Task as o where o.project.id = :projectid")
 public class Task implements Serializable {
 
    private static final long serialVersionUID = 7440293452003302414L;

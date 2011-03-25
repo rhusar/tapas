@@ -21,6 +21,7 @@ import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -33,6 +34,7 @@ import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
+import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.TaskStatus;
@@ -42,15 +44,16 @@ import com.radoslavhusar.tapas.war.client.app.Constants;
 import com.radoslavhusar.tapas.war.client.components.DynamicSelectionCell;
 import com.radoslavhusar.tapas.war.client.components.NumberEditTextCell;
 import com.radoslavhusar.tapas.war.client.components.PriorityEditTextCell;
+import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class TasksViewImpl extends ResizeComposite implements TasksView {
 
    private Presenter presenter;
+   private final TaskResourceServiceAsync service;
    private static Binder binder = GWT.create(Binder.class);
 
    interface Binder extends UiBinder<Widget, TasksViewImpl> {
@@ -68,10 +71,15 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
    SimplePager filterPager;
    private ClientState client;
    private DynamicSelectionCell resourceCell;
+   @UiField
+   Anchor addTask;
+   @UiField
+   Anchor saveTasks;
 
    @Inject
-   public TasksViewImpl(final ClientState client) {
+   public TasksViewImpl(final ClientState client, final TaskResourceServiceAsync service) {
       this.client = client;
+      this.service = service;
 
       provider = new ListDataProvider<Task>() {
 
@@ -108,7 +116,90 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       tasks = new CellTable<Task>(provider);
 
       initWidget(binder.createAndBindUi(this));
+      GWT.log("New TasksViewImpl created.");
+   }
 
+   // UI routines
+   public void bind() {
+      menu.add(Application.getInjector().getMenuView());
+      status.add(Application.getInjector().getStatusView());
+
+      // disable the gui
+      filter.setEnabled(false);
+      addTask.setEnabled(false);
+      saveTasks.setEnabled(false);
+
+      // cleanup
+      changed.clear();
+
+      if (client.getProjectId() == null) {
+         // no project selected, ignore that all
+         return;
+      }
+
+      // fetch data from services
+      toSync = 3;
+      service.findAllResourcesForProject(client.getProjectId(), new AsyncCallback<List<Resource>>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(List<Resource> result) {
+            client.setResources(result);
+            toSyncRender();
+         }
+      });
+
+      service.findAllTasksForProject(client.getProjectId(), new AsyncCallback<List<Task>>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(List<Task> result) {
+            client.setTasks(result);
+            toSyncRender();
+         }
+      });
+      if (client.getGroups() == null) {
+         service.findAllGroups(new AsyncCallback<List<ResourceGroup>>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+               throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public void onSuccess(List<ResourceGroup> result) {
+               client.setGroups(result);
+               toSyncRender();
+            }
+         });
+      } else {
+         toSyncRender();
+      }
+   }
+   private int toSync;
+
+   private void toSyncRender() {
+      toSync--;
+
+      if (toSync == 0) {
+         renderTasks();
+      }
+   }
+
+   public void unbind() {
+      menu.clear();
+      status.clear();
+   }
+
+   public void renderTasks() {
       filter.addKeyUpHandler(new KeyUpHandler() {
 
          @Override
@@ -122,8 +213,10 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
             provider.refresh();
          }
       });
-
       tasks.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+
+      // Columns definitions
+
 
       // ID (readonly)
       TextColumn<Task> idCol = new TextColumn<Task>() {
@@ -135,6 +228,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       };
       tasks.addColumn(idCol, "ID");
       tasks.setColumnWidth(idCol, 2, Unit.EM);
+
 
       // Unified ID
       Cell unifIdCell = new EditTextCell();
@@ -156,6 +250,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       });
       tasks.addColumn(unifiedIdCol, "UID");
       tasks.setColumnWidth(unifiedIdCol, 2, Unit.EM);
+
 
       // Priority
       Cell prioEditCell = new PriorityEditTextCell();
@@ -194,6 +289,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       tasks.addColumn(prioCol, "Prio");
       tasks.setColumnWidth(prioCol, 1, Unit.EM);
 
+
       // Status
       List<String> statusOptions = new ArrayList<String>();
       statusOptions.add(""); // The null value
@@ -218,7 +314,6 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                object.setStatus(null);
                return;
             }
-
             for (TaskStatus ts : TaskStatus.values()) {
                if (Task.formatState(ts).equals(value)) {
                   object.setStatus(ts);
@@ -230,7 +325,8 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       tasks.addColumn(statusCol, "Status");
       tasks.setColumnWidth(statusCol, 10, Unit.EM);
 
-      // Name
+
+      // Task Name
       Cell<String> nameCell = new EditTextCell();
       Column<Task, String> nameCol = new Column<Task, String>(nameCell) {
 
@@ -250,16 +346,23 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       });
       tasks.addColumn(nameCol, "Name");
 
+
       // Resource
       List<String> opts = new ArrayList<String>();
       opts.add(Constants.UNASSIGNED);
-      resourceCell = new DynamicSelectionCell(opts); // Needs to be fed data before data display - in bind().
+      for (Resource r : client.getResources()) {
+         // Resources which are allocated on this project!
+         if (r.getName() != null) {
+            opts.add(r.getName());
+         }
+      }
+      resourceCell = new DynamicSelectionCell(opts);
 
       Column<Task, String> resourceCol = new Column<Task, String>(resourceCell) {
 
          @Override
          public String getValue(Task task) {
-            return task.getResource() == null ? Constants.UNASSIGNED : task.getResource().getName();
+            return (task.getResource() == null) ? Constants.UNASSIGNED : task.getResource().getName();
          }
       };
       resourceCol.setFieldUpdater(new FieldUpdater<Task, String>() {
@@ -281,73 +384,8 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       tasks.setColumnWidth(resourceCol, 10, Unit.EM);
 
 
-      // Add a selection model to handle user selection.
-      final SingleSelectionModel<Task> selectionModel = new SingleSelectionModel<Task>();
-      tasks.setSelectionModel(selectionModel);
-      selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-
-         @Override
-         public void onSelectionChange(SelectionChangeEvent event) {
-            Task selected = selectionModel.getSelectedObject();
-            if (selected != null) {
-               //Window.alert("You selected: " + selected.getId());
-               //presenter.goToEdit("" + selected.getId());
-            }
-         }
-      });
-
-      // Just show all, workaround.
-      tasks.setPageSize(Integer.MAX_VALUE - 1);
-   }
-
-   // UI routines
-   public void bind() {
-      menu.add(Application.getInjector().getMenuView());
-      status.add(Application.getInjector().getStatusView());
-      changed.clear();
-
-
-      /* CLEANUP Application.getInjector().getService().findAllResourceStatsForProject(client.getProjectId(), new AsyncCallback<Map<Resource, Double[]>>() {
-
-         @Override
-         public void onFailure(Throwable caught) {
-            throw new UnsupportedOperationException("Not supported yet.");
-         }
-
-         // FIXME: in one place
-         @Override
-         public void onSuccess(Map<Resource, Double[]> result) {
-            client.setResources(result);
-            for (Resource r : client.getResources().keySet()) {
-               resourceCell.addOption(r.getName());
-            }
-
-
-            Application.getInjector().getService().findAllTasksForProject(client.getProject().getId(), new AsyncCallback<List<Task>>() {
-
-               @Override
-               public void onFailure(Throwable caught) {
-                  throw new UnsupportedOperationException("Not supported yet.");
-               }
-
-               @Override
-               public void onSuccess(List<Task> result) {
-                  // List<Task> s = new ArrayList(result);
-                  provider.setList(result);
-
-                  // Set the total row count. This isn't strictly necessary, but it affects
-                  // paging calculations, so its good habit to keep the row count up to date.
-                  tasks.setRowCount(result.size(), true);
-
-                  // Push the data into the widget.
-                  tasks.setRowData(0, result);
-               }
-            });
-         }
-      });*/
-
       // Phases Times
-      Project project = Application.getInjector().getClientState().getProject();
+      Project project = client.getProject();
       if (project != null) {
          for (final ProjectPhase phase : project.getPhases()) {
             Cell<String> timeCell = new NumberEditTextCell();
@@ -378,23 +416,23 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
 
                   changed.add(object);
 
-                  for (TimeAllocation tta : object.getTimeAllocations()) {
+                  for (TimeAllocation ta : object.getTimeAllocations()) {
                      // TODO: needs comparing IDs which is safe, but should be done .equal but doesnt work
-                     if (tta.getPhase().getId() == phase.getId()) {
-                        tta.setAllocation(index);
-                        GWT.log("Updating allocation: " + tta);
+                     if (ta.getPhase().getId() == phase.getId()) {
+                        ta.setAllocation(index);
+                        GWT.log("Updating allocation: " + ta);
                         tasks.redraw();
                         return;
                      }
                   }
 
                   // No Allocation found? Create a new one
-                  TimeAllocation tta = new TimeAllocation();
-                  tta.setTask(object);
-                  tta.setPhase(phase);
-                  tta.setAllocation(doubleValue);
-                  object.getTimeAllocations().add(tta);
-                  GWT.log("Creating allocation: " + tta);
+                  TimeAllocation ta = new TimeAllocation();
+                  ta.setTask(object);
+                  ta.setPhase(phase);
+                  ta.setAllocation(doubleValue);
+                  object.getTimeAllocations().add(ta);
+                  GWT.log("Creating allocation: " + ta);
                   tasks.redraw();
                }
             });
@@ -404,7 +442,8 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
          }
       }
 
-      // Total
+
+      // Totals
       NumberCell allocNumberCell = new NumberCell(NumberFormat.getFormat(Constants.ALLOC_FORMAT));
       Column<Task, Number> timeTotalCol = new Column<Task, Number>(allocNumberCell) {
 
@@ -419,14 +458,41 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
             return total;
          }
       };
-
       tasks.addColumn(timeTotalCol, "Total");
       tasks.setColumnWidth(timeTotalCol, 2, Unit.EM);
-   }
 
-   public void unbind() {
-      menu.clear();
-      status.clear();
+
+      // Add a selection model to handle user selection
+      final SingleSelectionModel<Task> selectionModel = new SingleSelectionModel<Task>();
+      tasks.setSelectionModel(selectionModel);
+      selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+
+         @Override
+         public void onSelectionChange(SelectionChangeEvent event) {
+            Task selected = selectionModel.getSelectedObject();
+            if (selected != null) {
+               GWT.log("You selected: " + selected.getId());
+            }
+         }
+      });
+
+      // Just show all tasks
+      tasks.setPageSize(Integer.MAX_VALUE - 1);
+
+      // Feed the data
+      provider.setList(client.getTasks());
+
+      // Set the total row count. This isn't strictly necessary, but it affects
+      // paging calculations, so its good habit to keep the row count up to date.
+      tasks.setRowCount(provider.getList().size(), true);
+
+      // Push the data into the widget.
+      tasks.setRowData(0, provider.getList());
+
+      // Re-enable the gui
+      filter.setEnabled(true);
+      addTask.setEnabled(true);
+      saveTasks.setEnabled(true);
    }
 
    @Override
@@ -439,7 +505,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       Task task = new Task();
       task.setTimeAllocations(new ArrayList());
       task.setProject(client.getProject());
-      task.setName("New task");
+      task.setName("New unsaved task");
       changed.add(task);
       provider.getList().add(task);
       provider.refresh();

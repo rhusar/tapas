@@ -24,6 +24,7 @@ public class AppActivityMapper implements ActivityMapper {
          Application.getInjector().getClientState().setProjectId(((OverviewPlace) place).getProjectId());
          return Application.getInjector().getOverviewActivity();
       } else if (place instanceof TasksPlace) {
+         Application.getInjector().getClientState().setProjectId(((TasksPlace) place).getProjectId());
          return Application.getInjector().getTaskListActivity();
       } else if (place instanceof TaskEditPlace) {
          // Dont make this singleton.. or?

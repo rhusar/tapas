@@ -115,7 +115,7 @@ public class MenuViewImpl extends Composite implements MenuView {
 
    @UiHandler("tasks")
    void navigateTasks(ClickEvent event) {
-      Application.getInjector().getPlaceController().goTo(new TasksPlace());
+      Application.getInjector().getPlaceController().goTo(new TasksPlace(client.getProjectId()));
    }
 
    @UiHandler("overview")

@@ -15,14 +15,14 @@ import com.google.gwt.resources.client.CssResource.NotStrict;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
+import com.radoslavhusar.tapas.war.client.overview.OverviewPlace;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class Application implements EntryPoint {
 
-   private Place defaultPlace = new TasksPlace();
+   private Place defaultPlace = new OverviewPlace((long) 1);
    private SimplePanel appWidget = new SimplePanel();
    private static final AppGinjector injector = GWT.create(AppGinjector.class);
 
@@ -62,22 +62,22 @@ public class Application implements EntryPoint {
       /*
       // handlers
       eventBus.addHandler(TaskEditEvent.TYPE, new TaskEditEventHandler() {
-
+      
       @Override
       public void onEditTask(TaskEditEvent event) {
       System.out.println(this.getClass().getName() + "is handling " + event);
       }
       });
-
-
+      
+      
       injector.getService().getCount(new AsyncCallback<Integer>() {
-
+      
       @Override
       public void onFailure(Throwable caught) {
       //            throw new UnsupportedOperationException("Not supported yet.");
       Window.alert("Request failed :-( ");
       }
-
+      
       @Override
       public void onSuccess(Integer result) {
       //            System.out.println("IT WORKED!!! " + result);

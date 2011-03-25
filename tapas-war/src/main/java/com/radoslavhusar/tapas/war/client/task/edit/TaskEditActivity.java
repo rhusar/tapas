@@ -4,8 +4,6 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.war.client.app.Application;
@@ -61,7 +59,7 @@ public class TaskEditActivity extends AbstractActivity implements TaskEditView.P
    @Override
    public void goTo() {
       view.unbind();
-      Application.getInjector().getPlaceController().goTo(new TasksPlace());
+      Application.getInjector().getPlaceController().goTo(new TasksPlace((long) 1));
    }
 
    @Override
@@ -70,19 +68,19 @@ public class TaskEditActivity extends AbstractActivity implements TaskEditView.P
 
       //Application.getInjector().getEventBus().fireEvent(new TaskEditEvent(t));
 /*      Application.getInjector().getService().edit(t, new AsyncCallback<Void>() {
-
-         @Override
-         public void onFailure(Throwable caught) {
-            Window.alert("error while saving!");
-         }
-
-         @Override
-         public void onSuccess(Void result) {
-            //Window.alert("SAVED!");
-            GWT.log("saved");
-         }
+      
+      @Override
+      public void onFailure(Throwable caught) {
+      Window.alert("error while saving!");
+      }
+      
+      @Override
+      public void onSuccess(Void result) {
+      //Window.alert("SAVED!");
+      GWT.log("saved");
+      }
       });*/
 
-      Application.getInjector().getPlaceController().goTo(new TasksPlace());
+      Application.getInjector().getPlaceController().goTo(new TasksPlace((long) 1));
    }
 }
