@@ -20,6 +20,7 @@ import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
 import com.radoslavhusar.tapas.war.client.overview.OverviewPlace;
+import com.radoslavhusar.tapas.war.client.projects.ProjectsPlace;
 import com.radoslavhusar.tapas.war.client.resources.ResourcesPlace;
 import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
@@ -88,8 +89,8 @@ public class MenuViewImpl extends Composite implements MenuView {
                // none was selected... get the last one then 
                // TODO this is not very happy-needs a loading screen at least
                Project p = result.get(result.size() - 1);
-               projectSwitch.setValue(p);
-               Application.getInjector().getPlaceController().goTo(new OverviewPlace(p.getId()));
+               //projectSwitch.setValue(p);
+               //Application.getInjector().getPlaceController().goTo(new OverviewPlace(p.getId()));
             }
 
             projectSwitch.setAcceptableValues(result);
@@ -113,14 +114,19 @@ public class MenuViewImpl extends Composite implements MenuView {
       presenter.doAbout();
    }
 
-   @UiHandler("tasks")
-   void navigateTasks(ClickEvent event) {
-      Application.getInjector().getPlaceController().goTo(new TasksPlace(client.getProjectId()));
+   @UiHandler("projects")
+   void navigateProjects(ClickEvent event) {
+      Application.getInjector().getPlaceController().goTo(new ProjectsPlace());
    }
 
    @UiHandler("overview")
    void navigateOverview(ClickEvent event) {
       Application.getInjector().getPlaceController().goTo(new OverviewPlace(client.getProjectId()));
+   }
+
+   @UiHandler("tasks")
+   void navigateTasks(ClickEvent event) {
+      Application.getInjector().getPlaceController().goTo(new TasksPlace(client.getProjectId()));
    }
 
    @UiHandler("resources")

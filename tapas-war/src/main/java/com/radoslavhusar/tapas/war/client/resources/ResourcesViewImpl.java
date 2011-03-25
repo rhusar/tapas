@@ -467,6 +467,12 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       }
        */
 
+      if (client.getProjectId() == null) {
+         // no project chosen
+         resources.setRowCount(0, true);
+         return;
+      }
+
       // Otherwise - reload
       toSync = 3; // number of async services to sync before render
       service.findAllResourcesForProject(client.getProjectId(), new AsyncCallback<List<Resource>>() {

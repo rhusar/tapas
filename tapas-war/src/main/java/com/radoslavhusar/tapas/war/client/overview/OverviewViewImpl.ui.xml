@@ -21,6 +21,7 @@
       <g:center>
          <g:ScrollPanel>
             <g:HTMLPanel>
+               <p>
                <h2>Project Properties</h2>
                <strong>Today</strong>
                <g:Label ui:field='propToday'>TBD</g:Label>
@@ -30,6 +31,7 @@
                <g:Label ui:field='propTarget'>TBD</g:Label>
                <strong>Days remaining</strong>
                <g:Label ui:field='propDays'>TBD</g:Label>
+               </p>
             </g:HTMLPanel>
          </g:ScrollPanel>
       </g:center>

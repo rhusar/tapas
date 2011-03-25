@@ -15,14 +15,14 @@ import com.google.gwt.resources.client.CssResource.NotStrict;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.radoslavhusar.tapas.war.client.overview.OverviewPlace;
+import com.radoslavhusar.tapas.war.client.projects.ProjectsPlace;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class Application implements EntryPoint {
 
-   private Place defaultPlace = new OverviewPlace((long) 1);
+   private Place defaultPlace = new ProjectsPlace();
    private SimplePanel appWidget = new SimplePanel();
    private static final AppGinjector injector = GWT.create(AppGinjector.class);
 

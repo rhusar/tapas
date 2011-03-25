@@ -18,7 +18,7 @@
    <inherits name="net.sf.gilead.Gilead4Gwt" />
 
    <!-- Charts -->
-   <!-- <inherits name="com.google.gwt.visualization.Visualization"/> -->
+   <inherits name="com.google.gwt.visualization.Visualization"/>
 
    <!-- include shadow package for entities -->
    <inherits name="com.radoslavhusar.tapas.ejb.Entity"/>
