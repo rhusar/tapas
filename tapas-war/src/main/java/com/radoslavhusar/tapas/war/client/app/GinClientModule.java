@@ -4,6 +4,8 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.inject.Singleton;
+import com.radoslavhusar.tapas.war.client.projects.ProjectsView;
+import com.radoslavhusar.tapas.war.client.projects.ProjectsViewImpl;
 import com.radoslavhusar.tapas.war.client.ui.MenuPresenter;
 import com.radoslavhusar.tapas.war.client.ui.MenuViewImpl;
 import com.radoslavhusar.tapas.war.client.tasks.TasksView;
@@ -27,6 +29,9 @@ public class GinClientModule extends AbstractGinModule {
       bind(StatusPresenter.class).in(Singleton.class);
       bind(MenuViewImpl.class).in(Singleton.class);
       bind(StatusViewImpl.class).in(Singleton.class);
+
+      bind(ProjectsView.class).to(ProjectsViewImpl.class).in(Singleton.class);
+      bind(ProjectsViewImpl.class).in(Singleton.class);
 
       // Views
       bind(TaskEditView.class).to(TaskEditViewImpl.class).in(Singleton.class);

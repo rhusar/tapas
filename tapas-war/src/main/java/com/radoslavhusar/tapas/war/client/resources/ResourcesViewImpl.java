@@ -92,7 +92,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public String getValue(Resource resource) {
-            return resource.getId() == null ? Constants.UNSAVEDID : resource.getId().toString();
+            return resource.getId() == null ? Constants.UNSAVED_ID : resource.getId().toString();
          }
       };
       /* 

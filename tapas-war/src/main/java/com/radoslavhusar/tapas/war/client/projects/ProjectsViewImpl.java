@@ -1,41 +1,39 @@
 package com.radoslavhusar.tapas.war.client.projects;
 
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.DatePickerCell;
-import com.google.gwt.cell.client.EditTextCell;
-import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Project;
-import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
-import java.util.ArrayList;
+import com.radoslavhusar.tapas.war.client.overview.OverviewPlace;
+import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.Collections;
-import java.util.Date;
+import java.util.List;
 
 public class ProjectsViewImpl extends ResizeComposite implements ProjectsView {
 
    private Presenter presenter;
    private static Binder binder = GWT.create(Binder.class);
+   private final ClientState client;
+   private final TaskResourceServiceAsync service;
 
    interface Binder extends UiBinder<Widget, ProjectsViewImpl> {
    }
@@ -43,135 +41,68 @@ public class ProjectsViewImpl extends ResizeComposite implements ProjectsView {
    SimplePanel menu;
    @UiField
    SimplePanel status;
-   /* @UiField(provided = true)
-   CellTable phases = new CellTable<ProjectPhase>();
-  @UiField
-   Label projectName;
-   @UiField
-   Anchor phaseAdd;
-   @UiField
-   Anchor phaseSave;
-   @UiField
-   Anchor phaseRemove;
-   @UiField
-   Label propToday;
-   @UiField
-   Label propStart;
-   @UiField
-   Label propTarget;
-   @UiField
-   Label propDays;
-   Project project;*/
    DateTimeFormat dateFormat = DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT);
+   @UiField
+   HTMLPanel left;
 
    @Inject
-   public ProjectsViewImpl(ClientState state) {
-     /* phases = new CellTable<ProjectPhase>();
+   public ProjectsViewImpl(ClientState client, TaskResourceServiceAsync service) {
+      this.client = client;
+      this.service = service;
 
-      // ID
-      TextColumn<ProjectPhase> idCol = new TextColumn<ProjectPhase>() {
-
-         @Override
-         public String getValue(ProjectPhase phase) {
-            return "" + (phase.getId() != 0 ? phase.getId() : "New");
-         }
-      };
-
-      phases.addColumn(idCol, "ID");
-      phases.setColumnWidth(idCol, 2, Unit.EM);
-
-      // Name
-      Cell nameCell = new EditTextCell();
-      Column<ProjectPhase, String> phaseNameCol = new Column<ProjectPhase, String>(nameCell) {
-
-         @Override
-         public String getValue(ProjectPhase phase) {
-            return phase.getName();
-            //+ " (" + phase.getName().substring(0, 4) + ")";
-         }
-      };
-      phaseNameCol.setFieldUpdater(new FieldUpdater<ProjectPhase, String>() {
-
-         @Override
-         public void update(int index, ProjectPhase object, String value) {
-            object.setName(value);
-         }
-      });
-      phases.addColumn(phaseNameCol, "Name");
-
-      // Start Date
-      Cell datePickCell = new DatePickerCell(dateFormat);
-
-      Column<ProjectPhase, Date> startDateCol = new Column<ProjectPhase, Date>(datePickCell) {
-
-         @Override
-         public Date getValue(ProjectPhase phase) {
-            return phase.getStartDate();
-         }
-      };
-      startDateCol.setFieldUpdater(new FieldUpdater<ProjectPhase, Date>() {
-
-         @Override
-         public void update(int index, ProjectPhase object, Date value) {
-            object.setStartDate(value);
-         }
-      });
-      phases.addColumn(startDateCol, "Start Date");
-
-      // End Date
-      Column<ProjectPhase, Date> endDateCol = new Column<ProjectPhase, Date>(datePickCell) {
-
-         @Override
-         public Date getValue(ProjectPhase phase) {
-            return phase.getEndDate();
-         }
-      };
-      endDateCol.setFieldUpdater(new FieldUpdater<ProjectPhase, Date>() {
-
-         @Override
-         public void update(int index, ProjectPhase object, Date value) {
-            object.setEndDate(value);
-         }
-      });
-      phases.addColumn(endDateCol, "End Date");
-
-      // Add a selection model to handle user selection.
-      final SingleSelectionModel<ProjectPhase> selectionModel = new SingleSelectionModel<ProjectPhase>();
-      phases.setSelectionModel(selectionModel);
-      phases.setPageSize(Integer.MAX_VALUE - 1);
-*/
       initWidget(binder.createAndBindUi(this));
+      GWT.log("New ProjectsViewImpl created.");
    }
 
    // UI routines
+   @Override
    public void bind() {
       menu.add(Application.getInjector().getMenuView());
       status.add(Application.getInjector().getStatusView());
 
-      /*project = Application.getInjector().getClientState().getProject();
-      if (project == null) {
-         return;
-      }
+      final VerticalPanel vp = new VerticalPanel();
+      left.add(vp);
+      vp.add(new Label("Loading..."));
 
-      // Set the properties
-      propToday.setText(dateFormat.format(new Date()));
-      propStart.setText(dateFormat.format(project.getStartDate()));
-      propTarget.setText(dateFormat.format(project.getTargetDate()));
-      double days = Math.round(project.getTargetDate().getTime() - (new Date()).getTime());
-      days /= 86400000;
-      propDays.setText("" + days);
+      service.findAllProjects(new AsyncCallback<List<Project>>() {
 
-      // Set the phases
-      projectName.setText(project.getName());
+         @Override
+         public void onFailure(Throwable caught) {
+            //throw new UnsupportedOperationException("Not supported yet.");
+         }
 
-      if (project.getPhases() == null) {
-         phases.setRowCount(0);
-      } else {
-         Collections.sort(project.getPhases());
-         phases.setRowData(project.getPhases());
-      }*/
+         @Override
+         public void onSuccess(List<Project> result) {
+            //throw new UnsupportedOperationException("Not supported yet.");
+            vp.clear();
+
+            Collections.reverse(result);
+
+            for (final Project p : result) {
+
+               FlowPanel fp = new FlowPanel();
+               fp.setWidth("100%");
+               Anchor link = new Anchor(p.getName());
+               link.addClickHandler(new ClickHandler() {
+
+                  @Override
+                  public void onClick(ClickEvent event) {
+                     Application.getInjector().getPlaceController().goTo(new OverviewPlace(p.getId()));
+                  }
+               });
+               fp.add(link);
+               fp.add(new InlineLabel(
+                       (p.getPhases().isEmpty() ? "" : " in " + p.getPhases().get(0).getName())
+                       + "" + (p.getTargetDate() == null ? "" : " due " + p.getTargetDate())));
+               vp.add(fp);
+            }
+
+            vp.add(new HTML("<br><br>"));
+         }
+      });
    }
 
+   @Override
    public void unbind() {
       menu.clear();
       status.clear();
@@ -182,45 +113,60 @@ public class ProjectsViewImpl extends ResizeComposite implements ProjectsView {
       this.presenter = presenter;
    }
 
-  /* @UiHandler("phaseRemove")
-   public void removePhase(ClickEvent event) {
-      ProjectPhase deletePhase = ((SingleSelectionModel<ProjectPhase>) phases.getSelectionModel()).getSelectedObject();
-      if (deletePhase.getId() == 0) {
-         project.getPhases().remove(deletePhase);
-         phases.setRowData(project.getPhases());
-         Window.alert("Removed '" + deletePhase.getName() + "'.");
-      } else {
-         Window.alert("Do you want to remove '" + deletePhase.getName() + "' phase? Not supported yet.");
+   @UiHandler("newProject")
+   public void doNewProject(ClickEvent event) {
+      /*
+      // Create a dialog box and set the caption text
+      final DialogBox dialogBox = new DialogBox();
+      //dialogBox.ensureDebugId("cwDialogBox");
+      dialogBox.setText("Start a new project...");
+      
+      // Create a table to layout the content
+      VerticalPanel dialogContents = new VerticalPanel();
+      dialogContents.setSpacing(4);
+      dialogBox.setWidget(dialogContents);
+      
+      // Add some text to the top of the dialog
+      HTML details = new HTML("Name a new project:");
+      dialogContents.add(details);
+      //dialogContents.setCellHorizontalAlignment(details, HasHorizontalAlignment.ALIGN_CENTER);
+      
+      // Add an image to the dialog
+      //Image image = new Image(Showcase.images.jimmy());
+      //dialogContents.add(image);
+      //dialogContents.setCellHorizontalAlignment(        image, HasHorizontalAlignment.ALIGN_CENTER);
+      
+      // Add a close button at the bottom of the dialog
+      Button closeButton = new Button("Close", new ClickHandler() {
+      
+      @Override
+      public void onClick(ClickEvent event) {
+      dialogBox.hide();
       }
-   }
-
-   @UiHandler("phaseAdd")
-   public void phaseAddClick(ClickEvent event) {
-      ProjectPhase newPhase = new ProjectPhase();
-      newPhase.setName("New phase");
-      newPhase.setStartDate(new Date());
-      newPhase.setEndDate(new Date());
-      newPhase.setProject(project);
-      if (project.getPhases() == null) {
-         project.setPhases(new ArrayList<ProjectPhase>());
-      }
-      project.getPhases().add(newPhase);
-      phases.setRowData(project.getPhases());
-   }
-
-   @UiHandler("phaseSave")
-   public void phaseSaveClick(ClickEvent event) {
-      Application.getInjector().getService().editProject(project, new AsyncCallback<Void>() {
-
-         @Override
-         public void onFailure(Throwable caught) {
-            GWT.log("Failed saving phases.");
-         }
-
-         @Override
-         public void onSuccess(Void result) {
-            GWT.log("Saved phases OK.");
-         }
       });
-   }*/
+      dialogContents.add(closeButton);
+      
+      Button createButton = new Button("Close", new ClickHandler() {
+      
+      @Override
+      public void onClick(ClickEvent event) {
+      Application.getInjector().getPlaceController().goTo(null);
+      }
+      });
+      dialogContents.add(createButton);
+      
+      dialogContents.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
+      
+      
+      // Return the dialog box
+      
+      dialogBox.setGlassEnabled(true);
+      dialogBox.setAnimationEnabled(true);
+      
+      
+      // onclick
+      dialogBox.center();
+      dialogBox.show();
+       */
+   }
 }

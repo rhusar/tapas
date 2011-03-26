@@ -11,7 +11,7 @@
       </g:north>
 
       <g:north size='4'>
-         <g:HTMLPanel>
+         <g:HTMLPanel styleName='{style.withPaddingTitle}'>
             <h1>
                <g:Label ui:field='projectName'>TBD</g:Label>
             </h1>
@@ -19,36 +19,41 @@
       </g:north>
 
       <g:center>
-         <g:ScrollPanel>
-            <g:HTMLPanel>
-               <p>
-               <h2>Project Properties</h2>
-               <strong>Today</strong>
-               <g:Label ui:field='propToday'>TBD</g:Label>
-               <strong>Start date</strong>
-               <g:Label ui:field='propStart'>TBD</g:Label>
-               <strong>Target date</strong>
-               <g:Label ui:field='propTarget'>TBD</g:Label>
-               <strong>Days remaining</strong>
-               <g:Label ui:field='propDays'>TBD</g:Label>
-               </p>
-            </g:HTMLPanel>
-         </g:ScrollPanel>
+         <g:DockLayoutPanel unit='PCT' height="100%" styleName='{style.outer}'>
+
+            <g:center size='100'>
+               <g:HTMLPanel styleName='{style.withPadding}'>
+                  <p>
+                     <h2>Project Properties</h2>
+                     <strong>Today</strong>
+                     <g:Label ui:field='propToday'>TBD</g:Label>
+                     <strong>Start date</strong>
+                     <g:Label ui:field='propStart'>TBD</g:Label>
+                     <strong>Target date</strong>
+                     <g:Label ui:field='propTarget'>TBD</g:Label>
+                     <strong>Days remaining</strong>
+                     <g:Label ui:field='propDays'>TBD</g:Label>
+                  </p>
+               </g:HTMLPanel> 
+            </g:center>
+               
+            <g:east size="50">
+               <g:HTMLPanel styleName='{style.withPadding}'>
+                  <h2>Project Phases</h2>
+                  <c:CellTable ui:field='phases'  styleName='{style.table}' />
+                  <g:Anchor ui:field='phaseAdd'>+ New</g:Anchor> |
+                  <g:Anchor ui:field='phaseRemove'>Remove</g:Anchor> |
+                  <g:Anchor ui:field='phaseSave'>Save</g:Anchor>
+               </g:HTMLPanel>
+            </g:east>
+    
+         </g:DockLayoutPanel>
       </g:center>
 
       <g:south size="2">
          <g:SimplePanel ui:field='status' />
       </g:south>
       
-      <g:east size="40" unit="PCT">
-         <g:HTMLPanel>
-            <h2>Project Phases</h2>
-            <c:CellTable ui:field='phases'  styleName='{style.table}' />
-            <g:Anchor ui:field='phaseAdd'>Add</g:Anchor> |
-            <g:Anchor ui:field='phaseRemove'>Remove</g:Anchor> |
-            <g:Anchor ui:field='phaseSave'>Save</g:Anchor>
-         </g:HTMLPanel>
-      </g:east>
    </g:DockLayoutPanel>
 
    <ui:style>
@@ -63,6 +68,13 @@
      width: 100%;
   }
 
+      .withPadding {
+      padding: 10px;
+      }
+      
+            .withPaddingTitle {
+      padding: 0 0 0 10px;
+      }
    </ui:style>
 
 </ui:UiBinder>

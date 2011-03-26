@@ -7,6 +7,9 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -18,9 +21,11 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
@@ -73,7 +78,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
 
          @Override
          public String getValue(ProjectPhase phase) {
-            return "" + (phase.getId() != 0 ? phase.getId() : "New");
+            return phase.getId() == null ? "" : phase.getId().toString();
          }
       };
 
@@ -163,6 +168,34 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
 
       // Set the phases
       projectName.setText(project.getName());
+      projectName.addClickHandler(new ClickHandler() {
+
+         @Override
+         public void onClick(ClickEvent event) {
+            final DecoratedPopupPanel simplePopup = new DecoratedPopupPanel(true);
+            simplePopup.setWidth("150px");
+            final TextBox box = new TextBox();
+            box.setText(projectName.getText());
+            box.addKeyUpHandler(new KeyUpHandler() {
+
+               @Override
+               public void onKeyUp(KeyUpEvent event) {
+                  if (event.getNativeKeyCode() == 13) {
+                     project.setName(box.getText() );
+                     projectName.setText(box.getText());
+                     simplePopup.hide();
+                  }
+               }
+            });
+            simplePopup.setWidget(box);
+            simplePopup.show();
+            box.setFocus(true);
+            Widget source = (Widget) event.getSource();
+            int left = source.getAbsoluteLeft() + 10;
+            int top = source.getAbsoluteTop() + 10;
+            simplePopup.setPopupPosition(left, top);
+         }
+      });
 
       if (project.getPhases() == null) {
          phases.setRowCount(0);

@@ -10,8 +10,8 @@
          <g:SimplePanel ui:field='menu' />
       </g:north>
 
-      <g:north size='4' >
-         <g:HTMLPanel>
+      <g:north size='4'>
+         <g:HTMLPanel styleName='{style.withPaddingTitle}'>
             <h1>
                <g:Label ui:field='projectName'>Task-Resource Allocation System</g:Label>
             </h1>
@@ -19,31 +19,34 @@
       </g:north>
 
       <g:center>
-
-         <g:HTMLPanel>
-            <h2>Projects</h2>
-<!--            <c:CellTable ui:field='phases'  styleName='{style.table}' />
-            <g:Anchor ui:field='phaseAdd'>Add</g:Anchor> |
-            <g:Anchor ui:field='phaseRemove'>Remove</g:Anchor> |
-            <g:Anchor ui:field='phaseSave'>Save</g:Anchor>-->
-         </g:HTMLPanel>
+         <g:VerticalPanel styleName='{style.withPadding}'>
+            <g:HTMLPanel  ui:field="left">
+               <h2>Projects</h2>
+               <!-- some things will be added here -->           
+            </g:HTMLPanel>
+            
+            <g:Anchor ui:field='newProject'>Start a new project &gt;</g:Anchor>
+         </g:VerticalPanel>
       </g:center>
 
       <g:south size="2">
          <g:SimplePanel ui:field='status' />
       </g:south>
       
-      <g:east size="40" unit="PCT">
+      <g:east size="40">
          <g:ScrollPanel>
             <g:HTMLPanel>
-<!--               <h1>Task-Resource Allocation System</h1>-->
-               <img src="tapas-logo-full.jpg" alt="Tapas: traditional Spanish apetizer" />
+               <img src="tapas-logo-full.jpg" alt="Tapas is a traditional Spanish apetiser" />
             </g:HTMLPanel>
          </g:ScrollPanel>
       </g:east>
    </g:DockLayoutPanel>
 
    <ui:style>
+      .withPadding {
+      padding: 1em;
+      }
+      
   .outer {
     border-left: 1px solid #999;
     border-bottom: 1px solid #999;
@@ -54,7 +57,15 @@
     .table {
      width: 100%;
   }
-
+  
+  
+      .withPadding {
+      padding: 10px;
+      }
+      
+            .withPaddingTitle {
+      padding: 0 0 0 10px;
+      }
    </ui:style>
 
 </ui:UiBinder>

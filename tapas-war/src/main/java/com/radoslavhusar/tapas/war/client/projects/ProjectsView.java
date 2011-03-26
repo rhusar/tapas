@@ -6,6 +6,10 @@ public interface ProjectsView extends IsWidget {
 
    void setPresenter(Presenter presenter);
 
+   void bind();
+
+   void unbind();
+
    public interface Presenter {
    }
 }

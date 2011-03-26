@@ -51,7 +51,7 @@ public class MenuViewImpl extends Composite implements MenuView {
    Button tasks;
 
    @Inject
-   public MenuViewImpl(TaskResourceServiceAsync res, ClientState client) {
+   public MenuViewImpl(final TaskResourceServiceAsync res, final ClientState client) {
       GWT.log("MenuViewImpl created!");
       this.client = client;
       this.presenter = Application.getInjector().getMenuPresenter();
@@ -77,7 +77,7 @@ public class MenuViewImpl extends Composite implements MenuView {
          @Override
          public void onSuccess(List<Project> result) {
             // Find which one was selected
-            Long current = Application.getInjector().getClientState().getProjectId();
+            Long current = client.getProjectId();
             if (current != null) {
                for (Project p : result) {
                   if (p.getId().equals(current)) {
@@ -88,7 +88,10 @@ public class MenuViewImpl extends Composite implements MenuView {
             } else {
                // none was selected... get the last one then 
                // TODO this is not very happy-needs a loading screen at least
-               Project p = result.get(result.size() - 1);
+               //Project p = result.get(result.size() - 1);
+               Project dummy = new Project();
+               dummy.setName("");
+               projectSwitch.setValue(dummy);
                //projectSwitch.setValue(p);
                //Application.getInjector().getPlaceController().goTo(new OverviewPlace(p.getId()));
             }

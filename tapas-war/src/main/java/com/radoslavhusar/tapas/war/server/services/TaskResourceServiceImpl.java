@@ -67,7 +67,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    public void editProject(Project project) {
       // Persist the phases
       for (ProjectPhase p : project.getPhases()) {
-         if (p.getId() == 0) {
+         if (p.getId() == null) {
             phases.create(p);
          } else {
             phases.edit(p);

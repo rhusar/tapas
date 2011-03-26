@@ -7,7 +7,7 @@ import com.radoslavhusar.tapas.war.client.app.Application;
 
 public class ProjectsActivity extends AbstractActivity implements ProjectsView.Presenter {
 
-   ProjectsViewImpl view;
+   ProjectsView view;
 
    @Override
    public void start(AcceptsOneWidget panel, EventBus eventBus) {

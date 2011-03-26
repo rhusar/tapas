@@ -1,6 +1,5 @@
 package com.radoslavhusar.tapas.war.client.app;
 
-import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;

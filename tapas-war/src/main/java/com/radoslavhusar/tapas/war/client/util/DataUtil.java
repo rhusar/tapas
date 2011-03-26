@@ -13,5 +13,6 @@ public class DataUtil {
    }
 
    private DataUtil() {
+      // Not instantiable, its a static util class.
    }
 }
