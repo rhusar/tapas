@@ -4,9 +4,11 @@ import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.NumberCell;
+import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
+
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -14,6 +16,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -39,7 +42,6 @@ import com.radoslavhusar.tapas.war.client.components.DynamicSelectionCell;
 import com.radoslavhusar.tapas.war.client.util.DataUtil;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -130,8 +132,20 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          }
       });
       nameCol.setSortable(true);
-      resources.addColumn(nameCol, "Resource Name");
-      // resources.setColumnWidth(nameCol, 10, Unit.EM);
+      resources.addColumn(nameCol, new Header<String>(new TextCell()) {
+
+         @Override
+         public String getValue() {
+            return "Resource Name";
+         }
+      }, new Header<String>(new TextCell()) {
+
+         @Override
+         public String getValue() {
+            return "" + provider.getList().size() + " resources total";
+         }
+      });
+
 
       // Group
       List<String> groupOptions = new ArrayList<String>();
@@ -189,7 +203,23 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             resources.redraw();
          }
       });
-      resources.addColumn(contractCol, "Contract %");
+      resources.addColumn(contractCol, new Header<String>(new TextCell()) {
+
+         @Override
+         public String getValue() {
+            return "Contract %";
+         }
+      }, new Header<String>(new TextCell()) {
+
+         @Override
+         public String getValue() {
+            int sum = 0;
+            for (Resource r : provider.getList()) {
+               sum += r.getContract();
+            }
+            return "" + sum;
+         }
+      });
       resources.setColumnWidth(contractCol, 1, Unit.EM);
 
       // Allocation
@@ -198,13 +228,6 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public String getValue(Resource resource) {
-//            for (ResourceAllocation rpa : client.getResourceAllocations()) {
-//               if (rpa.getKey().getResource().getId() == resource.getId()) {
-//                  return rpa.getPercent() + "%";
-//               }
-//            }
-//
-//            return "";
             return "" + resource.getResourceAllocations().get(0).getPercent();
          }
       };
@@ -257,7 +280,8 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       resources.addColumn(allocCol, "Project Allocation %");
       resources.setColumnWidth(allocCol, 10, Unit.EM);
 
-      // TODO: Update to http://google-web-toolkit.googlecode.com/svn/javadoc/2.2/com/google/gwt/cell/client/NumberCell.html
+      // Updated to http://google-web-toolkit.googlecode.com/svn/javadoc/2.2/com/google/gwt/cell/client/NumberCell.html but if we want to display ratio..
+
       // Number cells
       NumberCell daysNumberCell = new NumberCell(NumberFormat.getFormat("0.00"));
       NumberCell percentageNumberCell = new NumberCell(NumberFormat.getPercentFormat());
@@ -267,12 +291,29 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public String getValue(Resource resource) {
-            byte alloc = resource.getResourceAllocations().get(0).getPercent();
+            /* byte alloc = resource.getResourceAllocations().get(0).getPercent();
             double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
-            return "" + NumberFormat.getDecimalFormat().format(res);
+            return "" + NumberFormat.getDecimalFormat().format(res);*/
+            return NumberFormat.getFormat(Constants.ALLOC_FORMAT).format(DataUtil.remainingUntil(client.getProject().getTargetDate(), resource));
          }
       };
-      resources.addColumn(daysCol, "Remaining days");
+      resources.addColumn(daysCol, new Header<String>(new TextCell()) {
+
+         @Override
+         public String getValue() {
+            return "Remaining days";
+         }
+      }, new Header<String>(new TextCell()) {
+
+         @Override
+         public String getValue() {
+            double dsum = 0;
+            for (Resource resource : provider.getList()) {
+               dsum += DataUtil.remainingUntil(client.getProject().getTargetDate(), resource);
+            }
+            return NumberFormat.getFormat(Constants.ALLOC_FORMAT).format(dsum);
+         }
+      });
       resources.setColumnWidth(daysCol, 5, Unit.EM);
 
       // Clean Remaining days
@@ -283,7 +324,19 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             return "N/I";
          }
       };
-      resources.addColumn(cleanDaysCol, "Days less PTO/Tax");
+      resources.addColumn(cleanDaysCol, new Header<String>(new TextCell()) {
+
+         @Override
+         public String getValue() {
+            return "Days less PTO/Tax";
+         }
+      }, new Header<String>(new TextCell()) {
+
+         @Override
+         public String getValue() {
+            return "N/I";
+         }
+      });
       resources.setColumnWidth(cleanDaysCol, NUMBER_COL_EM, Unit.EM);
 
       // Assigned P1
@@ -364,7 +417,27 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             }
          }
       };
-      resources.addColumn(assignedTotal, "Total Assigned");
+      resources.addColumn(assignedTotal, new Header<String>(new TextCell()) {
+
+         @Override
+         public String getValue() {
+            return "Total Assigned";
+         }
+      }, new Header<String>(new TextCell()) {
+
+         @Override
+         public String getValue() {
+            int sum = 0;
+            for (Resource resource : provider.getList()) {
+               ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+               if (rad == null) {
+                  continue;
+               }
+               sum += DataUtil.calculateAssigned(rad);
+            }
+            return "" + sum;
+         }
+      });
       resources.setColumnWidth(assignedTotal, NUMBER_COL_EM, Unit.EM);
 
       // Remaining total
@@ -381,7 +454,27 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             }
          }
       };
-      resources.addColumn(remainingTotal, "Total Remaining");
+      resources.addColumn(remainingTotal, new Header<String>(new TextCell()) {
+
+         @Override
+         public String getValue() {
+            return "Total Remaining";
+         }
+      }, new Header<String>(new TextCell()) {
+
+         @Override
+         public String getValue() {
+            int sum = 0;
+            for (Resource resource : provider.getList()) {
+               ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+               if (rad == null) {
+                  continue;
+               }
+               sum += DataUtil.calculateRemaining(rad);
+            }
+            return "" + sum;
+         }
+      });
       resources.setColumnWidth(remainingTotal, NUMBER_COL_EM, Unit.EM);
 
       // Load %
@@ -394,14 +487,12 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             if (rad == null) {
                return null;
             }
-
             ResourceAllocation ra = resource.getResourceAllocations().get(0);
             if (ra == null) {
                return null;
             }
 
-            double resourcesRemainingTime = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * ra.getPercent() * resource.getContract() / 100 / 100;
-            return DataUtil.calculateRemaining(rad) / (resourcesRemainingTime);
+            return DataUtil.calculateRemaining(rad) / DataUtil.remainingUntil(client.getProject().getTargetDate(), resource);
          }
       };
       resources.addColumn(loadCol, "Total Load");
@@ -417,14 +508,12 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             if (rad == null) {
                return null;
             }
-
             ResourceAllocation ra = resource.getResourceAllocations().get(0);
             if (ra == null) {
                return null;
             }
 
-            double resourcesRemainingTime = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * ra.getPercent() * resource.getContract() / 100 / 100;
-            return rad.getP1Allocation() / (resourcesRemainingTime);
+            return rad.getP1Allocation() / DataUtil.remainingUntil(client.getProject().getTargetDate(), resource);
          }
       };
       resources.addColumn(loadP1Col, "P1 Load %");
@@ -458,23 +547,20 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
       changed = new HashSet<Resource>();
 
-      // Logic; if client cache is full, dont reload
-      //lets disable for a while the cache
-      /* 
-      if (client.getResources() != null && client.getResourceAllocations() != null) {
-      renderResources();
-      return;
-      }
-       */
-
       if (client.getProjectId() == null) {
          // no project chosen
          resources.setRowCount(0, true);
          return;
       }
 
+      // Logic; if client cache is full, dont reload
+      if (client.getResources() != null && client.getResourceData() != null && client.getGroups() != null) {
+         renderResources();
+         return;
+      }
+
       // Otherwise - reload
-      toSync = 3; // number of async services to sync before render
+      toSync = 3; // number of async services which MUST sync before render
       service.findAllResourcesForProject(client.getProjectId(), new AsyncCallback<List<Resource>>() {
 
          @Override
@@ -546,16 +632,23 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
    @UiHandler("addResource")
    public void addResource(ClickEvent click) {
-      Resource newguy = new Resource();
-      changed.add(newguy);
-      newguy.setName("New resource");
+      byte b = 100;
+
+      Resource newResource = new Resource();
+      changed.add(newResource);
+      newResource.setName("New resource");
+      newResource.setContract(b);
+
+      // Allocation
       ResourceAllocation fullAllocation = new ResourceAllocation();
-      fullAllocation.setPercent(new Byte("100"));
-      fullAllocation.setKey(new ResourceAllocationPK(client.getProject(), newguy));
+
+      fullAllocation.setPercent(b);
+      fullAllocation.setKey(new ResourceAllocationPK(client.getProject(), newResource));
       List allodcs = new ArrayList();
       allodcs.add(fullAllocation);
-      newguy.setResourceAllocations(allodcs);
-      provider.getList().add(newguy);
+
+      newResource.setResourceAllocations(allodcs);
+      provider.getList().add(newResource);
       resources.setRowData(provider.getList());
       resources.setRowCount(provider.getList().size());
       resources.redraw();
@@ -569,7 +662,6 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       int left = source.getAbsoluteLeft() + 10;
       int top = source.getAbsoluteTop() + 10;
       simplePopup.setPopupPosition(left, top);
-
       // Show the popup
       simplePopup.show();
    }
