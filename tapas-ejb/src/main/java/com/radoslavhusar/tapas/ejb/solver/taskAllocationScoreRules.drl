@@ -1,0 +1,20 @@
+/**
+*
+*/
+package org.drools.planner.examples.curriculumcourse.solver;
+dialect "java"
+
+import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalculator;
+import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
+import org.drools.planner.core.score.constraint.ConstraintType;
+
+import com.rad
+
+global HardAndSoftConstraintScoreCalculator scoreCalculator;
+
+rule "basicRule"
+when
+then
+end
+
+

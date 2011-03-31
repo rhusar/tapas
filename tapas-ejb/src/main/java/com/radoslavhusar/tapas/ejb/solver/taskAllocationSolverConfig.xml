@@ -1,0 +1,32 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<localSearchSolver>
+   <scoreDrl>/com/radoslavhusar/tapas/ejb/planner/taskAllocationScoreRules.drl</scoreDrl>
+   <scoreDefinition>
+      <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+   </scoreDefinition>
+   <startingSolutionInitializerClass>com.radoslavhusar.tapas.ejb.solver.TaskAllocationSolutionInitializer</startingSolutionInitializerClass>
+   <termination>
+      <!-- Meaning there are no contraints broken so a perfect solution must exist -->
+      <scoreAttained>0</scoreAttained>
+      <!-- 
+      <maximumUnimprovedStepCount>100</maximumUnimprovedStepCount>
+      <scoreAttained>0hard/-5000soft</scoreAttained>
+      -->
+   </termination>
+   <selector>
+      <moveFactoryClass>com.radoslavhusar.tapas.ejb.planner.TaskAllocationMoveFactory</moveFactoryClass>
+   </selector>
+   <acceptor>
+      <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+   </acceptor>
+   <forager>
+      <pickEarlyType>NEVER</pickEarlyType>
+   </forager>
+   
+   <!-- Development -->
+   <environmentMode>DEBUG</environmentMode>
+
+   <!-- Production -->
+   <!--   <environmentMode>PRODUCTION</environmentMode>-->
+
+</localSearchSolver>

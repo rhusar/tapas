@@ -1,6 +1,7 @@
 package com.radoslavhusar.tapas.ejb.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +17,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "TASK")
 @NamedQuery(name = "tasksForProject", query = "select object(o) from Task as o where o.project.id = :projectid")
-public class Task implements Serializable {
+public class Task implements Serializable, Cloneable {
 
    private static final long serialVersionUID = 7440293452003302414L;
    @Id
@@ -131,5 +132,26 @@ public class Task implements Serializable {
 
    public static String formatState(TaskStatus state) {
       return state == null ? "" : state.toString().substring(0, 1).toUpperCase() + state.toString().substring(1).toLowerCase();
+   }
+
+   /**
+    * Needed for drools planner. There must be a better way, this sucks.
+    * 
+    * @return a clone
+    */
+   @Override
+   public Task clone() {
+      Task clone = new Task();
+      clone.id = id;
+      clone.unifiedId = unifiedId;
+      clone.name = name;
+      clone.summary = summary;
+      clone.resource = resource;
+      clone.resourceGroup = resourceGroup;
+      clone.priority = priority;
+      clone.timeAllocations = new ArrayList();
+      clone.timeAllocations.addAll(timeAllocations);
+      clone.status = status;
+      return null;
    }
 }

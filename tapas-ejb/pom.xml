@@ -21,6 +21,14 @@
    </properties>
 
    <dependencies>
+      <!-- Drools Planner -->
+      <dependency>
+         <groupId>org.drools.planner</groupId>
+         <artifactId>drools-planner-core</artifactId>
+         <version>5.1.0.M2</version>
+      </dependency>
+      
+      <!-- Target application server, provided scope -->
       <dependency>
          <groupId>org.jboss.jbossas</groupId>
          <artifactId>jboss-as-client</artifactId>
@@ -90,7 +98,8 @@
             <artifactId>maven-ejb-plugin</artifactId>
             <version>2.3</version>
             <configuration>
-               <ejbVersion>3.0</ejbVersion>
+               <ejbVersion>3.0</ejbVersion> <!-- Java EE 5 -->
+               <generateClient>true</generateClient> <!-- this is false by default -->
             </configuration>
          </plugin>
       </plugins>
