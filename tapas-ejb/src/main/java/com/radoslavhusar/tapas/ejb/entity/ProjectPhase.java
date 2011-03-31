@@ -15,7 +15,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "PROJECT_PHASE")
-public class ProjectPhase implements Serializable, Comparable {
+public class ProjectPhase implements Serializable, Comparable<ProjectPhase> {
 
    private static final long serialVersionUID = 3L;
    @Id
@@ -78,16 +78,12 @@ public class ProjectPhase implements Serializable, Comparable {
     * @return positive integer if this phase starts after the compared to.
     */
    @Override
-   public int compareTo(Object o) {
-      if (o instanceof ProjectPhase) {
-         if (((ProjectPhase) o).getStartDate().after(this.startDate)) {
-            return -1;
-         } else {
-            return 1;
-         }
+   public int compareTo(ProjectPhase o) {
+      if (((ProjectPhase) o).getStartDate().after(this.startDate)) {
+         return -1;
+      } else {
+         return 1;
       }
-
-      return 0;
    }
 
    @Override

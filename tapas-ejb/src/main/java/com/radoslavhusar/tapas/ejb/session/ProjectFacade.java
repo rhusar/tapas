@@ -6,11 +6,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-/**
- *
- * @author <a href="mailto:me@radoslavhusar.com">Radoslav Husar</a>
- * @version 2011
- */
 @Stateless
 @Local(ProjectFacadeLocal.class)
 public class ProjectFacade extends AbstractFacade<Project> implements ProjectFacadeLocal {
@@ -19,7 +14,7 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
     * Or could be   
     * @PersistenceContext(unitName = "TapasPersistenceUnit")
     * but see article: TBD
-    */ 
+    */
    @PersistenceContext
    private EntityManager em;
 
