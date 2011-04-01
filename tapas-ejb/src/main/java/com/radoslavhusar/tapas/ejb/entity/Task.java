@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "TASK")
 @NamedQuery(name = "tasksForProject", query = "select object(o) from Task as o where o.project.id = :projectid")
-public class Task implements Serializable, Cloneable {
+public class Task implements Serializable {
 
    private static final long serialVersionUID = 7440293452003302414L;
    @Id
@@ -137,10 +137,13 @@ public class Task implements Serializable, Cloneable {
    /**
     * Needed for drools planner. There must be a better way, this sucks.
     * 
+    * This cant really be done by implementing interface Cloneable because GWT compiler has problem with it:
+    * 
+    * [INFO]          [ERROR] Line 143: The method clone() of type Task must override or implement a supertype method
+    * 
     * @return a clone
     */
-   @Override
-   public Task clone() {
+   public Task droolsClone() {
       Task clone = new Task();
       clone.id = id;
       clone.unifiedId = unifiedId;

@@ -5,6 +5,8 @@ import com.radoslavhusar.tapas.ejb.entity.Task;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 
@@ -37,7 +39,8 @@ public class TaskAllocationSolution implements Solution {
    public Solution cloneSolution() {
       List<Task> clonedTaskList = new ArrayList<Task>(tasks.size());
       for (Task task : tasks) {
-         Task clone = (Task) task.clone();
+         Task clone;
+         clone = task.droolsClone();
          clonedTaskList.add(clone);
       }
 
