@@ -26,6 +26,9 @@
          <groupId>org.drools.planner</groupId>
          <artifactId>drools-planner-core</artifactId>
          <version>5.1.0.M2</version>
+         <!-- if not provided then this happens but needs to be copied to the AS libs! -->
+         <!-- https://groups.google.com/forum/#!topic/google-web-toolkit/t8qm22isWsg -->
+         <scope>provided</scope> 
       </dependency>
       
       <!-- Target application server, provided scope -->
@@ -65,7 +68,7 @@
    </repositories>
 
    <build>
-      <!-- include entities for GWT compiler -->
+      <!-- include entities for GWT compiler to create a shadow package -->
       <resources>
          <resource>
             <directory>src/main/java</directory>
@@ -76,6 +79,7 @@
       </resources>
 
       <plugins>
+         
          <!-- JRebel -->
          <plugin>
             <groupId>org.zeroturnaround</groupId>
@@ -99,15 +103,15 @@
             <version>2.3</version>
             <configuration>
                <ejbVersion>3.0</ejbVersion> <!-- Java EE 5 -->
-               <generateClient>true</generateClient> <!-- this is false by default -->
+               <generateClient>true</generateClient> <!-- this is false by default, not used now though -->
             </configuration>
          </plugin>
+         
       </plugins>
    </build>
 
-
    <profiles>
-
+      
       <profile>
          <id>jbossas-remote-5.1</id>
          <dependencies>

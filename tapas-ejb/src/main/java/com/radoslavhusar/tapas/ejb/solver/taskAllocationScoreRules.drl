@@ -16,7 +16,11 @@ global SimpleScoreCalculator scoreCalculator;
 rule "insertResourceAssignmentTotal"
         salience 1 // Do these rules first (optional, for performance)
     when
-    	$resource : Resource()
+    	/*Task(
+         $resource : resource
+      )*/
+
+      $resource : Resource
     	
     	$assignmentTotal : Number() from accumulate(
             $task : Task(resource == $resource),

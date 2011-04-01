@@ -149,7 +149,8 @@ public class Task implements Serializable, Cloneable {
       clone.resource = resource;
       clone.resourceGroup = resourceGroup;
       clone.priority = priority;
-      clone.timeAllocations = new ArrayList();
+      // Isnt there a better way to copy over Collections?
+      clone.timeAllocations = new ArrayList(timeAllocations.size());
       clone.timeAllocations.addAll(timeAllocations);
       clone.status = status;
       return clone;

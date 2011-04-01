@@ -52,11 +52,11 @@ import java.util.List;
 import java.util.Set;
 
 public class TasksViewImpl extends ResizeComposite implements TasksView {
-   
+
    private Presenter presenter;
    private final TaskResourceServiceAsync service;
    private static Binder binder = GWT.create(Binder.class);
-   
+
    interface Binder extends UiBinder<Widget, TasksViewImpl> {
    }
    @UiField
@@ -76,12 +76,12 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
    Anchor addTask;
    @UiField
    Anchor saveTasks;
-   
+
    @Inject
    public TasksViewImpl(final ClientState client, final TaskResourceServiceAsync service) {
       this.client = client;
       this.service = service;
-      
+
       provider = new ListDataProvider<Task>() {
 
          // FIXME: Work around to display data onRangeChanged.
@@ -90,24 +90,24 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
             super.refresh();
             this.onRangeChanged(tasks);
          }
-         
+
          @Override
          protected void onRangeChanged(HasData<Task> display) {
             String filterBy = filter.getText();
-            
+
             if (filterBy.isEmpty()) {
                display.setVisibleRange(0, this.getList().size());
                display.setRowData(0, this.getList());
             } else {
                ArrayList<Task> filteredlist = new ArrayList<Task>();
-               
+
                for (Task task : this.getList()) {
                   if ((task.getSummary() != null && task.getSummary().contains(filterBy))
                           || (task.getName() != null && task.getName().contains(filterBy))) {
                      filteredlist.add(task);
                   }
                }
-               
+
                display.setRowCount(filteredlist.size());
                display.setRowData(0, filteredlist);
                GWT.log("Filtered by " + filter.getText() + ".");
@@ -115,7 +115,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
          }
       };
       tasks = new CellTable<Task>(provider);
-      
+
       initWidget(binder.createAndBindUi(this));
       GWT.log("New TasksViewImpl created.");
    }
@@ -132,7 +132,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
 
       // cleanup
       changed.clear();
-      
+
       if (client.getProjectId() == null) {
          // no project selected, ignore that all
          return;
@@ -141,26 +141,26 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       // fetch data from services
       toSync = 3;
       service.findAllResourcesForProject(client.getProjectId(), new AsyncCallback<List<Resource>>() {
-         
+
          @Override
          public void onFailure(Throwable caught) {
             throw new UnsupportedOperationException("Not supported yet.");
          }
-         
+
          @Override
          public void onSuccess(List<Resource> result) {
             client.setResources(result);
             toSyncRender();
          }
       });
-      
+
       service.findAllTasksForProject(client.getProjectId(), new AsyncCallback<List<Task>>() {
-         
+
          @Override
          public void onFailure(Throwable caught) {
             throw new UnsupportedOperationException("Not supported yet.");
          }
-         
+
          @Override
          public void onSuccess(List<Task> result) {
             client.setTasks(result);
@@ -169,12 +169,12 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       });
       if (client.getGroups() == null) {
          service.findAllGroups(new AsyncCallback<List<ResourceGroup>>() {
-            
+
             @Override
             public void onFailure(Throwable caught) {
                throw new UnsupportedOperationException("Not supported yet.");
             }
-            
+
             @Override
             public void onSuccess(List<ResourceGroup> result) {
                client.setGroups(result);
@@ -186,23 +186,23 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       }
    }
    private int toSync;
-   
+
    private void toSyncRender() {
       toSync--;
-      
+
       if (toSync == 0) {
          renderTasks();
       }
    }
-   
+
    public void unbind() {
       menu.clear();
       status.clear();
    }
-   
+
    public void renderTasks() {
       filter.addKeyUpHandler(new KeyUpHandler() {
-         
+
          @Override
          public void onKeyUp(KeyUpEvent event) {
             if (event.getNativeKeyCode() == 27) {
@@ -221,7 +221,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
 
       // ID (readonly)
       TextColumn<Task> idCol = new TextColumn<Task>() {
-         
+
          @Override
          public String getValue(Task task) {
             return task.getId() == null ? "" : task.getId().toString();
@@ -234,18 +234,18 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       // Unified ID
       Cell unifIdCell = new EditTextCell();
       Column<Task, String> unifiedIdCol = new Column<Task, String>(unifIdCell) {
-         
+
          @Override
          public String getValue(Task task) {
             return "" + (task.getUnifiedId() == null ? "" : task.getUnifiedId());
          }
       };
       unifiedIdCol.setFieldUpdater(new FieldUpdater<Task, String>() {
-         
+
          @Override
          public void update(int index, Task object, String value) {
             changed.add(object);
-            
+
             object.setUnifiedId(value);
          }
       });
@@ -254,37 +254,43 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
 
 
       // Priority
-      Cell prioEditCell = new PriorityEditTextCell();
-      Column<Task, String> prioCol = new Column<Task, String>(prioEditCell) {
-         
+      List<String> prioOptions = new ArrayList<String>();
+      prioOptions.add(""); // The null value = TBD
+      for (int i = 1; i <= 3; i++) {
+         prioOptions.add("P" + i);
+      }
+      Cell prioCell = new SelectionCell(prioOptions);
+      Column<Task, String> prioCol = new Column<Task, String>(prioCell) {
+
          @Override
          public String getValue(Task task) {
-            return task.getPriority() == null ? "TBD" : "P" + task.getPriority();
+            return task.getPriority() == null ? "" : "P" + task.getPriority();
          }
       };
       prioCol.setFieldUpdater(new FieldUpdater<Task, String>() {
-         
+
          @Override
          public void update(int index, Task object, String value) {
-            if (value.equalsIgnoreCase("TBD")) {
+            if (value.equals("TBD")) {
                object.setPriority(null);
                return;
             }
-            String input = value.replaceAll("P", "").replaceAll("p", "");
-            Byte num = 1;
-            
+
+            String input = value.substring(1, 1);
+            Byte num;
+
             try {
                num = Byte.parseByte(input);
                if (!(num >= 1 && num <= 3)) {
                   throw new NumberFormatException();
                }
+               object.setPriority(num);
             } catch (NumberFormatException nfo) {
-               Window.alert("Wrong priority number. Please correct.");
-               tasks.redraw();
+               // This cant happen now:
+               // Window.alert("Wrong priority number. Please correct.");
             }
             
-            object.setPriority(num);
-            tasks.redraw();
+            //tasks.redraw();
          }
       });
       tasks.addColumn(prioCol, "Prio");
@@ -299,18 +305,18 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       }
       SelectionCell statusCell = new SelectionCell(statusOptions);
       Column<Task, String> statusCol = new Column<Task, String>(statusCell) {
-         
+
          @Override
          public String getValue(Task task) {
             return Task.formatState(task.getStatus());
          }
       };
       statusCol.setFieldUpdater(new FieldUpdater<Task, String>() {
-         
+
          @Override
          public void update(int index, Task object, String value) {
             changed.add(object);
-            
+
             if (value.isEmpty()) {
                object.setStatus(null);
                return;
@@ -330,18 +336,18 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       // Task Name
       Cell<String> nameCell = new EditTextCell();
       Column<Task, String> nameCol = new Column<Task, String>(nameCell) {
-         
+
          @Override
          public String getValue(Task task) {
             return "" + task.getName();
          }
       };
       nameCol.setFieldUpdater(new FieldUpdater<Task, String>() {
-         
+
          @Override
          public void update(int index, Task object, String value) {
             changed.add(object);
-            
+
             object.setName(value);
          }
       });
@@ -358,16 +364,16 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
          }
       }
       resourceCell = new DynamicSelectionCell(opts);
-      
+
       Column<Task, String> resourceCol = new Column<Task, String>(resourceCell) {
-         
+
          @Override
          public String getValue(Task task) {
             return (task.getResource() == null) ? Constants.UNASSIGNED : task.getResource().getName();
          }
       };
       resourceCol.setFieldUpdater(new FieldUpdater<Task, String>() {
-         
+
          @Override
          public void update(int index, Task object, String value) {
             for (Resource r : client.getResources()) {
@@ -378,7 +384,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                   return;
                }
             }
-            
+
          }
       });
       tasks.addColumn(resourceCol, "Resource");
@@ -391,7 +397,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
          for (final ProjectPhase phase : project.getPhases()) {
             Cell<String> timeCell = new NumberEditTextCell();
             Column<Task, String> timePhaseCol = new Column<Task, String>(timeCell) {
-               
+
                @Override
                public String getValue(Task object) {
                   for (TimeAllocation tta : object.getTimeAllocations()) {
@@ -403,7 +409,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                }
             };
             timePhaseCol.setFieldUpdater(new FieldUpdater<Task, String>() {
-               
+
                @Override
                public void update(int index, Task object, String value) {
                   // Is the number valid anyway?
@@ -414,9 +420,9 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                      GWT.log("Could not parse input value ignoring.", nfe);
                      return;
                   }
-                  
+
                   changed.add(object);
-                  
+
                   for (TimeAllocation ta : object.getTimeAllocations()) {
                      // TODO: needs comparing IDs which is safe, but should be done .equal but doesnt work
                      if (ta.getPhase().getId() == phase.getId()) {
@@ -446,15 +452,15 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       // Totals
       NumberCell allocNumberCell = new NumberCell(NumberFormat.getFormat(Constants.ALLOC_FORMAT));
       Column<Task, Number> timeTotalCol = new Column<Task, Number>(allocNumberCell) {
-         
+
          @Override
          public Number getValue(Task task) {
             double total = 0;
-            
+
             for (TimeAllocation tta : task.getTimeAllocations()) {
                total += tta.getAllocation();
             }
-            
+
             return total;
          }
       };
@@ -466,7 +472,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       final SingleSelectionModel<Task> selectionModel = new SingleSelectionModel<Task>();
       tasks.setSelectionModel(selectionModel);
       selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-         
+
          @Override
          public void onSelectionChange(SelectionChangeEvent event) {
             Task selected = selectionModel.getSelectedObject();
@@ -494,12 +500,12 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       addTask.setEnabled(true);
       saveTasks.setEnabled(true);
    }
-   
+
    @Override
    public void setPresenter(Presenter presenter) {
       this.presenter = presenter;
    }
-   
+
    @UiHandler("addTask")
    public void addSomeTasks(ClickEvent event) {
       Task task = new Task();
@@ -510,18 +516,18 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       provider.getList().add(task);
       provider.refresh();
    }
-   
+
    @UiHandler("saveTasks")
    public void saveSomeTasks(ClickEvent event) {
       GWT.log("Saving " + changed.size() + " tasks: " + changed + ".");
-      
+
       Application.getInjector().getService().editTasks(changed, new AsyncCallback<Void>() {
-         
+
          @Override
          public void onFailure(Throwable caught) {
             GWT.log("Saving tasks failed: ", caught);
          }
-         
+
          @Override
          public void onSuccess(Void result) {
             GWT.log("Tasks saved!");
