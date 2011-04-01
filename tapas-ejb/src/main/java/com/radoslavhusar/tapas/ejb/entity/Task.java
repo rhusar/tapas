@@ -152,6 +152,6 @@ public class Task implements Serializable, Cloneable {
       clone.timeAllocations = new ArrayList();
       clone.timeAllocations.addAll(timeAllocations);
       clone.status = status;
-      return null;
+      return clone;
    }
 }

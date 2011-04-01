@@ -2,6 +2,8 @@ package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.solver.SolverFacadeLocal;
 import com.radoslavhusar.tapas.ejb.entity.Project;
+import com.radoslavhusar.tapas.ejb.entity.Task;
+import com.radoslavhusar.tapas.ejb.solver.TaskAllocationSolution;
 import javax.ejb.EJB;
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -38,6 +40,8 @@ public class SolverFacadeLocalTest {
               addPackage("com.radoslavhusar.tapas.ejb.entity").
               addPackage("com.radoslavhusar.tapas.ejb.session").
               addPackage("com.radoslavhusar.tapas.ejb.solver"). // needs to include DRL
+              addPackage("com.radoslavhusar.tapas.ejb.solver.move").
+              addPackage("com.radoslavhusar.tapas.ejb.solver.move.factory").
               addAsResource("com/radoslavhusar/tapas/ejb/solver/taskAllocationScoreRules.drl"). // https://issues.jboss.org/browse/SHRINKWRAP-150
               addAsResource("com/radoslavhusar/tapas/ejb/solver/taskAllocationSolverConfig.xml").
               addDirectory("com.radoslavhusar.tapas.ejb.solver"). // needs to include DRL
@@ -77,6 +81,12 @@ public class SolverFacadeLocalTest {
       System.out.println("solveAssignments");
 
       Project p = projectBean.findAll().get(0);
-      solverBean.solveAssignments(p.getId());
+      TaskAllocationSolution tas = (TaskAllocationSolution) solverBean.solveAssignments(p.getId());
+
+
+      for (Task t : tas.getTasks()) {
+         System.out.println((t.getId() == null ? "null" : t.getId()) + " => "
+                 + (t.getResource() == null ? "null" : t.getResource().getId()));
+      }
    }
 }

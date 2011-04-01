@@ -33,7 +33,7 @@ public class NextResourceMove implements Move {
 
    @Override
    public void doMove(WorkingMemory wm) {
-      FactHandle taskHandle = wm.getFactHandle(resource);
+      FactHandle taskHandle = wm.getFactHandle(task);
       task.setResource(resource);
       wm.update(taskHandle, task);
    }
