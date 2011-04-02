@@ -5,15 +5,14 @@ import com.radoslavhusar.tapas.ejb.entity.Task;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 
 public class TaskAllocationSolution implements Solution {
 
-   private Score score;
-   //private HardAndSoftScore score;
+   //private Score score;
+   private HardAndSoftScore score;
    private final List<Task> tasks;
    private final List<Resource> resources;
 
@@ -24,7 +23,7 @@ public class TaskAllocationSolution implements Solution {
 
    @Override
    public void setScore(Score score) {
-      this.score = score;
+      this.score = (HardAndSoftScore) score;
    }
 
    @Override

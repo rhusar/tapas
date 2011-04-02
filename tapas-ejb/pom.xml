@@ -30,7 +30,7 @@
          <!-- https://groups.google.com/forum/#!topic/google-web-toolkit/t8qm22isWsg -->
          <scope>provided</scope> 
       </dependency>
-      
+     
       <!-- Target application server, provided scope -->
       <dependency>
          <groupId>org.jboss.jbossas</groupId>
@@ -47,6 +47,7 @@
          <version>4.8.2</version>
          <scope>test</scope>
       </dependency>
+      
       <dependency>
          <groupId>org.jboss.arquillian</groupId>
          <artifactId>arquillian-junit</artifactId>

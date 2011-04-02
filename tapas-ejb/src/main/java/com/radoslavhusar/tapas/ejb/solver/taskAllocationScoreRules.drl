@@ -1,59 +1,43 @@
-package org.drools.planner.examples.curriculumcourse.solver;
+package com.radoslavhusar.tapas.ejb.solver;
 
 dialect "java"
 
 import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalculator;
 import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
-import org.drools.planner.core.score.calculator.SimpleScoreCalculator;
-import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
 
 import com.radoslavhusar.tapas.ejb.entity.Task
 import com.radoslavhusar.tapas.ejb.entity.Resource
 
-global SimpleScoreCalculator scoreCalculator;
-
-rule "insertResourceAssignmentTotal"
-        salience 1 // Do these rules first (optional, for performance)
-    when
-    	/*Task(
-         $resource : resource
-      )*/
-
-      $resource : Resource
-    	
-    	$assignmentTotal : Number() from accumulate(
-            $task : Task(resource == $resource),
-            count($task)
-        )
-    then
-        insertLogical(new IntConstraintOccurrence("insertResourceAssignmentTotal", ConstraintType.NEGATIVE_SOFT,
-                $assignmentTotal.intValue()));
-end
-
-
-// Accumulate soft constraints
-rule "softConstraintsBroken"
-        salience -1 // Do the other rules first (optional, for performance)
-    when
-        $softTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
-            sum($weight)
-        )
-    then
-        scoreCalculator.setScore($softTotal.intValue());
-end
-
-
-
-/*
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
 // ############################################################################
 // Hard constraints
-// ############################################################################
+// ############################################################################ intValue != 0 $totalUnassigned.intValue()
 
+/*rule "oneShiftPerDay"
+    when
+        $leftAssignment : Task($leftId : id, $resource : resource)
+        $rightAssignment : Task(id > $leftId, resource == $resource)
+    then
+        insertLogical(new IntConstraintOccurrence("oneShiftPerDay", ConstraintType.NEGATIVE_HARD,
+                1,
+                $leftAssignment, $rightAssignment));
+end*/
 
+rule "insertEmployeeAssignmentTotal"
+        salience 1 // Do these rules first (optional, for performance)
+    when
+       $task : Task(resource == null)
+    
+       /* $assignmentTotal : Number(intValue > 0) from accumulate(
+            count($task)
+        ) */
+    then
+        insertLogical(new IntConstraintOccurrence("insertEmployeeAssignmentTotal",
+        ConstraintType.NEGATIVE_HARD, 
+        1, $task));
+end
 
 // ############################################################################
 // Soft constraints
@@ -69,7 +53,7 @@ rule "hardConstraintsBroken"
     when
         $hardTotal : Number() from accumulate(
             IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
-            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+            sum($weight)
         )
     then
         scoreCalculator.setHardConstraintsBroken($hardTotal.intValue());
@@ -81,11 +65,10 @@ rule "softConstraintsBroken"
     when
         $softTotal : Number() from accumulate(
             IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
-            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+            sum(- $weight)
         )
     then
         scoreCalculator.setSoftConstraintsBroken($softTotal.intValue());
 end
-*/
 
 

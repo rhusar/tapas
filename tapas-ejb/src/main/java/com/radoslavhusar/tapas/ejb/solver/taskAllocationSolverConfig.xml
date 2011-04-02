@@ -1,29 +1,38 @@
-<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<?xml version="1.0" encoding="UTF-8"?>
 <localSearchSolver>
    <scoreDrl>/com/radoslavhusar/tapas/ejb/solver/taskAllocationScoreRules.drl</scoreDrl>
+   <!--<scoreDrl>/home/rhusar/Dropbox/masthe/gilead/tapas-ejb/src/main/java/com/radoslavhusar/tapas/ejb/solver/taskAllocationScoreRules2.drl</scoreDrl>-->
+   <!--<scoreDrl>file:/home/rhusar/Dropbox/masthe/gilead/tapas-ejb/src/main/java/com/radoslavhusar/tapas/ejb/solver/taskAllocationScoreRules.drl</scoreDrl>-->
+   
    <scoreDefinition>
-      <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+      <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
    </scoreDefinition>
-<!--   <startingSolutionInitializerClass>com.radoslavhusar.tapas.ejb.solver.TaskAllocationSolutionInitializer</startingSolutionInitializerClass>-->
+   
+   <!--   
+   <startingSolutionInitializerClass>com.radoslavhusar.tapas.ejb.solver.TaskAllocationSolutionInitializer</startingSolutionInitializerClass>
+   -->
+   
    <termination>
       <!-- Meaning there are no contraints broken so a perfect solution must exist -->
       <!--      <scoreAttained>0</scoreAttained>-->
-      <!-- 
--->      
-      <maximumUnimprovedStepCount>10</maximumUnimprovedStepCount><!--
-      <scoreAttained>0hard/-5000soft</scoreAttained>
-      -->
-<!--      <maximumMinutesSpend>1</maximumMinutesSpend>-->
+      <maximumUnimprovedStepCount>30</maximumUnimprovedStepCount>
+      <!--      <scoreAttained>0hard/-5000soft</scoreAttained>   -->
+      <!--      <maximumMinutesSpend>1</maximumMinutesSpend>-->
    </termination>
+   
    <selector>
       <moveFactoryClass>com.radoslavhusar.tapas.ejb.solver.move.factory.TaskAllocationMoveFactory</moveFactoryClass>
    </selector>
+   
    <acceptor>
       <completeSolutionTabuSize>1000</completeSolutionTabuSize>
    </acceptor>
-<!--   <forager>
+   
+<!--   
+   <forager>
       <pickEarlyType>NEVER</pickEarlyType>
-   </forager>-->
+   </forager>
+-->
    
    <!-- Development -->
    <environmentMode>DEBUG</environmentMode>

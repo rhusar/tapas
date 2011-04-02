@@ -2,13 +2,14 @@ package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import javax.ejb.Local;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Stateless
 @Local(ProjectFacadeLocal.class)
-public class ProjectFacade extends AbstractFacade<Project> implements ProjectFacadeLocal {
+public class ProjectFacade extends AbstractFacade<Project> implements ProjectFacadeLocal, ProjectFacadeRemote {
 
    /**
     * Or could be   

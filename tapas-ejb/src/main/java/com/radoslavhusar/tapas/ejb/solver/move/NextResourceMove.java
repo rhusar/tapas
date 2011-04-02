@@ -8,8 +8,8 @@ import org.drools.planner.core.move.Move;
 
 public class NextResourceMove implements Move {
 
-   private final Task task;
-   private final Resource resource;
+   private Task task;
+   private Resource resource;
 
    public NextResourceMove(Task task, Resource resource) {
       this.task = task;
@@ -18,7 +18,7 @@ public class NextResourceMove implements Move {
 
    @Override
    public boolean isMoveDoable(WorkingMemory wm) {
-      if (task.getResource().equals(resource)) {
+      if (resource.equals(task.getResource())) {
          return false;
       }
 

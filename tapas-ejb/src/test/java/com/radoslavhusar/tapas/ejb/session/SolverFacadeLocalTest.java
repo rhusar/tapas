@@ -5,7 +5,11 @@ import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.solver.TaskAllocationSolution;
 import javax.ejb.EJB;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -31,7 +35,7 @@ public class SolverFacadeLocalTest {
    public SolverFacadeLocalTest() {
    }
 
-   @Deployment
+   @Deployment //(testable = false)
    public static JavaArchive createTestArchive() {
 
       // all dependecies:
@@ -77,8 +81,14 @@ public class SolverFacadeLocalTest {
    }
 
    @Test
-   public void testSolveAssignments() {
+   //@RunAsClient
+   public void testSolveAssignments() throws NamingException {
       System.out.println("solveAssignments");
+
+      // Obtain our environment naming context
+      /*Context initCtx = new InitialContext();
+      Context envCtx = (Context) initCtx.lookup("java:comp/env");*/
+      //http://javahowto.blogspot.com/2007/11/simple-ejb-3-on-jboss-application.html
 
       Project p = projectBean.findAll().get(0);
       TaskAllocationSolution tas = (TaskAllocationSolution) solverBean.solveAssignments(p.getId());
