@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -41,6 +42,8 @@ public class Task implements Serializable {
    private List<TimeAllocation> timeAllocations;
    @Column
    private TaskStatus status;
+   @OneToOne(fetch = FetchType.EAGER)
+   private Trait requiredTrait;
 
    public Long getId() {
       return id;
@@ -121,6 +124,14 @@ public class Task implements Serializable {
 
    public void setResourceGroup(ResourceGroup resourceGroup) {
       this.resourceGroup = resourceGroup;
+   }
+
+   public Trait getRequiredTrait() {
+      return requiredTrait;
+   }
+
+   public void setRequiredTrait(Trait requiredTrait) {
+      this.requiredTrait = requiredTrait;
    }
 
    @Override

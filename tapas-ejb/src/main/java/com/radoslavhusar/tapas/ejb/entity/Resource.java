@@ -13,6 +13,10 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+/**
+ * Fetching options: http://docs.jboss.org/hibernate/entitymanager/3.5/reference/en/html/queryhql.html
+ * 
+ */
 @Entity
 @Table(name = "RESOURCE")
 @NamedQuery(name = "resourcesForProject", query = "select object(o) from Resource as o fetch all properties inner join o.resourceAllocations as a where a.key.project.id = :projectid")
@@ -32,6 +36,8 @@ public class Resource implements Serializable {
    private List<ResourceAllocation> resourceAllocations;
    @OneToMany(mappedBy = "resource", fetch = FetchType.LAZY)
    private List<Task> tasks;
+   @OneToMany(fetch = FetchType.LAZY)
+   private List<Trait> traits;
 
    public Long getId() {
       return id;
@@ -79,6 +85,14 @@ public class Resource implements Serializable {
 
    public void setTasks(List<Task> tasks) {
       this.tasks = tasks;
+   }
+
+   public List<Trait> getTraits() {
+      return traits;
+   }
+
+   public void setTraits(List<Trait> traits) {
+      this.traits = traits;
    }
 
    @Override
