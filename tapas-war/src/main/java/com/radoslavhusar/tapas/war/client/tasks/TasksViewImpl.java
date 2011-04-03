@@ -1,6 +1,7 @@
 package com.radoslavhusar.tapas.war.client.tasks;
 
 import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.NumberCell;
@@ -295,12 +296,13 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
 
          @Override
          public void update(int index, Task object, String value) {
-            if (value.equals("TBD")) {
+            if (value.isEmpty()) {
                object.setPriority(null);
+               changed.add(object);
                return;
             }
 
-            String input = value.substring(1, 1);
+            String input = value.substring(1, 2);
             Byte num;
 
             try {
@@ -309,12 +311,11 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                   throw new NumberFormatException();
                }
                object.setPriority(num);
+               changed.add(object);
             } catch (NumberFormatException nfo) {
                // This cant happen now, so no need for:
                // Window.alert("Wrong priority number. Please correct.");
             }
-
-            //tasks.redraw();
          }
       });
       tasks.addColumn(prioCol, "Prio");
@@ -377,7 +378,9 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
             // if it doesnt have a requirement lets do some scanning
             if (object.getRequiredTrait() == null) {
                for (Trait t : client.getTraits()) {
-                  if (value.contains(t.getName())) {
+                  // Silly workaround for contains being case sensitive.
+                  // TODO: try using pattern matching, e.g.: http://stackoverflow.com/questions/86780/is-the-contains-method-in-java-lang-string-case-sensitive
+                  if (value.toLowerCase().contains(t.getName().toLowerCase())) {
                      object.setRequiredTrait(t);
                      tasks.redraw();
                      return;
@@ -511,8 +514,8 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                @Override
                public String getValue(Task object) {
                   for (TimeAllocation tta : object.getTimeAllocations()) {
-                     if (tta.getPhase().getId() == phase.getId()) {
-                        return "" + tta.getAllocation();
+                     if (tta.getPhase().getId().equals(phase.getId())) {
+                        return "" + (tta.getCompleted() <= 0 ? "" : tta.getCompleted() + "/") + tta.getAllocation();
                      }
                   }
                   return "";
@@ -522,21 +525,44 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
 
                @Override
                public void update(int index, Task object, String value) {
+
+                  if (value.isEmpty()) {
+                     // delete the allocation...
+                     for (TimeAllocation ta : object.getTimeAllocations()) {
+                        if (ta.getPhase().getId().equals(phase.getId())) {
+                           object.getTimeAllocations().remove(ta);
+                           return;
+                        }
+                     }
+                  }
                   // Is the number valid anyway?
-                  double doubleValue;
+                  double assignedTime;
+                  double completedTime;
                   try {
-                     doubleValue = Double.parseDouble(value);
+                     if (value.contains("/")) {
+                        // You need to parse separately
+                        String[] values = value.split("/");
+                        completedTime = Double.parseDouble(values[0]);
+                        assignedTime = Double.parseDouble(values[1]);
+                     } else {
+                        completedTime = -1; // Default to -1 if not specified - no change
+                        assignedTime = Double.parseDouble(value);
+                     }
                   } catch (NumberFormatException nfe) {
-                     GWT.log("Could not parse input value ignoring.", nfe);
+                     GWT.log("Could not parse input value ignoring: " + nfe.getMessage());
                      return;
                   }
 
+                  // One or the other, it WILL be changed.
                   changed.add(object);
 
                   for (TimeAllocation ta : object.getTimeAllocations()) {
                      // TODO: needs comparing IDs which is safe, but should be done .equal but doesnt work
-                     if (ta.getPhase().getId() == phase.getId()) {
-                        ta.setAllocation(index);
+                     if (ta.getPhase().getId().equals(phase.getId())) {
+                        ta.setAllocation(assignedTime);
+                        if (completedTime != -1) {
+                           ta.setCompleted(completedTime);
+                        }
                         GWT.log("Updating allocation: " + ta);
                         tasks.redraw();
                         return;
@@ -547,21 +573,26 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                   TimeAllocation ta = new TimeAllocation();
                   ta.setTask(object);
                   ta.setPhase(phase);
-                  ta.setAllocation(doubleValue);
+                  ta.setAllocation(assignedTime);
+                  if (completedTime != -1) {
+                     ta.setCompleted(completedTime);
+                  }
                   object.getTimeAllocations().add(ta);
                   GWT.log("Creating allocation: " + ta);
+
                   tasks.redraw();
+                  return;
                }
             });
             tasks.addColumn(timePhaseCol, UiUtil.formatPhase(phase.getName()));
-            tasks.setColumnWidth(timePhaseCol, 2, Unit.EM);
+            tasks.setColumnWidth(timePhaseCol, 1, Unit.EM);
          }
       }
 
 
       // Totals
-      NumberCell allocNumberCell = new NumberCell(NumberFormat.getFormat(Constants.ALLOC_FORMAT));
-      Column<Task, Number> timeTotalCol = new Column<Task, Number>(allocNumberCell) {
+      Cell allocNumberCell = new NumberCell(NumberFormat.getFormat(Constants.ALLOC_FORMAT));
+      Column<Task, Number> totalTimeCol = new Column<Task, Number>(allocNumberCell) {
 
          @Override
          public Number getValue(Task task) {
@@ -574,8 +605,36 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
             return total;
          }
       };
-      tasks.addColumn(timeTotalCol, "Total");
-      tasks.setColumnWidth(timeTotalCol, 2, Unit.EM);
+      tasks.addColumn(totalTimeCol, "Total");
+      tasks.setColumnWidth(totalTimeCol, 1, Unit.EM);
+
+      // Remaining
+      Cell remainingCell = new ClickableTextCell();
+      Column<Task, String> remainingTimeCol = new Column<Task, String>(remainingCell) {
+
+         @Override
+         public String getValue(Task task) {
+            double total = 0;
+
+            for (TimeAllocation tta : task.getTimeAllocations()) {
+               total += tta.getAllocation();
+               total -= tta.getCompleted();
+            }
+
+            return NumberFormat.getFormat(Constants.ALLOC_FORMAT).format(total);
+         }
+      };
+      remainingTimeCol.setFieldUpdater(new FieldUpdater<Task, String>() {
+
+         @Override
+         public void update(int index, Task object, String value) {
+            // Show a dialog
+            AllocationDialogBox.getPopup(client, object).show();
+            changed.add(object);
+         }
+      });
+      tasks.addColumn(remainingTimeCol, "Left");
+      tasks.setColumnWidth(remainingTimeCol, 1, Unit.EM);
 
 
       // Add a selection model to handle user selection

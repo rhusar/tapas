@@ -51,6 +51,8 @@ public class ResourceGroup implements Serializable {
 
    @Override
    public String toString() {
-      return "ResourceGroup{id=" + id + ", name=" + name + '}';
+      return "ResourceGroup{id=" + id
+              + ",name=" + name
+              + "}";
    }
 }

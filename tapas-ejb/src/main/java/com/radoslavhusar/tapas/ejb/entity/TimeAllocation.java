@@ -18,14 +18,17 @@ public class TimeAllocation implements Serializable {
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
    private Long id;
-   @Column
-   private double allocation;
-   @Column
-   private double completed;
+   /* These are candidates for embedded IDs */
    @ManyToOne(fetch = FetchType.LAZY, optional = false)
    private Task task;
    @ManyToOne(fetch = FetchType.EAGER, optional = false)
    private ProjectPhase phase;
+   @Column
+   private double allocation;
+   @Column
+   private double completed;
+   @Column
+   private String tracker;
 
    public TimeAllocation() {
    }
@@ -41,22 +44,6 @@ public class TimeAllocation implements Serializable {
 
    public void setId(Long id) {
       this.id = id;
-   }
-
-   public ProjectPhase getPhase() {
-      return phase;
-   }
-
-   public void setPhase(ProjectPhase phase) {
-      this.phase = phase;
-   }
-
-   public Task getTask() {
-      return task;
-   }
-
-   public void setTask(Task task) {
-      this.task = task;
    }
 
    public double getAllocation() {
@@ -75,13 +62,37 @@ public class TimeAllocation implements Serializable {
       this.completed = completed;
    }
 
+   public ProjectPhase getPhase() {
+      return phase;
+   }
+
+   public void setPhase(ProjectPhase phase) {
+      this.phase = phase;
+   }
+
+   public Task getTask() {
+      return task;
+   }
+
+   public void setTask(Task task) {
+      this.task = task;
+   }
+
+   public String getTracker() {
+      return tracker;
+   }
+
+   public void setTracker(String tracker) {
+      this.tracker = tracker;
+   }
+
    @Override
    public String toString() {
       return "TimeAllocation{id=" + id
-              + ", allocation=" + allocation
-              + ", completed=" + completed
-              + ", task=" + task == null ? null : task.getId()
-              + ", phase=" + phase == null ? null : phase.getId()
+              + ",allocation=" + allocation
+              + ",completed=" + completed
+              + ",task=" + (task == null ? "null" : task.getId())
+              + ",phase=" + (phase == null ? "null" : phase.getId())
               + "}";
    }
 }

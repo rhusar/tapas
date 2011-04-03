@@ -45,6 +45,13 @@ public class Trait implements Serializable {
    }
 
    @Override
+   public String toString() {
+      return "Trait{id=" + id
+              + ",name=" + name
+              + "}";
+   }
+
+   @Override
    public boolean equals(Object obj) {
       if (obj == null) {
          return false;

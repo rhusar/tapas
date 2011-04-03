@@ -100,6 +100,7 @@ public class Project implements Serializable {
               + ",name=" + name
               + ",tax=" + tax
               + ",startDate=" + startDate
-              + ",targetDate=" + targetDate + "}";
+              + ",targetDate=" + targetDate
+              + "}";
    }
 }

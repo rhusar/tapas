@@ -88,6 +88,11 @@ public class ProjectPhase implements Serializable, Comparable<ProjectPhase> {
 
    @Override
    public String toString() {
-      return "ProjectPhase{id=" + id + ", name=" + name + ", project=" + project == null ? null : project.getId() + ", startDate=" + startDate + ", endDate=" + endDate + '}';
+      return "ProjectPhase{id=" + id
+              + ",name=" + name
+              + ",project=" + (project == null ? "null" : project.getId())
+              + ",startDate=" + startDate
+              + ",endDate=" + endDate
+              + "}";
    }
 }

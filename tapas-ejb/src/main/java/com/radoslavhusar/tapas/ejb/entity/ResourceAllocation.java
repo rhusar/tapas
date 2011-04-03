@@ -36,8 +36,9 @@ public class ResourceAllocation implements Serializable {
 
    @Override
    public String toString() {
-      return "ResourceAllocation{id=(resource=" + (key == null ? null : key.getResource().getId())
-              + ",project=" + (key == null ? null : key.getProject().getId())
-              + "),percent=" + percent + "}";
+      return "ResourceAllocation{id=(resource=" + (key == null ? "null" : key.getResource().getId())
+              + ",project=" + (key == null ? "null" : key.getProject().getId())
+              + "),percent=" + percent
+              + "}";
    }
 }
