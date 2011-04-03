@@ -44,6 +44,12 @@ public class ProjectsViewImpl extends ResizeComposite implements ProjectsView {
    DateTimeFormat dateFormat = DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT);
    @UiField
    HTMLPanel left;
+   @UiField
+   VerticalPanel projectsPanel;
+   @UiField
+   Anchor manageTraits;
+   @UiField
+   Anchor manageExternal;
 
    @Inject
    public ProjectsViewImpl(ClientState client, TaskResourceServiceAsync service) {
@@ -60,9 +66,8 @@ public class ProjectsViewImpl extends ResizeComposite implements ProjectsView {
       menu.add(Application.getInjector().getMenuView());
       status.add(Application.getInjector().getStatusView());
 
-      final VerticalPanel vp = new VerticalPanel();
-      left.add(vp);
-      vp.add(new Label("Loading..."));
+      projectsPanel.clear();
+      projectsPanel.add(new Label("Loading Projects..."));
 
       service.findAllProjects(new AsyncCallback<List<Project>>() {
 
@@ -74,7 +79,7 @@ public class ProjectsViewImpl extends ResizeComposite implements ProjectsView {
          @Override
          public void onSuccess(List<Project> result) {
             //throw new UnsupportedOperationException("Not supported yet.");
-            vp.clear();
+            projectsPanel.clear();
 
             Collections.reverse(result);
 
@@ -94,10 +99,8 @@ public class ProjectsViewImpl extends ResizeComposite implements ProjectsView {
                fp.add(new InlineLabel(
                        (p.getPhases().isEmpty() ? "" : " in " + p.getPhases().get(0).getName())
                        + "" + (p.getTargetDate() == null ? "" : " due " + p.getTargetDate())));
-               vp.add(fp);
+               projectsPanel.add(fp);
             }
-
-            vp.add(new HTML("<br><br>"));
          }
       });
    }
@@ -168,5 +171,10 @@ public class ProjectsViewImpl extends ResizeComposite implements ProjectsView {
       dialogBox.center();
       dialogBox.show();
        */
+   }
+
+   @UiHandler("manageTraits")
+   void showManageTraitsDialog(ClickEvent event) {
+      ManageTraitsDialogBox.getDialogBox(presenter);
    }
 }

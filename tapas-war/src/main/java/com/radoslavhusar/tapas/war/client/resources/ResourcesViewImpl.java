@@ -161,7 +161,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public void update(int index, Resource resource, String value) {
-            TraitsPopup.getPopup(resource).show();
+            ResourcesTraitsDialogBox.getPopup(resource).show();
          }
       });
       nameCol.setSortable(true);

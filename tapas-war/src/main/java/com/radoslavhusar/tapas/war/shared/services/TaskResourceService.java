@@ -25,6 +25,8 @@ public interface TaskResourceService extends RemoteService {
    // Trait
    List<Trait> findAllTraits();
 
+   void createTrait(Trait trait);
+
    // Task
    void editTasks(Collection<Task> tasks);
 

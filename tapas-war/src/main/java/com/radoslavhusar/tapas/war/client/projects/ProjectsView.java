@@ -1,6 +1,7 @@
 package com.radoslavhusar.tapas.war.client.projects;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.radoslavhusar.tapas.ejb.entity.Trait;
 
 public interface ProjectsView extends IsWidget {
 
@@ -11,5 +12,7 @@ public interface ProjectsView extends IsWidget {
    void unbind();
 
    public interface Presenter {
+
+      void saveTrait(Trait trait);
    }
 }

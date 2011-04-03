@@ -22,10 +22,21 @@
          <g:VerticalPanel styleName='{style.withPadding}'>
             <g:HTMLPanel  ui:field="left">
                <h2>Projects</h2>
-               <!-- some things will be added here -->           
+               
+               <!-- some things will be added here -->
+               <g:VerticalPanel ui:field="projectsPanel"></g:VerticalPanel>
+               
+               <h2>New Project</h2>
+               <g:Anchor ui:field='newProject'>Start a new project &gt;</g:Anchor>
+               
+               <h2>Global Settings</h2>
+               <g:Anchor ui:field='manageExternal'>Manage External Systems &gt;</g:Anchor>
+               <br/>
+               <g:Anchor ui:field='manageTraits'>Manage Resource Traits &gt;</g:Anchor>
+               
             </g:HTMLPanel>
             
-            <g:Anchor ui:field='newProject'>Start a new project &gt;</g:Anchor>
+            
          </g:VerticalPanel>
       </g:center>
 

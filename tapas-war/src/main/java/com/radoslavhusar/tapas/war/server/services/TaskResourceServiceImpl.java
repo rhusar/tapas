@@ -190,4 +190,9 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    public List<Trait> findAllTraits() {
       return traitBean.findAll();
    }
+
+   @Override
+   public void createTrait(Trait trait) {
+      traitBean.create(trait);
+   }
 }
