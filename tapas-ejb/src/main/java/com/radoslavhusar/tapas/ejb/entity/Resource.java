@@ -19,7 +19,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "RESOURCE")
-@NamedQuery(name = "resourcesForProject", query = "select object(o) from Resource as o fetch all properties inner join o.resourceAllocations as a where a.key.project.id = :projectid")
+@NamedQuery(name = "resourcesForProject", query = "select object(o) from Resource as o fetch all properties inner join o.resourceAllocations as a  where a.key.project.id = :projectid")
 public class Resource implements Serializable {
 
    private static final long serialVersionUID = 1L;
@@ -36,6 +36,7 @@ public class Resource implements Serializable {
    private List<ResourceAllocation> resourceAllocations;
    @OneToMany(mappedBy = "resource", fetch = FetchType.LAZY)
    private List<Task> tasks;
+   // Owning relation! Must be careful.
    @OneToMany(fetch = FetchType.LAZY)
    private List<Trait> traits;
 
@@ -97,6 +98,8 @@ public class Resource implements Serializable {
 
    @Override
    public String toString() {
-      return "Resource{id=" + id + ", name=" + name + ", contract=" + contract + "}";
+      return "Resource{id=" + id
+              + ",name=" + name
+              + ",contract=" + contract + "}";
    }
 }

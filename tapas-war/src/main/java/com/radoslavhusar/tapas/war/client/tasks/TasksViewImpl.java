@@ -19,7 +19,6 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.ResizeComposite;
@@ -42,8 +41,7 @@ import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
 import com.radoslavhusar.tapas.war.client.app.Constants;
 import com.radoslavhusar.tapas.war.client.components.DynamicSelectionCell;
-import com.radoslavhusar.tapas.war.client.components.NumberEditTextCell;
-import com.radoslavhusar.tapas.war.client.components.PriorityEditTextCell;
+import com.radoslavhusar.tapas.war.client.components.SizeableEditTextCell;
 import com.radoslavhusar.tapas.war.client.util.UiUtil;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.ArrayList;
@@ -289,7 +287,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                // This cant happen now:
                // Window.alert("Wrong priority number. Please correct.");
             }
-            
+
             //tasks.redraw();
          }
       });
@@ -395,7 +393,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       Project project = client.getProject();
       if (project != null) {
          for (final ProjectPhase phase : project.getPhases()) {
-            Cell<String> timeCell = new NumberEditTextCell();
+            Cell<String> timeCell = new SizeableEditTextCell(2);
             Column<Task, String> timePhaseCol = new Column<Task, String>(timeCell) {
 
                @Override

@@ -1,6 +1,7 @@
 package com.radoslavhusar.tapas.war.client.resources;
 
 import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.NumberCell;
@@ -39,6 +40,7 @@ import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
 import com.radoslavhusar.tapas.war.client.app.Constants;
 import com.radoslavhusar.tapas.war.client.components.DynamicSelectionCell;
+import com.radoslavhusar.tapas.war.client.components.SizeableEditTextCell;
 import com.radoslavhusar.tapas.war.client.util.DataUtil;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.ArrayList;
@@ -146,6 +148,37 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          }
       });
 
+      // Traits
+      Cell traitCell = new ClickableTextCell();
+      Column<Resource, String> traitCol = new Column<Resource, String>(traitCell) {
+
+         @Override
+         public String getValue(Resource resource) {
+            return resource.getTraits() == null ? "null" : (resource.getTraits().size() + "x");
+         }
+      };
+      traitCol.setFieldUpdater(new FieldUpdater<Resource, String>() {
+
+         @Override
+         public void update(int index, Resource resource, String value) {
+            TraitsPopup.getPopup(resource).show();
+         }
+      });
+      nameCol.setSortable(true);
+      resources.addColumn(traitCol, new Header<String>(new TextCell()) {
+
+         @Override
+         public String getValue() {
+            return "Traits";
+         }
+      }, new Header<String>(new TextCell()) {
+
+         @Override
+         public String getValue() {
+            return "";
+         }
+      });
+
 
       // Group
       List<String> groupOptions = new ArrayList<String>();
@@ -182,11 +215,13 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             }
          }
       });
-      resources.addColumn(groupCol, "Resource Group");
+      // TODO: this is actually "Resource Group" but lets make it more human and call it Team as for human resources.
+      resources.addColumn(groupCol, "Team");
       resources.setColumnWidth(groupCol, 10, Unit.EM);
 
-      // Load
-      Cell contractCell = new EditTextCell();
+
+      // Contract
+      Cell contractCell = new SizeableEditTextCell(2); //new EditTextCell();
       Column<Resource, String> contractCol = new Column<Resource, String>(contractCell) {
 
          @Override
@@ -207,7 +242,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public String getValue() {
-            return "Contract %";
+            return "Contract";
          }
       }, new Header<String>(new TextCell()) {
 
@@ -222,8 +257,9 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       });
       resources.setColumnWidth(contractCol, 1, Unit.EM);
 
-      // Allocation
-      Cell allocCell = new EditTextCell();
+
+      // Project Allocation
+      Cell allocCell = new SizeableEditTextCell(2); //new EditTextCell();
       Column<Resource, String> allocCol = new Column<Resource, String>(allocCell) {
 
          @Override
@@ -237,11 +273,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          public void update(int index, Resource object, String value) {
             changed.add(object);
 
-
-            //for (ResourceAllocation rpa : client.getResourceAllocations().get(object.getId())) {
-
             // is it in the cache?
-
             ResourceAllocation rpa = object.getResourceAllocations().get(0); //client.getResourceAllocations().get(object.getId());
             if (rpa != null) {
                if (rpa.getKey().getResource().equals(object)) {
@@ -277,7 +309,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             resources.redraw();
          }
       });
-      resources.addColumn(allocCol, "Project Allocation %");
+      resources.addColumn(allocCol, "Project Allocation");
       resources.setColumnWidth(allocCol, 10, Unit.EM);
 
       // Updated to http://google-web-toolkit.googlecode.com/svn/javadoc/2.2/com/google/gwt/cell/client/NumberCell.html but if we want to display ratio..

@@ -44,6 +44,10 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
                break;
             }
          }
+         
+         // Lazy loaded, so fetch them all - cant really switch to eager because
+         // http://opensource.atlassian.com/projects/hibernate/browse/HHH-2980
+         res.getTraits().size();
       }
 
       return result;

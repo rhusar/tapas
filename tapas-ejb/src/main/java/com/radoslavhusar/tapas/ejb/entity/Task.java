@@ -3,6 +3,7 @@ package com.radoslavhusar.tapas.ejb.entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -42,7 +43,7 @@ public class Task implements Serializable {
    private List<TimeAllocation> timeAllocations;
    @Column
    private TaskStatus status;
-   @OneToOne(fetch = FetchType.EAGER)
+   @ManyToOne(fetch = FetchType.EAGER)
    private Trait requiredTrait;
 
    public Long getId() {
@@ -136,9 +137,10 @@ public class Task implements Serializable {
 
    @Override
    public String toString() {
-      return "Task{id=" + id + "|" + unifiedId
+      return "Task{id=" + id
+              + ",uid=" + unifiedId
               + ",name=" + name
-              + ",assignee=" + resource == null ? null : resource.getName() + "}";
+              + ",assignee=" + (resource == null ? null : resource.getName()) + "}";
    }
 
    public static String formatState(TaskStatus state) {

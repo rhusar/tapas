@@ -5,9 +5,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
-import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
 import com.radoslavhusar.tapas.ejb.entity.Task;
+import com.radoslavhusar.tapas.ejb.entity.Trait;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +22,9 @@ public interface TaskResourceService extends RemoteService {
 
    void editProject(Project project);
 
+   // Trait
+   List<Trait> findAllTraits();
+
    // Task
    void editTasks(Collection<Task> tasks);
 
@@ -33,7 +36,6 @@ public interface TaskResourceService extends RemoteService {
    List<Resource> findAllResourcesForProject(long projectId);
 
    /*Map<Long, ResourceAllocation> findAllAllocationsForProject(long projectId);*/
-
    Map<Long, ResourceAllocationData> fetchAllResourceDataForProject(long projectId);
 
    void editResourcesForProject(long projectId, Collection<Resource> resources);

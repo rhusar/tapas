@@ -8,6 +8,7 @@ import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
+import com.radoslavhusar.tapas.ejb.entity.Trait;
 import com.radoslavhusar.tapas.ejb.session.ProjectFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.ProjectPhaseFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.ResourceFacadeLocal;
@@ -15,6 +16,7 @@ import com.radoslavhusar.tapas.ejb.session.ResourceGroupFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.ResourceAllocationFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TimeAllocationFacadeLocal;
+import com.radoslavhusar.tapas.ejb.session.TraitFacadeLocal;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceService;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,17 +40,19 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    @EJB
    private TaskFacadeLocal taskBean;
    @EJB
-   private ProjectFacadeLocal projects;
+   private ProjectFacadeLocal projectBean;
    @EJB
-   private ProjectPhaseFacadeLocal phases;
+   private ProjectPhaseFacadeLocal phaseBean;
    @EJB
    private ResourceFacadeLocal resourceBean;
    @EJB
-   private TimeAllocationFacadeLocal timeAllocationBean;
+   private TimeAllocationFacadeLocal timeAllocBean;
    @EJB
-   private ResourceAllocationFacadeLocal allocations;
+   private ResourceAllocationFacadeLocal allocBean;
    @EJB
-   private ResourceGroupFacadeLocal resourceGroup;
+   private ResourceGroupFacadeLocal groupBean;
+   @EJB
+   private TraitFacadeLocal traitBean;
 
    public TaskResourceServiceImpl() {
       EntityManagerFactory emf = null;
@@ -68,22 +72,22 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
       // Persist the phases
       for (ProjectPhase p : project.getPhases()) {
          if (p.getId() == null) {
-            phases.create(p);
+            phaseBean.create(p);
          } else {
-            phases.edit(p);
+            phaseBean.edit(p);
          }
       }
-      projects.edit(project);
+      projectBean.edit(project);
    }
 
    @Override
    public List<Project> findAllProjects() {
-      return projects.findAll();
+      return projectBean.findAll();
    }
 
    @Override
    public List<ResourceGroup> findAllGroups() {
-      return resourceGroup.findAll();
+      return groupBean.findAll();
    }
 
    @Override
@@ -99,19 +103,6 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
       return result;
    }
 
-   /*@Override
-   public Map<Long, ResourceAllocation> findAllAllocationsForProject(long projectId) {
-   List<ResourceAllocation> list = allocations.findAllForProject(projectId);
-   
-   // Make it better presentable
-   Map<Long, ResourceAllocation> map = new HashMap<Long, ResourceAllocation>();
-   
-   for (ResourceAllocation ra : list) {
-   map.put(ra.getKey().getResource().getId(), ra);
-   }
-   
-   return map;
-   }*/
    @Override
    public List<Resource> findAllResourcesForProject(long projectId) {
       return resourceBean.findAllForProject(projectId);
@@ -127,7 +118,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
             for (ResourceAllocation rpa : res.getResourceAllocations()) {
                if (rpa.getPercent() > 0) {
                   // save only if allocated to more than 0%
-                  allocations.create(rpa);
+                  allocBean.create(rpa);
                }
             }
          } else {
@@ -136,10 +127,10 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
             for (ResourceAllocation rpa : res.getResourceAllocations()) {
                if (rpa.getPercent() < 0) {
                   // remove if allocated to 0%
-                  allocations.remove(rpa);
+                  allocBean.remove(rpa);
                } else {
                   // update it
-                  allocations.edit(rpa);
+                  allocBean.edit(rpa);
                }
             }
             // secondly - so that references are already persisted
@@ -159,7 +150,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
             for (TimeAllocation ta : t.getTimeAllocations()) {
                if (ta.getAllocation() > 0) {
                   // dont save if allocated to 0%
-                  timeAllocationBean.create(ta);
+                  timeAllocBean.create(ta);
                }
             }
          } else {
@@ -167,10 +158,10 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
             // allocations changed?
             for (TimeAllocation ta : t.getTimeAllocations()) {
                if (ta.getAllocation() > 0) {
-                  timeAllocationBean.edit(ta);
+                  timeAllocBean.edit(ta);
                } else {
                   // remove if its zero
-                  timeAllocationBean.remove(ta);
+                  timeAllocBean.remove(ta);
                }
             }
             // secondly - so that references are already persisted
@@ -192,6 +183,11 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
 
    @Override
    public Project findProject(long projectId) {
-      return projects.find(projectId);
+      return projectBean.find(projectId);
+   }
+
+   @Override
+   public List<Trait> findAllTraits() {
+      return traitBean.findAll();
    }
 }

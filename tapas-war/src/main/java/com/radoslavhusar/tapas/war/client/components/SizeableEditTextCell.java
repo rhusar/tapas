@@ -37,13 +37,15 @@ import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
  * purposes, which is entirely wrong. It should be able to treat it as a proper
  * string (especially since that's all the user can enter).
  */
-public class PriorityEditTextCell extends AbstractEditableCell<String, PriorityEditTextCell.ViewData> {
+public class SizeableEditTextCell extends AbstractEditableCell<String, SizeableEditTextCell.ViewData> {
+
+   private final int size;
 
    interface Template extends SafeHtmlTemplates {
 
       // CHANGED
-      @Template("<input type=\"text\" value=\"{0}\" tabindex=\"-1\" size=\"3\" maxlength=\"3\"></input>")
-      SafeHtml input(String value);
+      @Template("<input type=\"text\" value=\"{0}\" tabindex=\"-1\" size=\"{1}\"></input>")
+      SafeHtml input(String value, int size);
    }
 
    /**
@@ -56,18 +58,15 @@ public class PriorityEditTextCell extends AbstractEditableCell<String, PriorityE
    static class ViewData {
 
       private boolean isEditing;
-
       /**
        * If true, this is not the first edit.
        */
       private boolean isEditingAgain;
-
       /**
        * Keep track of the original value at the start of the edit, which might be
        * the edited value from the previous edit and NOT the actual value.
        */
       private String original;
-
       private String text;
 
       /**
@@ -135,26 +134,35 @@ public class PriorityEditTextCell extends AbstractEditableCell<String, PriorityE
          return (o1 == null) ? o2 == null : o1.equals(o2);
       }
    }
-
    private static Template template;
-
    private final SafeHtmlRenderer<String> renderer;
 
    /**
     * Construct a new PriorityEditTextCell that will use a
     * {@link SimpleSafeHtmlRenderer}.
+    * @param size make this sizeable
     */
-   public PriorityEditTextCell() {
-      this(SimpleSafeHtmlRenderer.getInstance());
+   /* Force the size to be set!
+   
+   public SizeableEditTextCell() {
+   this(SimpleSafeHtmlRenderer.getInstance(), 10);
+   }
+    */
+   public SizeableEditTextCell(int size) {
+      this(SimpleSafeHtmlRenderer.getInstance(), size);
    }
 
    /**
     * Construct a new PriorityEditTextCell that will use a given {@link SafeHtmlRenderer}.
     *
     * @param renderer a {@link SafeHtmlRenderer SafeHtmlRenderer<String>} instance
+    * @param size of the input field 
     */
-   public PriorityEditTextCell(SafeHtmlRenderer<String> renderer) {
+   public SizeableEditTextCell(SafeHtmlRenderer<String> renderer, int size) {
       super("click", "keyup", "keydown", "blur");
+
+      this.size = size;
+
       if (template == null) {
          template = GWT.create(Template.class);
       }
@@ -212,7 +220,7 @@ public class PriorityEditTextCell extends AbstractEditableCell<String, PriorityE
          SafeHtml html = renderer.render(text);
          if (viewData.isEditing()) {
             // Note the template will not treat SafeHtml specially
-            sb.append(template.input(html.asString()));
+            sb.append(template.input(html.asString(), size));
          } else {
             // The user pressed enter, but view data still exists.
             sb.append(html);
@@ -331,7 +339,7 @@ public class PriorityEditTextCell extends AbstractEditableCell<String, PriorityE
     * Get the input element in edit mode.
     */
    private InputElement getInputElement(Element parent) {
-    return parent.getFirstChild().<InputElement> cast();
+      return parent.getFirstChild().<InputElement>cast();
    }
 
    /**
