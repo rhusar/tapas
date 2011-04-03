@@ -18,16 +18,14 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.Trait;
 import com.radoslavhusar.tapas.war.client.app.Application;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO: maybe tasks can use the same dialog?
+ * TODO: maybe tasks can use the same dialog? 
+ * But we keep it only OneToMany so its not necessary.
  */
-public class ResourcesTraitsDialogBox {
-
-   private ResourcesTraitsDialogBox() {
-      // Not instanciable
-   }
+public class ResourceTraitsDialogBox {
 
    public static DialogBox getPopup(final Resource resource) {
 
@@ -41,6 +39,8 @@ public class ResourcesTraitsDialogBox {
       dialogContents.setSpacing(4);
       dialogBox.setWidget(dialogContents);
 
+      final List<Trait> traits = new ArrayList();
+
       // Add Oracle -Define the oracle that finds suggestions
       final MultiWordSuggestOracle oracle = new MultiWordSuggestOracle();
 
@@ -48,12 +48,14 @@ public class ResourcesTraitsDialogBox {
 
          @Override
          public void onFailure(Throwable caught) {
-            // no problem, but no suggestions
+            // This is a big problem, nothing to check against.
+            oracle.clear();
          }
 
          @Override
          public void onSuccess(List<Trait> result) {
             for (Trait t : result) {
+               traits.add(t);
                oracle.add(t.getName());
             }
          }
@@ -63,17 +65,9 @@ public class ResourcesTraitsDialogBox {
       // Create the suggest box
       final SuggestBox suggestBox = new SuggestBox(oracle);
       //suggestBox.ensureDebugId("cwSuggestBox");
-      suggestBox.addKeyPressHandler(new KeyPressHandler() {
-
-         @Override
-         public void onKeyPress(KeyPressEvent event) {
-            /*if (event.getNativeKeyCode() == 13) {
-            
-            }*/
-         }
-      });
 
       HorizontalPanel suggestPanel = new HorizontalPanel();
+      final VerticalPanel traitsPanel = new VerticalPanel();
       suggestPanel.add(suggestBox);
 
       // Add a close button at the bottom of the dialog
@@ -81,17 +75,36 @@ public class ResourcesTraitsDialogBox {
 
          @Override
          public void onClick(ClickEvent event) {
-            final Anchor histrait = new Anchor(suggestBox.getText());
-            histrait.addClickHandler(new ClickHandler() {
+            String tname = suggestBox.getText();
 
-               @Override
-               public void onClick(ClickEvent event) {
-                  //remove that trait
-                  //resource.getTraits().remove(trait);
-                  histrait.setVisible(false);
+            // Is this valid trait?
+            for (final Trait t : traits) {
+               if (tname.equalsIgnoreCase(t.getName())) {
+                  // This is a real trait, lets add it.
+                  suggestBox.setText("");
+                  resource.getTraits().add(t);
+
+                  // Show the link
+                  final Anchor newTraitAnchor = new Anchor(t.getName());
+                  newTraitAnchor.addClickHandler(new ClickHandler() {
+
+                     @Override
+                     public void onClick(ClickEvent event) {
+                        //remove that trait
+                        resource.getTraits().remove(t);
+                        newTraitAnchor.setVisible(false);
+                        traitsPanel.remove(newTraitAnchor);
+                     }
+                  });
+                  traitsPanel.add(newTraitAnchor);
+
+                  suggestBox.setFocus(true);
+                  return;
                }
-            });
-            dialogContents.add(histrait);
+            }
+
+            // Nothing found - let user know
+            Window.alert("Trait not found. Go to Projects -> Global Settings -> Manage Traits to add it.");
          }
       });
       suggestPanel.add(addButton);
@@ -99,6 +112,8 @@ public class ResourcesTraitsDialogBox {
 
       // label
       dialogContents.add(new Label("Current traits, click to remove: "));
+
+      dialogContents.add(traitsPanel);
 
       // list of traits
       if (resource.getTraits() != null) {
@@ -110,14 +125,12 @@ public class ResourcesTraitsDialogBox {
                public void onClick(ClickEvent event) {
                   //remove that trait
                   resource.getTraits().remove(trait);
-                  histrait.setVisible(false);
+                  traitsPanel.remove(histrait); //histrait.setVisible(false);
                }
             });
-            dialogContents.add(histrait);
+            traitsPanel.add(histrait);
          }
       }
-
-
 
       // Add a close button at the bottom of the dialog
       Button closeButton = new Button("Done", new ClickHandler() {
@@ -125,7 +138,6 @@ public class ResourcesTraitsDialogBox {
          @Override
          public void onClick(ClickEvent event) {
             dialogBox.hide();
-            Window.alert("IMPLETEMNT SAVE!");
          }
       });
       dialogContents.add(closeButton);
@@ -134,7 +146,14 @@ public class ResourcesTraitsDialogBox {
       // Send it to center
       dialogBox.center();
 
+      // Focus on suggestbox
+      suggestBox.setFocus(true);      
+      
       // Return the dialog box
       return dialogBox;
+   }
+
+   private ResourceTraitsDialogBox() {
+      // Not instantiable
    }
 }

@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -18,6 +19,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "TRAIT", uniqueConstraints =
 @UniqueConstraint(columnNames = {"name"}))
+@NamedQuery(name = "findAllTraitsSorted", query = "select object(o) from Trait as o order by name")
 public class Trait implements Serializable {
 
    @Id

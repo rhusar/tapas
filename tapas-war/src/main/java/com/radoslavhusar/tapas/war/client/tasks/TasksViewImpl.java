@@ -38,6 +38,7 @@ import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.TaskStatus;
 import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
+import com.radoslavhusar.tapas.ejb.entity.Trait;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
 import com.radoslavhusar.tapas.war.client.app.Constants;
 import com.radoslavhusar.tapas.war.client.components.DynamicSelectionCell;
@@ -45,6 +46,7 @@ import com.radoslavhusar.tapas.war.client.components.SizeableEditTextCell;
 import com.radoslavhusar.tapas.war.client.util.UiUtil;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -137,7 +139,9 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       }
 
       // fetch data from services
-      toSync = 3;
+      toSync = 4;
+
+      // Resources ON the project
       service.findAllResourcesForProject(client.getProjectId(), new AsyncCallback<List<Resource>>() {
 
          @Override
@@ -152,6 +156,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
          }
       });
 
+      // Tasks
       service.findAllTasksForProject(client.getProjectId(), new AsyncCallback<List<Task>>() {
 
          @Override
@@ -165,6 +170,8 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
             toSyncRender();
          }
       });
+
+      // Groups
       if (client.getGroups() == null) {
          service.findAllGroups(new AsyncCallback<List<ResourceGroup>>() {
 
@@ -176,6 +183,25 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
             @Override
             public void onSuccess(List<ResourceGroup> result) {
                client.setGroups(result);
+               toSyncRender();
+            }
+         });
+      } else {
+         toSyncRender();
+      }
+
+      // Traits
+      if (client.getTraits() == null) {
+         service.findAllTraits(new AsyncCallback<List<Trait>>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+               throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public void onSuccess(List<Trait> result) {
+               client.setTraits(result);
                toSyncRender();
             }
          });
@@ -284,7 +310,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                }
                object.setPriority(num);
             } catch (NumberFormatException nfo) {
-               // This cant happen now:
+               // This cant happen now, so no need for:
                // Window.alert("Wrong priority number. Please correct.");
             }
 
@@ -347,6 +373,17 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
             changed.add(object);
 
             object.setName(value);
+
+            // if it doesnt have a requirement lets do some scanning
+            if (object.getRequiredTrait() == null) {
+               for (Trait t : client.getTraits()) {
+                  if (value.contains(t.getName())) {
+                     object.setRequiredTrait(t);
+                     tasks.redraw();
+                     return;
+                  }
+               }
+            }
          }
       });
       tasks.addColumn(nameCol, "Name");
@@ -388,10 +425,85 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       tasks.addColumn(resourceCol, "Resource");
       tasks.setColumnWidth(resourceCol, 10, Unit.EM);
 
+      // Team - Group
+      List<String> groupOptions = new ArrayList<String>();
+      groupOptions.add(""); // the NULL option
+      for (ResourceGroup g : client.getGroups()) {
+         groupOptions.add(g.getName());
+      }
+      Cell groupCell = new SelectionCell(groupOptions);
+      Column<Task, String> groupCol = new Column<Task, String>(groupCell) {
+
+         @Override
+         public String getValue(Task object) {
+            return "" + (object.getResourceGroup() != null ? object.getResourceGroup().getName() : "");
+         }
+      };
+      groupCol.setFieldUpdater(new FieldUpdater<Task, String>() {
+
+         @Override
+         public void update(int index, Task object, String value) {
+            changed.add(object);
+
+            if (value.isEmpty()) {
+               object.setResourceGroup(null);
+               return;
+            }
+            for (ResourceGroup group : client.getGroups()) {
+               if (group.getName().equals(value)) {
+                  object.setResourceGroup(group);
+                  return;
+               }
+            }
+         }
+      });
+      // TODO: this is actually "Resource Group" but lets make it more human and call it Team as for human resources.
+      tasks.addColumn(groupCol, "Team");
+      tasks.setColumnWidth(groupCol, 5, Unit.EM);
+
+
+      // Requirements Traits
+      List<String> traitOptions = new ArrayList<String>();
+      traitOptions.add(""); // the NULL option - nothing is required
+      for (Trait t : client.getTraits()) {
+         traitOptions.add(t.getName());
+      }
+      Cell traitCell = new SelectionCell(traitOptions);
+      Column<Task, String> traitCol = new Column<Task, String>(traitCell) {
+
+         @Override
+         public String getValue(Task object) {
+            return "" + (object.getRequiredTrait() != null ? object.getRequiredTrait().getName() : "");
+         }
+      };
+      traitCol.setFieldUpdater(new FieldUpdater<Task, String>() {
+
+         @Override
+         public void update(int index, Task object, String value) {
+            changed.add(object);
+
+            if (value.isEmpty()) {
+               object.setRequiredTrait(null);
+               return;
+            }
+            for (Trait t : client.getTraits()) {
+               if (t.getName().equalsIgnoreCase(value)) {
+                  object.setRequiredTrait(t);
+                  return;
+               }
+            }
+         }
+      });
+      tasks.addColumn(traitCol, "Requires");
+      tasks.setColumnWidth(traitCol, 5, Unit.EM);
+
 
       // Phases Times
       Project project = client.getProject();
       if (project != null) {
+         // Sort them before display
+         Collections.sort(project.getPhases());
+
          for (final ProjectPhase phase : project.getPhases()) {
             Cell<String> timeCell = new SizeableEditTextCell(2);
             Column<Task, String> timePhaseCol = new Column<Task, String>(timeCell) {

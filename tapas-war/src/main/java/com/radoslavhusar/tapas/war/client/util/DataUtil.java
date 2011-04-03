@@ -6,6 +6,10 @@ import java.util.Date;
 
 public class DataUtil {
 
+   public static double cleanTaxDays(double days, byte tax) {
+      return days * (100 - tax) / 100;
+   }
+
    public static double calculateAssigned(ResourceAllocationData rad) {
       return rad.getP1Allocation() + rad.getP2Allocation() + rad.getP3Allocation() + rad.getTbdAllocation();
    }

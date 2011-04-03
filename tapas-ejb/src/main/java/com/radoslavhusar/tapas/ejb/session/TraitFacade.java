@@ -1,6 +1,7 @@
 package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Trait;
+import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -20,5 +21,15 @@ public class TraitFacade extends AbstractFacade<Trait> implements TraitFacadeLoc
 
    public TraitFacade() {
       super(Trait.class);
+   }
+
+   /**
+    * Override to fetch them sorted.
+    * 
+    * @return sorted list
+    */
+   @Override
+   public List<Trait> findAll() {
+      return getEntityManager().createNamedQuery("findAllTraitsSorted").getResultList();
    }
 }

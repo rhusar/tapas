@@ -9,15 +9,16 @@ import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
 import com.radoslavhusar.tapas.ejb.entity.Task;
+import com.radoslavhusar.tapas.ejb.entity.Trait;
 import com.radoslavhusar.tapas.war.client.event.DataReadyEvent;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Singleton which controls state and cache of the application.
+ * Singleton which controls state and cache of the client application.
  * 
- * TODO: maybe rename to ClientCache?
+ * TODO: consider maybe rename to ClientCache?
  */
 @Singleton
 public class ClientState {
@@ -30,6 +31,7 @@ public class ClientState {
    private Map<Long, ResourceAllocationData> resourceData;
    private List<ResourceGroup> groups;
    private List<Task> tasks;
+   private List<Trait> traits;
 
    //private volatile int toSync = 3;
    @Inject
@@ -81,6 +83,19 @@ public class ClientState {
             eventBus.fireEvent(new DataReadyEvent(DataReadyEvent.DataType.GROUPS));
          }
       });
+      service.findAllTraits(new AsyncCallback<List<Trait>>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(List<Trait> result) {
+            traits = result;
+            eventBus.fireEvent(new DataReadyEvent(DataReadyEvent.DataType.TRAITS));
+         }
+      });
    }
 
    public Project getProject() {
@@ -118,5 +133,13 @@ public class ClientState {
 
    public List<Task> getTasks() {
       return tasks;
+   }
+
+   public List<Trait> getTraits() {
+      return traits;
+   }
+
+   public void setTraits(List<Trait> traits) {
+      this.traits = traits;
    }
 }

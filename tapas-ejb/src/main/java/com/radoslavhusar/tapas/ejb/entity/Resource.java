@@ -2,6 +2,7 @@ package com.radoslavhusar.tapas.ejb.entity;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -38,7 +39,7 @@ public class Resource implements Serializable {
    private List<Task> tasks;
    // Owning relation! Must be careful.
    @OneToMany(fetch = FetchType.LAZY)
-   private List<Trait> traits;
+   private Set<Trait> traits;
 
    public Long getId() {
       return id;
@@ -88,11 +89,11 @@ public class Resource implements Serializable {
       this.tasks = tasks;
    }
 
-   public List<Trait> getTraits() {
+   public Set<Trait> getTraits() {
       return traits;
    }
 
-   public void setTraits(List<Trait> traits) {
+   public void setTraits(Set<Trait> traits) {
       this.traits = traits;
    }
 

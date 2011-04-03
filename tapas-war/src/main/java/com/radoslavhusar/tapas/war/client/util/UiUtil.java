@@ -4,13 +4,13 @@ public class UiUtil {
 
    public static String formatPhase(String phaseName) {
 
-      phaseName.replaceAll(" ", "");
-      phaseName.trim(); // should be useless
+      String pshaseNameNoSpaces = phaseName.replaceAll("\\s+", "");
+      //phaseName.trim(); // should is now useless
 
-      if (phaseName.length() <= 4) {
-         return phaseName;
+      if (pshaseNameNoSpaces.length() <= 3) {
+         return pshaseNameNoSpaces.toUpperCase();
       } else {
-         return phaseName.substring(0, 4);
+         return pshaseNameNoSpaces.substring(0, 3).toUpperCase();
       }
    }
 

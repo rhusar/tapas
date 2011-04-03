@@ -9,7 +9,6 @@ import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
-
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -36,6 +35,7 @@ import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationPK;
+import com.radoslavhusar.tapas.ejb.entity.Trait;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
 import com.radoslavhusar.tapas.war.client.app.Constants;
@@ -161,7 +161,8 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public void update(int index, Resource resource, String value) {
-            ResourcesTraitsDialogBox.getPopup(resource).show();
+            ResourceTraitsDialogBox.getPopup(resource).show();
+            changed.add(resource);
          }
       });
       nameCol.setSortable(true);
@@ -318,6 +319,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       NumberCell daysNumberCell = new NumberCell(NumberFormat.getFormat("0.00"));
       NumberCell percentageNumberCell = new NumberCell(NumberFormat.getPercentFormat());
 
+      
       // Remaining days
       TextColumn<Resource> daysCol = new TextColumn<Resource>() {
 
@@ -326,14 +328,15 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             /* byte alloc = resource.getResourceAllocations().get(0).getPercent();
             double res = ((double) (client.getProject().getTargetDate().getTime() - (new Date()).getTime()) / 86400000) * alloc * resource.getContract() / 100 / 100;
             return "" + NumberFormat.getDecimalFormat().format(res);*/
-            return NumberFormat.getFormat(Constants.ALLOC_FORMAT).format(DataUtil.remainingUntil(client.getProject().getTargetDate(), resource));
+            return NumberFormat.getFormat(Constants.ALLOC_FORMAT).format(
+                    DataUtil.remainingUntil(client.getProject().getTargetDate(), resource));
          }
       };
       resources.addColumn(daysCol, new Header<String>(new TextCell()) {
 
          @Override
          public String getValue() {
-            return "Remaining days";
+            return "Days remaining";
          }
       }, new Header<String>(new TextCell()) {
 
@@ -353,20 +356,25 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public String getValue(Resource resource) {
-            return "N/I";
+            return NumberFormat.getFormat(Constants.ALLOC_FORMAT).format(
+                    DataUtil.cleanTaxDays(DataUtil.remainingUntil(client.getProject().getTargetDate(), resource), client.getProject().getTax()));
          }
       };
       resources.addColumn(cleanDaysCol, new Header<String>(new TextCell()) {
 
          @Override
          public String getValue() {
-            return "Days less PTO/Tax";
+            return "Days less Tax";
          }
       }, new Header<String>(new TextCell()) {
 
          @Override
          public String getValue() {
-            return "N/I";
+            double dsum = 0;
+            for (Resource resource : provider.getList()) {
+               dsum += DataUtil.cleanTaxDays(DataUtil.remainingUntil(client.getProject().getTargetDate(), resource), client.getProject().getTax());
+            }
+            return NumberFormat.getFormat(Constants.ALLOC_FORMAT).format(dsum);
          }
       });
       resources.setColumnWidth(cleanDaysCol, NUMBER_COL_EM, Unit.EM);
@@ -673,13 +681,16 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
       // Allocation
       ResourceAllocation fullAllocation = new ResourceAllocation();
-
       fullAllocation.setPercent(b);
       fullAllocation.setKey(new ResourceAllocationPK(client.getProject(), newResource));
       List allodcs = new ArrayList();
       allodcs.add(fullAllocation);
-
       newResource.setResourceAllocations(allodcs);
+      
+      // Traits (none)
+      Set<Trait> noneTraits = new HashSet<Trait>();
+      newResource.setTraits(noneTraits);
+      
       provider.getList().add(newResource);
       resources.setRowData(provider.getList());
       resources.setRowCount(provider.getList().size());

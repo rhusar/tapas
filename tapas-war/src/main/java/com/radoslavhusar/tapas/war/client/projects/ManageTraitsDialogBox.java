@@ -112,7 +112,7 @@ public class ManageTraitsDialogBox {
          }
       });
       closePanel.add(closeButton);
-      closePanel.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
+      closePanel.setCellHorizontalAlignment(closePanel, HasHorizontalAlignment.ALIGN_RIGHT);
       dialogContents.add(closePanel);
 
       // Send it to center

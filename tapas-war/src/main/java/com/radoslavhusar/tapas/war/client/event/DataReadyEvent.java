@@ -9,7 +9,7 @@ public class DataReadyEvent extends GwtEvent<DataReadyEventHandler> {
 
    public static enum DataType {
 
-      OVERVIEW, TASKS, RESOURCES, PROJECT, GROUPS
+      OVERVIEW, TASKS, RESOURCES, PROJECT, GROUPS, TRAITS
    }
 
    public DataReadyEvent(DataType dataType) {

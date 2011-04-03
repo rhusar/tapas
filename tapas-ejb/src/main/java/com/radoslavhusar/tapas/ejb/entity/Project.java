@@ -33,6 +33,8 @@ public class Project implements Serializable {
    private List<ProjectPhase> phases;
    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
    private List<Task> tasks;
+   @Column
+   private byte tax;
 
    public Long getId() {
       return id;
@@ -84,11 +86,20 @@ public class Project implements Serializable {
       this.tasks = tasks;
    }
 
+   public byte getTax() {
+      return tax;
+   }
+
+   public void setTax(byte tax) {
+      this.tax = tax;
+   }
+
    @Override
    public String toString() {
       return "Project{id=" + id
-              + ", name=" + name
-              + ", startDate=" + startDate
-              + ", targetDate=" + targetDate + "}";
+              + ",name=" + name
+              + ",tax=" + tax
+              + ",startDate=" + startDate
+              + ",targetDate=" + targetDate + "}";
    }
 }

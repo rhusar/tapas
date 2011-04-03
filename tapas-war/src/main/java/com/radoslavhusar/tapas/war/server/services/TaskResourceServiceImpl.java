@@ -112,6 +112,8 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    public void editResourcesForProject(long projectId, Collection<Resource> resources) {
       for (Resource res : resources) {
          if (res.getId() == null) {
+            // Hm should I do this before that? res.setResourceAllocations(null);
+
             // its a new resource, persist it
             resourceBean.create(res);
             // now persist the NEW allocation
@@ -125,7 +127,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
             // resource is not new, save changes
             // allocations changed?
             for (ResourceAllocation rpa : res.getResourceAllocations()) {
-               if (rpa.getPercent() < 0) {
+               if (rpa.getPercent() <= 0) {
                   // remove if allocated to 0%
                   allocBean.remove(rpa);
                } else {
