@@ -39,6 +39,29 @@ rule "insertEmployeeAssignmentTotal"
         1, $task));
 end
 
+/*
+How much is allocated compared to what the load on the project is.
+rule "insertAssignmentLoadTotal"
+        salience 1 // Do these rules first (optional, improves performance)
+    when
+       $resource : Resource() // Take all resources on the project
+       $task : Task(resource == $resource) // And his current tasks
+    
+       // Sum total allocation on total:
+       $assignmentTotal : Number(intValue > 0) from accumulate(
+            sum($task.allocation.Time)
+        )
+
+        // And divide by allocation on project + load
+        $final : Number() from ... {$assignmentTotal}
+    then
+        insertLogical(new IntConstraintOccurrence("insertAssignmentLoadTotal",
+        ConstraintType.NEGATIVE_HARD, 
+        1, $task));
+end
+*/
+
+
 // ############################################################################
 // Soft constraints
 // ############################################################################

@@ -25,12 +25,20 @@ public class ProjectPhase implements Serializable, Comparable<ProjectPhase> {
    private String name;
    @ManyToOne(fetch = FetchType.LAZY)
    private Project project;
+   /*
+   // There is no need for a start date. The project is continuous, so the previous
+   // end date is the next start date and the first start date is the start date of the
+   // project itself.
    @Column
    @Temporal(TemporalType.DATE)
    private Date startDate;
+    */
    @Column
    @Temporal(TemporalType.DATE)
-   private Date endDate;
+   private Date targetted;
+   @Column
+   @Temporal(TemporalType.DATE)
+   private Date ended;
 
    public Long getId() {
       return id;
@@ -56,34 +64,42 @@ public class ProjectPhase implements Serializable, Comparable<ProjectPhase> {
       this.project = project;
    }
 
-   public Date getEndDate() {
-      return endDate;
+   public Date getEnded() {
+      return ended;
    }
 
-   public void setEndDate(Date endDate) {
-      this.endDate = endDate;
+   public void setEnded(Date endDate) {
+      this.ended = endDate;
    }
 
-   public Date getStartDate() {
-      return startDate;
+   public Date getTargetted() {
+      return targetted;
    }
 
-   public void setStartDate(Date startDate) {
-      this.startDate = startDate;
+   public void setTargetted(Date targetDate) {
+      this.targetted = targetDate;
    }
 
    /**
-    * Sorts by start date.
+    * Sorts by TARGET date.
     *
     * @return positive integer if this phase starts after the compared to.
     */
    @Override
    public int compareTo(ProjectPhase o) {
-      if (((ProjectPhase) o).getStartDate().after(this.startDate)) {
-         return -1;
-      } else {
-         return 1;
+      if (o.getTargetted() == null || targetted == null) {
+         // Really cant judge them
+         return 0;
       }
+
+      /*if (o.getTargetted().after(this.targetDate)) {
+      return -1;
+      } else {
+      return 1;
+      }*/
+
+      // Need to cast to loss of precision
+      return (int) (this.targetted.getTime() - o.getTargetted().getTime());
    }
 
    @Override
@@ -91,8 +107,8 @@ public class ProjectPhase implements Serializable, Comparable<ProjectPhase> {
       return "ProjectPhase{id=" + id
               + ",name=" + name
               + ",project=" + (project == null ? "null" : project.getId())
-              + ",startDate=" + startDate
-              + ",endDate=" + endDate
+              + ",targetted=" + (targetted == null ? "null" : targetted)
+              + ",ended=" + (ended == null ? "null" : ended)
               + "}";
    }
 }

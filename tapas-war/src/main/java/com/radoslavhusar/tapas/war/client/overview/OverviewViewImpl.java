@@ -104,41 +104,63 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       });
       phases.addColumn(phaseNameCol, "Name");
 
+      /*
       // Start Date
       Cell datePickCell = new DatePickerCell(dateFormat);
-
+      
       Column<ProjectPhase, Date> startDateCol = new Column<ProjectPhase, Date>(datePickCell) {
+      
+      @Override
+      public Date getValue(ProjectPhase phase) {
+      return phase.getStartDate();
+      }
+      };
+      startDateCol.setFieldUpdater(new FieldUpdater<ProjectPhase, Date>() {
+      
+      @Override
+      public void update(int index, ProjectPhase object, Date value) {
+      object.setStartDate(value);
+      }
+      });
+      phases.addColumn(startDateCol, "Start Date");
+       */
+
+      // Target Date - also sorts like this
+      Cell targetDatePickCell = new DatePickerCell(dateFormat);
+      Column<ProjectPhase, Date> targetDateCol = new Column<ProjectPhase, Date>(targetDatePickCell) {
 
          @Override
          public Date getValue(ProjectPhase phase) {
-            return phase.getStartDate();
+            return phase.getTargetted();
          }
       };
-      startDateCol.setFieldUpdater(new FieldUpdater<ProjectPhase, Date>() {
+      targetDateCol.setFieldUpdater(new FieldUpdater<ProjectPhase, Date>() {
 
          @Override
          public void update(int index, ProjectPhase object, Date value) {
-            object.setStartDate(value);
+            object.setTargetted(value);
          }
       });
-      phases.addColumn(startDateCol, "Start Date");
+      phases.addColumn(targetDateCol, "Target Date");
 
       // End Date
-      Column<ProjectPhase, Date> endDateCol = new Column<ProjectPhase, Date>(datePickCell) {
+      Cell endDatePickCell = new DatePickerCell(dateFormat);
+      Column<ProjectPhase, Date> endDateCol = new Column<ProjectPhase, Date>(endDatePickCell) {
 
          @Override
          public Date getValue(ProjectPhase phase) {
-            return phase.getEndDate();
+            return phase.getEnded();
          }
       };
       endDateCol.setFieldUpdater(new FieldUpdater<ProjectPhase, Date>() {
 
          @Override
          public void update(int index, ProjectPhase object, Date value) {
-            object.setEndDate(value);
+            object.setEnded(value);
          }
       });
       phases.addColumn(endDateCol, "End Date");
+
 
       // Add a selection model to handle user selection.
       final SingleSelectionModel<ProjectPhase> selectionModel = new SingleSelectionModel<ProjectPhase>();
@@ -181,7 +203,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
                @Override
                public void onKeyUp(KeyUpEvent event) {
                   if (event.getNativeKeyCode() == 13) {
-                     project.setName(box.getText() );
+                     project.setName(box.getText());
                      projectName.setText(box.getText());
                      simplePopup.hide();
                   }
@@ -231,8 +253,8 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
    public void phaseAddClick(ClickEvent event) {
       ProjectPhase newPhase = new ProjectPhase();
       newPhase.setName("New phase");
-      newPhase.setStartDate(new Date());
-      newPhase.setEndDate(new Date());
+      newPhase.setTargetted(new Date());
+      newPhase.setEnded(null);
       newPhase.setProject(project);
       if (project.getPhases() == null) {
          project.setPhases(new ArrayList<ProjectPhase>());

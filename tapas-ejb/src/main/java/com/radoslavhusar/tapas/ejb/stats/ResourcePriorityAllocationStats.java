@@ -1,8 +1,8 @@
-package com.radoslavhusar.tapas.ejb.entity;
+package com.radoslavhusar.tapas.ejb.stats;
 
 import java.io.Serializable;
 
-public class ResourceAllocationData implements Serializable {
+public class ResourcePriorityAllocationStats implements Serializable {
 
    private long resourceId;
    private long projectId;
@@ -15,15 +15,12 @@ public class ResourceAllocationData implements Serializable {
    private double tbdAllocation;
    private double tbdCompleted;
 
-   public ResourceAllocationData() {
-   }
-
-   public ResourceAllocationData(long resourceId, long projectId) {
+   public ResourcePriorityAllocationStats(long resourceId, long projectId) {
       this.resourceId = resourceId;
       this.projectId = projectId;
    }
 
-   public ResourceAllocationData(long resourceId, long projectId, double p1Allocation, double p1Completed, double p2Allocation, double p2Completed, double p3Allocation, double p3Completed, double tbdAllocation, double tbdCompleted) {
+   public ResourcePriorityAllocationStats(long resourceId, long projectId, double p1Allocation, double p1Completed, double p2Allocation, double p2Completed, double p3Allocation, double p3Completed, double tbdAllocation, double tbdCompleted) {
       this.resourceId = resourceId;
       this.projectId = projectId;
       this.p1Allocation = p1Allocation;
@@ -118,6 +115,16 @@ public class ResourceAllocationData implements Serializable {
 
    @Override
    public String toString() {
-      return "ResourceAllocationData{resourceId=" + resourceId + ", projectId=" + projectId + ", p1Allocation=" + p1Allocation + ", p1Completed=" + p1Completed + ", p2Allocation=" + p2Allocation + ", p2Completed=" + p2Completed + ", p3Allocation=" + p3Allocation + ", p3Completed=" + p3Completed + ", tbdAllocation=" + tbdAllocation + ", tbdCompleted=" + tbdCompleted + "}";
+      return "ResourceAllocationData{resourceId=" + resourceId
+              + ",projectId=" + projectId
+              + ",p1Allocation=" + p1Allocation
+              + ",p1Completed=" + p1Completed
+              + ",p2Allocation=" + p2Allocation
+              + ",p2Completed=" + p2Completed
+              + ",p3Allocation=" + p3Allocation
+              + ",p3Completed=" + p3Completed
+              + ",tbdAllocation=" + tbdAllocation
+              + ",tbdCompleted=" + tbdCompleted
+              + "}";
    }
 }

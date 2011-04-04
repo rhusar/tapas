@@ -38,7 +38,7 @@ import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
-import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
+import com.radoslavhusar.tapas.ejb.stats.ResourcePriorityAllocationStats;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationPK;
 import com.radoslavhusar.tapas.ejb.entity.Trait;
 import com.radoslavhusar.tapas.war.client.app.Application;
@@ -396,7 +396,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public Number getValue(Resource resource) {
-            ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+            ResourcePriorityAllocationStats rad = client.getResourceData().get(resource.getId());
             if (rad == null) {
                return null;
             } else {
@@ -412,7 +412,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public Number getValue(Resource resource) {
-            ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+            ResourcePriorityAllocationStats rad = client.getResourceData().get(resource.getId());
             if (rad == null) {
                return null;
             } else {
@@ -428,7 +428,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public Number getValue(Resource resource) {
-            ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+            ResourcePriorityAllocationStats rad = client.getResourceData().get(resource.getId());
             if (rad == null) {
                return null;
             } else {
@@ -444,7 +444,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public Number getValue(Resource resource) {
-            ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+            ResourcePriorityAllocationStats rad = client.getResourceData().get(resource.getId());
             if (rad == null) {
                return null;
             } else {
@@ -460,7 +460,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public Number getValue(Resource resource) {
-            ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+            ResourcePriorityAllocationStats rad = client.getResourceData().get(resource.getId());
             if (rad == null) {
                return null;
             } else {
@@ -481,7 +481,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          public String getValue() {
             int sum = 0;
             for (Resource resource : provider.getList()) {
-               ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+               ResourcePriorityAllocationStats rad = client.getResourceData().get(resource.getId());
                if (rad == null) {
                   continue;
                }
@@ -497,7 +497,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
 
          @Override
          public Number getValue(Resource resource) {
-            ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+            ResourcePriorityAllocationStats rad = client.getResourceData().get(resource.getId());
             if (rad == null) {
                return null;
             } else {
@@ -518,7 +518,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          public String getValue() {
             int sum = 0;
             for (Resource resource : provider.getList()) {
-               ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+               ResourcePriorityAllocationStats rad = client.getResourceData().get(resource.getId());
                if (rad == null) {
                   continue;
                }
@@ -535,7 +535,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          @Override
          public Number getValue(Resource resource) {
             // Fraction of ALL assigned - sum of done  
-            ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+            ResourcePriorityAllocationStats rad = client.getResourceData().get(resource.getId());
             if (rad == null) {
                return null;
             }
@@ -556,7 +556,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          @Override
          public Number getValue(Resource resource) {
             // Fraction of assigned P1 - sum of done  
-            ResourceAllocationData rad = client.getResourceData().get(resource.getId());
+            ResourcePriorityAllocationStats rad = client.getResourceData().get(resource.getId());
             if (rad == null) {
                return null;
             }
@@ -626,7 +626,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             toSyncRender();
          }
       });
-      service.fetchAllResourceDataForProject(client.getProjectId(), new AsyncCallback<Map<Long, ResourceAllocationData>>() {
+      service.fetchAllResourceDataForProject(client.getProjectId(), new AsyncCallback<Map<Long, ResourcePriorityAllocationStats>>() {
 
          @Override
          public void onFailure(Throwable caught) {
@@ -634,7 +634,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
          }
 
          @Override
-         public void onSuccess(Map<Long, ResourceAllocationData> result) {
+         public void onSuccess(Map<Long, ResourcePriorityAllocationStats> result) {
             client.setResourceData(result);
             toSyncRender();
          }

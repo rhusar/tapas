@@ -5,7 +5,7 @@ import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
-import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
+import com.radoslavhusar.tapas.ejb.stats.ResourcePriorityAllocationStats;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
 import com.radoslavhusar.tapas.ejb.entity.Trait;
@@ -91,13 +91,13 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    }
 
    @Override
-   public Map<Long, ResourceAllocationData> fetchAllResourceDataForProject(long projectId) {
+   public Map<Long, ResourcePriorityAllocationStats> fetchAllResourceDataForProject(long projectId) {
       List<Resource> list = resourceBean.findAllForProject(projectId);
-      Map<Long, ResourceAllocationData> result = new HashMap<Long, ResourceAllocationData>();
+      Map<Long, ResourcePriorityAllocationStats> result = new HashMap<Long, ResourcePriorityAllocationStats>();
 
       // Make it better presentable
       for (Resource res : list) {
-         result.put(res.getId(), resourceBean.fetchDataForProject(res.getId(), projectId));
+         result.put(res.getId(), resourceBean.tallyResourceDataForProject(res.getId(), projectId));
       }
 
       return result;

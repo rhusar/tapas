@@ -1,7 +1,7 @@
 package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Resource;
-import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
+import com.radoslavhusar.tapas.ejb.stats.ResourcePriorityAllocationStats;
 import java.util.List;
 
 public interface ResourceFacadeLocal {
@@ -29,7 +29,7 @@ public interface ResourceFacadeLocal {
     */
    List<Resource> findAllForProject(long projectId);
 
-   ResourceAllocationData fetchDataForProject(long resourceId, long projectId);
+   ResourcePriorityAllocationStats tallyResourceDataForProject(long resourceId, long projectId);
 
    List<Resource> findAllNotOnProject(long projectId);
 }

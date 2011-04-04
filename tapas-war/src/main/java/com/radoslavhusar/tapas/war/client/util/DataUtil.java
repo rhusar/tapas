@@ -1,7 +1,7 @@
 package com.radoslavhusar.tapas.war.client.util;
 
 import com.radoslavhusar.tapas.ejb.entity.Resource;
-import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
+import com.radoslavhusar.tapas.ejb.stats.ResourcePriorityAllocationStats;
 import java.util.Date;
 
 public class DataUtil {
@@ -10,11 +10,11 @@ public class DataUtil {
       return days * (100 - tax) / 100;
    }
 
-   public static double calculateAssigned(ResourceAllocationData rad) {
+   public static double calculateAssigned(ResourcePriorityAllocationStats rad) {
       return rad.getP1Allocation() + rad.getP2Allocation() + rad.getP3Allocation() + rad.getTbdAllocation();
    }
 
-   public static double calculateRemaining(ResourceAllocationData rad) {
+   public static double calculateRemaining(ResourcePriorityAllocationStats rad) {
       return calculateAssigned(rad) - (rad.getP1Completed() + rad.getP2Completed() + rad.getP3Completed() + rad.getTbdCompleted());
    }
 

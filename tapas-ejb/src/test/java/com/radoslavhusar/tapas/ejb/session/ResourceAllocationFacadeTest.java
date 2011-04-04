@@ -28,6 +28,7 @@ public class ResourceAllocationFacadeTest {
       return ShrinkWrap.create(JavaArchive.class).
               addPackage("com.radoslavhusar.tapas.ejb.entity").
               addPackage("com.radoslavhusar.tapas.ejb.session").
+              addPackage("com.radoslavhusar.tapas.ejb.stats").
               addAsManifestResource("test-persistence.xml", ArchivePaths.create("persistence.xml"));
    }
 

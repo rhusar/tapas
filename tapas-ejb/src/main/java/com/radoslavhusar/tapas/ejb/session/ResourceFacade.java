@@ -2,7 +2,7 @@ package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
-import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
+import com.radoslavhusar.tapas.ejb.stats.ResourcePriorityAllocationStats;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
     * @return array of P1 Ass, P1 Done, P2 Ass, P2 Done, P3 Ass, P3 Done, PX Ass, PX Done
     */
    @Override
-   public ResourceAllocationData fetchDataForProject(long resourceId, long projectId) {
+   public ResourcePriorityAllocationStats tallyResourceDataForProject(long resourceId, long projectId) {
       // TODO: get this to work, aggregate via Hibernate
 //       List l = getEntityManager().
 //              createQuery("select sum(a.timeAllocation) from " + Resource.class.getSimpleName() + " as o "
@@ -94,7 +94,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
          }
       }
 
-      ResourceAllocationData ras = new ResourceAllocationData(resourceId, projectId, result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7]);
+      ResourcePriorityAllocationStats ras = new ResourcePriorityAllocationStats(resourceId, projectId, result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7]);
       System.out.println(ras.toString());
 
       return ras;

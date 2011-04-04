@@ -7,7 +7,7 @@ import com.google.inject.Singleton;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
-import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationData;
+import com.radoslavhusar.tapas.ejb.stats.ResourcePriorityAllocationStats;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.Trait;
 import com.radoslavhusar.tapas.war.client.event.DataReadyEvent;
@@ -28,7 +28,7 @@ public class ClientState {
    private Long projectId;
    private Project project;
    private List<Resource> resources;
-   private Map<Long, ResourceAllocationData> resourceData;
+   private Map<Long, ResourcePriorityAllocationStats> resourceData;
    private List<ResourceGroup> groups;
    private List<Task> tasks;
    private List<Trait> traits;
@@ -110,11 +110,11 @@ public class ClientState {
       this.groups = groups;
    }
 
-   public Map<Long, ResourceAllocationData> getResourceData() {
+   public Map<Long, ResourcePriorityAllocationStats> getResourceData() {
       return resourceData;
    }
 
-   public void setResourceData(Map<Long, ResourceAllocationData> resourceData) {
+   public void setResourceData(Map<Long, ResourcePriorityAllocationStats> resourceData) {
       this.resourceData = resourceData;
    }
 

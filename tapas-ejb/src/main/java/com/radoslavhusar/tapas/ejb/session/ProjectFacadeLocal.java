@@ -1,6 +1,7 @@
 package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Project;
+import com.radoslavhusar.tapas.ejb.stats.ProjectStats;
 import java.util.List;
 
 public interface ProjectFacadeLocal {
@@ -19,6 +20,7 @@ public interface ProjectFacadeLocal {
    List<Project> findRange(int[] range);
 
    int count();
-   
+
    // CUSTOM
+   ProjectStats tallyProjectStats(long projectId);
 }
