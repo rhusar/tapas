@@ -1,10 +1,13 @@
 package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Project;
+import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
 import com.radoslavhusar.tapas.ejb.stats.ProjectStats;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
-import com.radoslavhusar.tapas.ejb.entity.Task;
+import com.radoslavhusar.tapas.ejb.stats.ProjectPhaseStats;
 import com.radoslavhusar.tapas.ejb.stats.ResourceStats;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -67,48 +70,37 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
       //System.out.println("Current rate: " + mandayRate);
       result.setMandayRate(mandayRate);
 
+      Calendar nowButFuture = Calendar.getInstance();
+
       // Calculate estimated times etc.
-      //List<Task> tasks = tasksBean.findAllForProject(projectId);
-      List<ResourceStats> rs = em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourceStats(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
-              + "from Resource as r "
-              + "inner join r.resourceAllocations as a "
-              + "inner join a.key.project as p "
-              + "left outer join r.tasks as t "
-              + "left outer join t.timeAllocations as ta "
-              + "where p.id = :projectid "
-              + "group by r").
-              setParameter("projectid", projectId).
-              getResultList();
-
-      System.out.println(rs);
-
-      /*         
-      // this needs to be done in a nicer way - JDBC query.
       for (ProjectPhase pp : p.getPhases()) {
-      double allocated = 0;
-      double completed = 0;
-      Date estimatedMax = new Date();
-      
-      for (Task t : tasks) {
-      // This could be a perf killer, this needs to be done in a nicer way - JDBC query.
-      for (TimeAllocation ta : t.getTimeAllocations()) {
-      if (ta.getPhase().equals(pp)) {
-      allocated += ta.getAllocation();
-      completed += ta.getCompleted();
-      
-      // Now do the calculation
-      
-      
-      break; // from TimeAllocation for
+
+         if (pp.getEnded() != null) {
+            // Just get stats for UNFINISHED phases.
+            continue;
+         }
+
+         double assigned = 0;
+         double completed = 0;
+         double maxMandaysRemaining = 0;
+
+         // Get stats for this phase:
+         List<ResourceStats> rs = resourceBean.tallyResourcesStatsForPhase(pp.getId());
+
+         for (ResourceStats s : rs) {
+            assigned += s.getAssigned();
+            completed += s.getCompleted();
+            maxMandaysRemaining = Math.max(maxMandaysRemaining, (assigned - completed) / s.getRate());
+         }
+
+         // All data is gathered, create an estimate now. 
+         int mandaysRemaining = (int) Math.round(Math.ceil(maxMandaysRemaining * WORKWEEK));
+
+         nowButFuture.add(Calendar.DATE, mandaysRemaining);
+
+         // This wouldnt reflect assignment to each people :-/ Estimated date = Now + ( allocated-completed / mandayRate )
+         result.getProjection().put(pp.getId(), new ProjectPhaseStats(assigned, completed, nowButFuture.getTime()));
       }
-      }
-      }
-      
-      // All data is gathered, create an estimate now. 
-      // This wouldnt reflect assignment to each people :-/ Estimated date = Now + ( allocated-completed / mandayRate )
-      Date pend = new Date();
-      result.getProjection().put(pp.getId(), new ProjectPhaseStats(allocated, completed, pend));
-      }*/
 
       return result;
    }

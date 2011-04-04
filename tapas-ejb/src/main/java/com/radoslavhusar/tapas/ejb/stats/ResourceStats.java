@@ -2,12 +2,22 @@ package com.radoslavhusar.tapas.ejb.stats;
 
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 
+/**
+ * Used in Hibernate QL, edit with caution! 
+ */
 public class ResourceStats {
 
    private Resource resource;
    private Double assigned;
    private Double completed;
    private Double rate;
+
+   /**
+    * Empty constructor needed by GWT-Gilead!
+    * E.g.: http://forums.smartclient.com/showthread.php?t=4966
+    */
+   public ResourceStats() {
+   }
 
    public ResourceStats(Resource resource, Double assigned, Double completed, Double rate) {
       this.resource = resource;

@@ -2,6 +2,7 @@ package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.stats.ResourcePriorityAllocationStats;
+import com.radoslavhusar.tapas.ejb.stats.ResourceStats;
 import java.util.List;
 
 public interface ResourceFacadeLocal {
@@ -23,13 +24,24 @@ public interface ResourceFacadeLocal {
 
    // CUSTOM
    /**
-    * Initializes allocation but only for the selected project!
+    * NOTE: Initializes lazy allocation but only for the selected project!
+    * 
     * @param projectId
     * @return  
     */
    List<Resource> findAllForProject(long projectId);
 
+   List<Resource> findAllNotOnProject(long projectId);
+
    ResourcePriorityAllocationStats tallyResourceDataForProject(long resourceId, long projectId);
 
-   List<Resource> findAllNotOnProject(long projectId);
+   /**
+    * Contains resource, allocated, completed
+    * 
+    * @param projectId 
+    * @return  ResourceStats list
+    */
+   List<ResourceStats> tallyResourcesStatsForProject(long projectId);
+
+   List<ResourceStats> tallyResourcesStatsForPhase(long phaseId);
 }

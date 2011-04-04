@@ -10,6 +10,14 @@ public class ProjectPhaseStats implements Serializable {
    private Double completed;
    private Double assigned;
 
+   /**
+    * Empty constructor needed by GWT-Gilead!
+    * E.g.: http://forums.smartclient.com/showthread.php?t=4966
+    */
+   public ProjectPhaseStats() {
+   }
+
+   
    public ProjectPhaseStats(Double assigned, Double completed, Date projectedEnd) {
       this.projectedEnd = projectedEnd;
       this.completed = completed;

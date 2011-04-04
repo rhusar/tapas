@@ -5,6 +5,7 @@ import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import com.radoslavhusar.tapas.war.client.overview.OverviewActivity;
 import com.radoslavhusar.tapas.war.client.overview.OverviewViewImpl;
+import com.radoslavhusar.tapas.war.client.planning.PlanningViewImpl;
 import com.radoslavhusar.tapas.war.client.projects.ProjectsActivity;
 import com.radoslavhusar.tapas.war.client.projects.ProjectsViewImpl;
 import com.radoslavhusar.tapas.war.client.resources.ResourcesActivity;
@@ -59,4 +60,6 @@ public interface AppGinjector extends Ginjector {
    ResourcesViewImpl getResourcesView();
 
    TaskEditViewImpl getTaskEditView();
+
+   PlanningViewImpl getPlanningView();
 }

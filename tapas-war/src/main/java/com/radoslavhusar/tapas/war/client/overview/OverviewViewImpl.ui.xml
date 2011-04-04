@@ -46,6 +46,8 @@
                   <g:Anchor ui:field='phaseAdd'>+ New</g:Anchor> |
                   <g:Anchor ui:field='phaseRemove'>Remove</g:Anchor> |
                   <g:Anchor ui:field='phaseSave'>Save</g:Anchor>
+                  <i>The first date change is ignored, there is a bug.</i>
+                  <g:VerticalPanel ui:field="vpanel"></g:VerticalPanel>
                </g:HTMLPanel>
             </g:east>
     

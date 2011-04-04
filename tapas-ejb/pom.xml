@@ -15,7 +15,6 @@
    <name>${project.artifactId} ${project.version}</name>
    <url>http://maven.apache.org</url>
 
-
    <properties>
       <arquillian.version>1.0.0.Alpha5</arquillian.version>
    </properties>
@@ -58,10 +57,12 @@
    </dependencies>
 
    <repositories>
+<!--      
       <repository>
          <id>gilead</id>
          <url>http://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo</url>
       </repository>
+-->
       <repository>
          <id>jboss-maven2</id>
          <url>http://repository.jboss.com/maven2</url>

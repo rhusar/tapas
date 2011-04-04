@@ -1,7 +1,6 @@
 package com.radoslavhusar.tapas.war.client.overview;
 
 import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.DatePickerCell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
@@ -26,6 +25,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
@@ -33,6 +33,7 @@ import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
+import com.radoslavhusar.tapas.war.client.components.NullableDatePickerCell;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -68,6 +69,8 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
    Label propDays;
    Project project;
    DateTimeFormat dateFormat = DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT);
+   @UiField
+   VerticalPanel vpanel;
 
    @Inject
    public OverviewViewImpl(ClientState state) {
@@ -126,7 +129,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
        */
 
       // Target Date - also sorts like this
-      Cell targetDatePickCell = new DatePickerCell(dateFormat);
+      Cell targetDatePickCell = new NullableDatePickerCell(dateFormat);
       Column<ProjectPhase, Date> targetDateCol = new Column<ProjectPhase, Date>(targetDatePickCell) {
 
          @Override
@@ -144,7 +147,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       phases.addColumn(targetDateCol, "Target Date");
 
       // End Date
-      Cell endDatePickCell = new DatePickerCell(dateFormat);
+      Cell endDatePickCell = new NullableDatePickerCell(dateFormat);
       Column<ProjectPhase, Date> endDateCol = new Column<ProjectPhase, Date>(endDatePickCell) {
 
          @Override

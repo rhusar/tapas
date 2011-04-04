@@ -13,6 +13,10 @@ public class ProjectStats implements Serializable {
    private Map<Long, ProjectPhaseStats> projection = new HashMap<Long, ProjectPhaseStats>();
    private double mandayRate;
 
+   /**
+    * Empty constructor needed by GWT-Gilead!
+    * E.g.: http://forums.smartclient.com/showthread.php?t=4966
+    */
    public ProjectStats() {
    }
 
