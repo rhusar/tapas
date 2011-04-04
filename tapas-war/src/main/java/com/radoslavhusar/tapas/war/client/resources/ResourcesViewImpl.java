@@ -9,7 +9,10 @@ import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.text.shared.AbstractRenderer;
+import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -21,10 +24,12 @@ import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
-import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -75,14 +80,21 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
    Anchor allocateResource;
    final DecoratedPopupPanel simplePopup = new DecoratedPopupPanel(true);
    private DynamicSelectionCell groupCell;
+   static Renderer<Resource> renderer = new AbstractRenderer<Resource>() {
+
+      @Override
+      public String render(Resource object) {
+         return (object == null ? "" : object.getName());
+      }
+   };
 
    @Inject
    public ResourcesViewImpl(final ClientState client, TaskResourceServiceAsync service) {
       this.service = service;
       this.client = client;
 
-      simplePopup.setWidth("200px");
-      simplePopup.setWidget(new HTML(Constants.RESOURCE_ALLOCATION));
+      /*simplePopup.setWidth("200px");
+      simplePopup.setWidget(new HTML(Constants.RESOURCE_ALLOCATION));*/
 
       // Not automatically bound items
       provider = new ListDataProvider<Resource>();
@@ -319,7 +331,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       NumberCell daysNumberCell = new NumberCell(NumberFormat.getFormat("0.00"));
       NumberCell percentageNumberCell = new NumberCell(NumberFormat.getPercentFormat());
 
-      
+
       // Remaining days
       TextColumn<Resource> daysCol = new TextColumn<Resource>() {
 
@@ -686,11 +698,11 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       List allodcs = new ArrayList();
       allodcs.add(fullAllocation);
       newResource.setResourceAllocations(allodcs);
-      
+
       // Traits (none)
       Set<Trait> noneTraits = new HashSet<Trait>();
       newResource.setTraits(noneTraits);
-      
+
       provider.getList().add(newResource);
       resources.setRowData(provider.getList());
       resources.setRowCount(provider.getList().size());
@@ -702,9 +714,68 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
    public void allocateResource(ClickEvent event) {
       // Reposition the popup relative to the link
       Widget source = (Widget) event.getSource();
-      int left = source.getAbsoluteLeft() + 10;
+      int left = source.getAbsoluteLeft() - 20;
       int top = source.getAbsoluteTop() + 10;
       simplePopup.setPopupPosition(left, top);
+      final Button addButton = new Button("Allocate");
+      addButton.setEnabled(true);
+      HorizontalPanel horizontal = new HorizontalPanel();
+      final ValueListBox<Resource> resourceSwitch = new ValueListBox<Resource>(renderer);
+      ArrayList tmp = new ArrayList(1);
+      final Resource r = new Resource();
+      r.setName("");
+      tmp.add(r);
+      //resourceSwitch.setAcceptableValues(tmp);
+      resourceSwitch.setValue(r);
+
+      service.findAllResourcesNotOnProject(client.getProjectId(), new AsyncCallback<List<Resource>>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            addButton.setEnabled(false);
+         }
+
+         @Override
+         public void onSuccess(List<Resource> result) {
+            if (!result.isEmpty()) {
+               resourceSwitch.setAcceptableValues(result);
+               resourceSwitch.setValue(result.get(0));
+               addButton.setEnabled(true);
+            } else {
+               addButton.setEnabled(false);
+            }
+         }
+      });
+      horizontal.add(resourceSwitch);
+
+      addButton.addClickHandler(new ClickHandler() {
+
+         @Override
+         public void onClick(ClickEvent event) {
+            Resource res = resourceSwitch.getValue();
+            client.getResources().add(res);
+
+            ResourceAllocation fullAllocation = new ResourceAllocation();
+            fullAllocation.setPercent((byte) 100);
+            fullAllocation.setKey(new ResourceAllocationPK(client.getProject(), res));
+            List allodcs = new ArrayList();
+            allodcs.add(fullAllocation);
+            res.setResourceAllocations(allodcs);
+
+            changed.add(res);
+            simplePopup.hide();
+
+            // Stupid hack!
+            //Application.getInjector().getPlaceController().goTo(new ResourcesPlace(client.getProjectId()));
+            //resources.setRowCount(provider.getList().size() + 1);
+            //resources.redraw();
+
+            renderResources();
+         }
+      });
+      horizontal.add(addButton);
+      simplePopup.setWidget(horizontal);
+
       // Show the popup
       simplePopup.show();
    }

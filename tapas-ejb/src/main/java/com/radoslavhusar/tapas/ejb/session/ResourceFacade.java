@@ -44,7 +44,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
                break;
             }
          }
-         
+
          // Lazy loaded, so fetch them all - cant really switch to eager because
          // http://opensource.atlassian.com/projects/hibernate/browse/HHH-2980
          res.getTraits().size();
@@ -98,5 +98,26 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
       System.out.println(ras.toString());
 
       return ras;
+   }
+
+   /**
+    * Be warned that this doesn't fetch assignments!
+    * 
+    * @param projectId
+    * @return resourcesNotOnProject
+    */
+   @Override
+   public List<Resource> findAllNotOnProject(long projectId) {
+      List<Resource> result = getEntityManager().createNamedQuery("resourcesNotOnProject").setParameter("projectid", projectId).getResultList();
+
+      // Fetch traits
+      // FIXME: this may be a performance killer for large project.
+      for (Resource res : result) {
+         // Lazy loaded, so fetch them all - cant really switch to eager because
+         // http://opensource.atlassian.com/projects/hibernate/browse/HHH-2980
+         res.getTraits().size();
+      }
+
+      return result;
    }
 }

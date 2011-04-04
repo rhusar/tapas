@@ -30,4 +30,6 @@ public interface ResourceFacadeLocal {
    List<Resource> findAllForProject(long projectId);
 
    ResourceAllocationData fetchDataForProject(long resourceId, long projectId);
+
+   List<Resource> findAllNotOnProject(long projectId);
 }

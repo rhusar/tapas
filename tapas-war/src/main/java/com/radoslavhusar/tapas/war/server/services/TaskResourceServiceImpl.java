@@ -197,4 +197,9 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    public void createTrait(Trait trait) {
       traitBean.create(trait);
    }
+
+   @Override
+   public List<Resource> findAllResourcesNotOnProject(long projectId) {
+      return resourceBean.findAllNotOnProject(projectId);
+   }
 }

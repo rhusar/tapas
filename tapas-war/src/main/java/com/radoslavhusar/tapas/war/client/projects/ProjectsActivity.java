@@ -38,12 +38,10 @@ public class ProjectsActivity extends AbstractActivity implements ProjectsView.P
 
          @Override
          public void onFailure(Throwable caught) {
-            throw new UnsupportedOperationException("Not supported yet.");
          }
 
          @Override
          public void onSuccess(Void result) {
-            throw new UnsupportedOperationException("Not supported yet.");
          }
       });
    }

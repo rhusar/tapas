@@ -414,10 +414,16 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
 
          @Override
          public void update(int index, Task object, String value) {
+            changed.add(object);
+
+            if (value.isEmpty()) {
+               // Null - unassigned
+               object.setResource(null);
+
+            }
             for (Resource r : client.getResources()) {
                if (value.equals(r.getName())) {
                   object.setResource(r);
-                  changed.add(object);
                   GWT.log("Updating assignee, value: " + value);
                   return;
                }

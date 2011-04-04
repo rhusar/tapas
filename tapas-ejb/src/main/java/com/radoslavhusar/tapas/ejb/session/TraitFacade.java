@@ -11,7 +11,7 @@ import javax.persistence.PersistenceContext;
 @Local(TraitFacadeLocal.class)
 public class TraitFacade extends AbstractFacade<Trait> implements TraitFacadeLocal {
 
-   @PersistenceContext(unitName = "TapasPersistenceUnit")
+   @PersistenceContext
    private EntityManager em;
 
    @Override

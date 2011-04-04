@@ -9,7 +9,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -20,7 +22,10 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "RESOURCE")
-@NamedQuery(name = "resourcesForProject", query = "select object(o) from Resource as o fetch all properties inner join o.resourceAllocations as a  where a.key.project.id = :projectid")
+@NamedQueries(value = {
+   @NamedQuery(name = "resourcesForProject", query = "select object(o) from Resource as o fetch all properties inner join o.resourceAllocations as a where a.key.project.id = :projectid"),
+   @NamedQuery(name = "resourcesNotOnProject", query = "select object(o) from Resource as o fetch all properties where o.id not in (select o.id from Resource as o inner join o.resourceAllocations as a where a.key.project.id = :projectid)")
+})
 public class Resource implements Serializable {
 
    private static final long serialVersionUID = 1L;
@@ -38,7 +43,7 @@ public class Resource implements Serializable {
    @OneToMany(mappedBy = "resource", fetch = FetchType.LAZY)
    private List<Task> tasks;
    // Owning relation! Must be careful.
-   @OneToMany(fetch = FetchType.LAZY)
+   @ManyToMany(fetch = FetchType.LAZY)
    private Set<Trait> traits;
 
    public Long getId() {

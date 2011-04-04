@@ -29,6 +29,15 @@ public class ResourceFacadeTest {
          System.out.println("There should be NO fetching now!");
          System.out.println(r.getResourceAllocations());
       }
+   }
 
+   @Test
+   public void testFindAllNotOnProject_long() {
+      System.out.println("testFindAllNotOnProject_long");
+      List<Resource> l = resourceBean.findAllNotOnProject(1);
+
+      for (Resource r : l) {
+         System.out.println(r.toString());
+      }
    }
 }
