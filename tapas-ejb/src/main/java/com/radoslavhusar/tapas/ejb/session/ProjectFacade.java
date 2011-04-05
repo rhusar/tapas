@@ -7,7 +7,6 @@ import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.stats.ProjectPhaseStats;
 import com.radoslavhusar.tapas.ejb.stats.ResourceStats;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -19,7 +18,6 @@ import javax.persistence.PersistenceContext;
 @Local(ProjectFacadeLocal.class)
 public class ProjectFacade extends AbstractFacade<Project> implements ProjectFacadeLocal {
 
-   public static final double WORKWEEK = 5 / 7;
    @EJB
    ResourceFacadeLocal resourceBean;
    @EJB
@@ -72,35 +70,53 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
 
       Calendar nowButFuture = Calendar.getInstance();
 
+      double projectAllocated = 0;
+      double projectCompleted = 0;
+
       // Calculate estimated times etc.
       for (ProjectPhase pp : p.getPhases()) {
+
+         long phaseId = pp.getId();
 
          if (pp.getEnded() != null) {
             // Just get stats for UNFINISHED phases.
             continue;
          }
 
-         double assigned = 0;
+         double allocated = 0;
          double completed = 0;
          double maxMandaysRemaining = 0;
 
          // Get stats for this phase:
-         List<ResourceStats> rs = resourceBean.tallyResourcesStatsForPhase(pp.getId());
+         List<ResourceStats> rs = resourceBean.tallyResourcesStatsForPhase(phaseId);
 
          for (ResourceStats s : rs) {
-            assigned += s.getAssigned();
+            allocated += s.getAllocated();
             completed += s.getCompleted();
-            maxMandaysRemaining = Math.max(maxMandaysRemaining, (assigned - completed) / s.getRate());
+            //System.out.println("res stats: " + s);
+            maxMandaysRemaining = Math.max(maxMandaysRemaining, (allocated - completed) / s.getRate());
+            //System.out.println("maxMandaysRemaining: " + maxMandaysRemaining);
          }
 
          // All data is gathered, create an estimate now. 
-         int mandaysRemaining = (int) Math.round(Math.ceil(maxMandaysRemaining * WORKWEEK));
+         int mandaysRemaining = Math.round((float) Math.ceil(maxMandaysRemaining * 7 / 5));
+         //System.out.println("maxMandaysRemaining of week: " + mandaysRemaining);
 
          nowButFuture.add(Calendar.DATE, mandaysRemaining);
 
+         // Calculate a days slip as well
+         int slip = (int) ((nowButFuture.getTime().getTime() - pp.getTargetted().getTime()) / (24 * 60 * 60 * 1000));
+
          // This wouldnt reflect assignment to each people :-/ Estimated date = Now + ( allocated-completed / mandayRate )
-         result.getProjection().put(pp.getId(), new ProjectPhaseStats(assigned, completed, nowButFuture.getTime()));
+         result.getProjection().put(phaseId, new ProjectPhaseStats(allocated, completed, nowButFuture.getTime(), slip));
+
+         // increase project counters
+         projectAllocated += allocated;
+         projectCompleted += completed;
       }
+
+      result.setAllocated(projectAllocated);
+      result.setCompleted(projectCompleted);
 
       return result;
    }

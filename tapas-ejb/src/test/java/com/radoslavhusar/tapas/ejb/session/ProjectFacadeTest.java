@@ -30,7 +30,6 @@ public class ProjectFacadeTest {
       System.out.println("testTallyProjectData_long");
       ProjectStats pd = projectBean.tallyProjectStats((long) 1);
 
-      System.out.println("MandaysRate: " + pd.getMandayRate());
-
+      System.out.println("ProjectStats are " + pd.toString());
    }
 }

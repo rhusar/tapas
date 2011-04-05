@@ -12,9 +12,10 @@
       </g:north>
 
       <g:center>
-         <g:ScrollPanel>
- 
-
+         <g:ScrollPanel> <!-- Accepts only ONE widget -->
+            <g:VerticalPanel ui:field="content">
+               <!-- Filled in programatically. -->
+            </g:VerticalPanel>
          </g:ScrollPanel>
       </g:center>
 

@@ -4,6 +4,7 @@ import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.radoslavhusar.tapas.war.client.overview.OverviewPlace;
+import com.radoslavhusar.tapas.war.client.planning.PlanningPlace;
 import com.radoslavhusar.tapas.war.client.projects.ProjectsPlace;
 import com.radoslavhusar.tapas.war.client.resources.ResourcesPlace;
 import com.radoslavhusar.tapas.war.client.task.edit.TaskEditActivity;
@@ -37,6 +38,10 @@ public class AppActivityMapper implements ActivityMapper {
          // Let the client know which project
          Application.getInjector().getClientState().setProjectId(((ResourcesPlace) place).getProjectId());
          return Application.getInjector().getResourcesActivity();
+      } else if (place instanceof PlanningPlace) {
+         // Let the client know which project
+         Application.getInjector().getClientState().setProjectId(((PlanningPlace) place).getProjectId());
+         return Application.getInjector().getPlanningActivity();
       }
 
       return null;

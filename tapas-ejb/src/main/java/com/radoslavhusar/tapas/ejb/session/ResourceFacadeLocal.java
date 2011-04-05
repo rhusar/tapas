@@ -41,7 +41,7 @@ public interface ResourceFacadeLocal {
     * @param projectId 
     * @return  ResourceStats list
     */
-   List<ResourceStats> tallyResourcesStatsForProject(long projectId);
+   //List<ResourceStats> tallyResourcesStatsForProject(long projectId);
 
    List<ResourceStats> tallyResourcesStatsForPhase(long phaseId);
 }

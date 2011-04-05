@@ -47,7 +47,7 @@
       <g:east size="40">
          <g:ScrollPanel>
             <g:HTMLPanel>
-               <img src="tapas-logo-full.jpg" alt="Tapas is a traditional Spanish apetiser" />
+               <img src="tapas-logo-full.jpg" alt="Tapas is the name of a wide variety of delicious appetizers in Spanish cuisine." />
             </g:HTMLPanel>
          </g:ScrollPanel>
       </g:east>

@@ -7,7 +7,8 @@ import java.util.Map;
 public class ProjectStats implements Serializable {
 
    private long projectId;
-   private double remaining;
+   private double completed;
+   private double allocated;
    // Public structure actually
    // TODO: how to sort?
    private Map<Long, ProjectPhaseStats> projection = new HashMap<Long, ProjectPhaseStats>();
@@ -39,12 +40,24 @@ public class ProjectStats implements Serializable {
       this.projectId = projectId;
    }
 
-   public double getRemaining() {
-      return remaining;
+   public double getAllocated() {
+      return allocated;
    }
 
-   public void setRemaining(double remaining) {
-      this.remaining = remaining;
+   public void setAllocated(double allocated) {
+      this.allocated = allocated;
+   }
+
+   public double getCompleted() {
+      return completed;
+   }
+
+   public void setCompleted(double completed) {
+      this.completed = completed;
+   }
+
+   public double getRemaining() {
+      return allocated - completed;
    }
 
    public double getMandayRate() {
@@ -53,5 +66,10 @@ public class ProjectStats implements Serializable {
 
    public void setMandayRate(double mandayRate) {
       this.mandayRate = mandayRate;
+   }
+
+   @Override
+   public String toString() {
+      return "ProjectStats{" + "projectId=" + projectId + ", remaining=" + getRemaining() + ", projection=" + projection + ", mandayRate=" + mandayRate + '}';
    }
 }

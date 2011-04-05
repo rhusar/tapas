@@ -8,9 +8,9 @@ import com.radoslavhusar.tapas.ejb.entity.Resource;
 public class ResourceStats {
 
    private Resource resource;
-   private Double assigned;
-   private Double completed;
-   private Double rate;
+   private double allocated;
+   private double completed;
+   private double rate;
 
    /**
     * Empty constructor needed by GWT-Gilead!
@@ -19,31 +19,39 @@ public class ResourceStats {
    public ResourceStats() {
    }
 
-   public ResourceStats(Resource resource, Double assigned, Double completed, Double rate) {
+   /**
+    * Cannot be simple types because of Hibernate.
+    * 
+    * @param resource
+    * @param allocated
+    * @param completed
+    * @param rate 
+    */
+   public ResourceStats(Resource resource, Double allocated, Double completed, Double rate) {
       this.resource = resource;
-      this.assigned = assigned;
-      this.completed = completed;
-      this.rate = rate;
+      this.allocated = allocated == null ? 0 : allocated;
+      this.completed = completed == null ? 0 : completed;
+      this.rate = rate == null ? 0 : rate;
    }
 
-   public Double getAssigned() {
-      return assigned;
+   public double getAllocated() {
+      return allocated;
    }
 
-   public void setAssigned(Double assigned) {
-      this.assigned = assigned;
+   public void setAllocated(double allocated) {
+      this.allocated = allocated;
    }
 
-   public Double getCompleted() {
+   public double getCompleted() {
       return completed;
    }
 
-   public void setCompleted(Double completed) {
+   public void setCompleted(double completed) {
       this.completed = completed;
    }
 
-   public Double getRemaining() {
-      return (assigned == null || completed == null) ? null : (assigned - completed);
+   public double getRemaining() {
+      return allocated - completed;
    }
 
    public Resource getResource() {
@@ -54,7 +62,7 @@ public class ResourceStats {
       this.resource = resource;
    }
 
-   public Double getRate() {
+   public double getRate() {
       return rate;
    }
 
@@ -64,6 +72,6 @@ public class ResourceStats {
 
    @Override
    public String toString() {
-      return "ResourceStats{resource=" + resource + ", assigned=" + assigned + ", completed=" + completed + ", rate=" + rate + '}';
+      return "ResourceStats{resource=" + resource + ", allocated=" + allocated + ", completed=" + completed + ", rate=" + rate + '}';
    }
 }

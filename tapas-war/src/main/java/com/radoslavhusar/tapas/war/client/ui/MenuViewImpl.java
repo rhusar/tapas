@@ -20,6 +20,7 @@ import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
 import com.radoslavhusar.tapas.war.client.overview.OverviewPlace;
+import com.radoslavhusar.tapas.war.client.planning.PlanningPlace;
 import com.radoslavhusar.tapas.war.client.projects.ProjectsPlace;
 import com.radoslavhusar.tapas.war.client.resources.ResourcesPlace;
 import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
@@ -135,6 +136,11 @@ public class MenuViewImpl extends Composite implements MenuView {
    @UiHandler("resources")
    void navigateResources(ClickEvent event) {
       Application.getInjector().getPlaceController().goTo(new ResourcesPlace(client.getProjectId()));
+   }
+
+   @UiHandler("planning")
+   void navigatePlanning(ClickEvent event) {
+      Application.getInjector().getPlaceController().goTo(new PlanningPlace(client.getProjectId()));
    }
 
    @Override

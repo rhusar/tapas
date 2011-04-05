@@ -122,30 +122,35 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
       return result;
    }
 
-   @Override
+   /*@Override
    public List<ResourceStats> tallyResourcesStatsForProject(long projectId) {
-      return em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourceStats(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
-              + "from Resource as r "
-              + "inner join r.resourceAllocations as a "
-              + "inner join a.key.project as p "
-              + "left outer join r.tasks as t "
-              + "left outer join t.timeAllocations as ta "
-              + "where p.id = :projectid "
-              + "group by r").
-              setParameter("projectid", projectId).
-              getResultList();
-   }
-
+   return em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourceStats(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
+   + "from Resource as r "
+   + "inner join r.resourceAllocations as a "
+   + "inner join a.key.project as p "
+   + "left outer join r.tasks as t "
+   + "left outer join t.timeAllocations as ta "
+   + "where p.id = :projectid "
+   + "group by r").
+   setParameter("projectid", projectId).
+   getResultList();
+   }*/
+   /**
+    * We WANT the outer join so we get their manday rate even if they have no tasks yet.
+    * 
+    * @param phaseId
+    * @return 
+    */
    @Override
    public List<ResourceStats> tallyResourcesStatsForPhase(long phaseId) {
       return em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourceStats(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
               + "from Resource as r "
               + "inner join r.resourceAllocations as a "
               + "inner join a.key.project as p "
-              + "inner join p.phases as pp "
+              //+ "inner join p.phases as pp "
               + "left outer join r.tasks as t "
               + "left outer join t.timeAllocations as ta "
-              + "where pp.id = :phaseId "
+              + "where ta.phase.id = :phaseId "
               + "group by r").
               setParameter("phaseId", phaseId).
               getResultList();
