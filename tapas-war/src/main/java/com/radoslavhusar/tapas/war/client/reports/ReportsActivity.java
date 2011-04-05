@@ -1,4 +1,4 @@
-package com.radoslavhusar.tapas.war.client.task.edit;
+package com.radoslavhusar.tapas.war.client.reports;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
@@ -9,13 +9,13 @@ import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
 
-public class TaskEditActivity extends AbstractActivity implements TaskEditView.Presenter {
+public class ReportsActivity extends AbstractActivity implements ReportsView.Presenter {
 
-   private TaskEditView view;
-   private TaskEditPlace place;
+   private ReportsView view;
+   private ReportsPlace place;
 
-   public TaskEditActivity(Place place) {
-      this.place = (TaskEditPlace) place;
+   public ReportsActivity(Place place) {
+      this.place = (ReportsPlace) place;
    }
 
    @Override
@@ -31,7 +31,7 @@ public class TaskEditActivity extends AbstractActivity implements TaskEditView.P
 //         return;
 //      }
 
-      //TaskEditPlace tep = (TaskEditPlace) Application.getInjector().getPlaceController().getWhere();
+      //TaskEditPlace tep = (ReportsPlace) Application.getInjector().getPlaceController().getWhere();
 //      Integer taskId = Integer.valueOf(place.getTaskId());
 
 //      Task e = null;

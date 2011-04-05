@@ -11,13 +11,13 @@ import com.radoslavhusar.tapas.war.client.projects.ProjectsActivity;
 import com.radoslavhusar.tapas.war.client.projects.ProjectsViewImpl;
 import com.radoslavhusar.tapas.war.client.resources.ResourcesActivity;
 import com.radoslavhusar.tapas.war.client.resources.ResourcesViewImpl;
-import com.radoslavhusar.tapas.war.client.ui.MenuPresenter;
-import com.radoslavhusar.tapas.war.client.ui.MenuViewImpl;
-import com.radoslavhusar.tapas.war.client.ui.StatusViewImpl;
+import com.radoslavhusar.tapas.war.client.menu.MenuPresenter;
+import com.radoslavhusar.tapas.war.client.menu.MenuViewImpl;
+import com.radoslavhusar.tapas.war.client.menu.StatusViewImpl;
 import com.radoslavhusar.tapas.war.client.tasks.TasksActivity;
 import com.radoslavhusar.tapas.war.client.tasks.TasksViewImpl;
-import com.radoslavhusar.tapas.war.client.task.edit.TaskEditViewImpl;
-import com.radoslavhusar.tapas.war.client.ui.StatusPresenter;
+import com.radoslavhusar.tapas.war.client.reports.ReportsViewImpl;
+import com.radoslavhusar.tapas.war.client.menu.StatusPresenter;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 
 @GinModules(GinClientModule.class)
@@ -62,7 +62,7 @@ public interface AppGinjector extends Ginjector {
 
    ResourcesViewImpl getResourcesView();
 
-   TaskEditViewImpl getTaskEditView();
+   ReportsViewImpl getTaskEditView();
 
    PlanningViewImpl getPlanningView();
 }

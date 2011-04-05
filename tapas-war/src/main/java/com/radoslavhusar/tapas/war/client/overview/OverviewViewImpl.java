@@ -33,7 +33,7 @@ import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
-import com.radoslavhusar.tapas.war.client.components.NullableDatePickerCell;
+import com.radoslavhusar.tapas.war.client.ui.NullableDatePickerCell;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;

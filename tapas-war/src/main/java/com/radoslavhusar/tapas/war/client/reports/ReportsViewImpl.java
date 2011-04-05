@@ -1,4 +1,4 @@
-package com.radoslavhusar.tapas.war.client.task.edit;
+package com.radoslavhusar.tapas.war.client.reports;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -16,13 +16,13 @@ import com.google.gwt.user.client.ui.Widget;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.war.client.app.Application;
 
-public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
+public class ReportsViewImpl extends ResizeComposite implements ReportsView {
 
    private Presenter presenter;
    private static Binder binder = GWT.create(Binder.class);
    private Long taskId;
 
-   interface Binder extends UiBinder<Widget, TaskEditViewImpl> {
+   interface Binder extends UiBinder<Widget, ReportsViewImpl> {
    }
    @UiField
    SimplePanel menu;
@@ -40,7 +40,7 @@ public class TaskEditViewImpl extends ResizeComposite implements TaskEditView {
    @UiField
    Button submit;
 
-   public TaskEditViewImpl() {
+   public ReportsViewImpl() {
       person = new SuggestBox(peopleList);
       initWidget(binder.createAndBindUi(this));
    }

@@ -7,9 +7,9 @@ import com.radoslavhusar.tapas.war.client.overview.OverviewPlace;
 import com.radoslavhusar.tapas.war.client.planning.PlanningPlace;
 import com.radoslavhusar.tapas.war.client.projects.ProjectsPlace;
 import com.radoslavhusar.tapas.war.client.resources.ResourcesPlace;
-import com.radoslavhusar.tapas.war.client.task.edit.TaskEditActivity;
+import com.radoslavhusar.tapas.war.client.reports.ReportsActivity;
 import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
-import com.radoslavhusar.tapas.war.client.task.edit.TaskEditPlace;
+import com.radoslavhusar.tapas.war.client.reports.ReportsPlace;
 
 public class AppActivityMapper implements ActivityMapper {
 
@@ -31,9 +31,9 @@ public class AppActivityMapper implements ActivityMapper {
       } else if (place instanceof TasksPlace) {
          Application.getInjector().getClientState().setProjectId(((TasksPlace) place).getProjectId());
          return Application.getInjector().getTaskListActivity();
-      } else if (place instanceof TaskEditPlace) {
+      } else if (place instanceof ReportsPlace) {
          // Dont make this singleton.. or?
-         return new TaskEditActivity(place);
+         return new ReportsActivity(place);
       } else if (place instanceof ResourcesPlace) {
          // Let the client know which project
          Application.getInjector().getClientState().setProjectId(((ResourcesPlace) place).getProjectId());

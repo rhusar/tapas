@@ -7,7 +7,7 @@ import com.radoslavhusar.tapas.war.client.planning.PlanningPlace;
 import com.radoslavhusar.tapas.war.client.projects.ProjectsPlace;
 import com.radoslavhusar.tapas.war.client.resources.ResourcesPlace;
 import com.radoslavhusar.tapas.war.client.tasks.TasksPlace;
-import com.radoslavhusar.tapas.war.client.task.edit.TaskEditPlace;
+import com.radoslavhusar.tapas.war.client.reports.ReportsPlace;
 
 /**
  * PlaceHistoryMapper interface is used to attach all places which the
@@ -21,7 +21,7 @@ import com.radoslavhusar.tapas.war.client.task.edit.TaskEditPlace;
    TasksPlace.Tokenizer.class,
    ResourcesPlace.Tokenizer.class,
    PlanningPlace.Tokenizer.class,
-   TaskEditPlace.Tokenizer.class})
+   ReportsPlace.Tokenizer.class})
 public interface AppPlaceHistoryMapper extends PlaceHistoryMapper {
    // Nothing needed here.
 }

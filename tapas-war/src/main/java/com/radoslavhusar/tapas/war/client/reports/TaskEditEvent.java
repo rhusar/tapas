@@ -1,4 +1,4 @@
-package com.radoslavhusar.tapas.war.client.task.edit;
+package com.radoslavhusar.tapas.war.client.reports;
 
 import com.google.gwt.event.shared.GwtEvent;
 import com.radoslavhusar.tapas.ejb.entity.Task;

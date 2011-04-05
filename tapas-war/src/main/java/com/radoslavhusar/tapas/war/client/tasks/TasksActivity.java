@@ -4,7 +4,6 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.radoslavhusar.tapas.war.client.app.Application;
-import com.radoslavhusar.tapas.war.client.task.edit.TaskEditPlace;
 
 public class TasksActivity extends AbstractActivity implements TasksView.Presenter {
 
@@ -17,11 +16,6 @@ public class TasksActivity extends AbstractActivity implements TasksView.Present
       view.bind();
 
       panel.setWidget(view.asWidget());
-   }
-
-   @Override
-   public void goToEdit(String someId) {
-      Application.getInjector().getPlaceController().goTo(new TaskEditPlace(someId));
    }
 
    @Override

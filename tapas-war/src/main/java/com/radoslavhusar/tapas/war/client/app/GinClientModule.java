@@ -6,14 +6,14 @@ import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.inject.Singleton;
 import com.radoslavhusar.tapas.war.client.projects.ProjectsView;
 import com.radoslavhusar.tapas.war.client.projects.ProjectsViewImpl;
-import com.radoslavhusar.tapas.war.client.ui.MenuPresenter;
-import com.radoslavhusar.tapas.war.client.ui.MenuViewImpl;
+import com.radoslavhusar.tapas.war.client.menu.MenuPresenter;
+import com.radoslavhusar.tapas.war.client.menu.MenuViewImpl;
 import com.radoslavhusar.tapas.war.client.tasks.TasksView;
-import com.radoslavhusar.tapas.war.client.task.edit.TaskEditView;
-import com.radoslavhusar.tapas.war.client.task.edit.TaskEditViewImpl;
+import com.radoslavhusar.tapas.war.client.reports.ReportsView;
+import com.radoslavhusar.tapas.war.client.reports.ReportsViewImpl;
 import com.radoslavhusar.tapas.war.client.tasks.TasksViewImpl;
-import com.radoslavhusar.tapas.war.client.ui.StatusPresenter;
-import com.radoslavhusar.tapas.war.client.ui.StatusViewImpl;
+import com.radoslavhusar.tapas.war.client.menu.StatusPresenter;
+import com.radoslavhusar.tapas.war.client.menu.StatusViewImpl;
 
 public class GinClientModule extends AbstractGinModule {
 
@@ -34,7 +34,7 @@ public class GinClientModule extends AbstractGinModule {
       bind(ProjectsViewImpl.class).in(Singleton.class);
 
       // Views
-      bind(TaskEditView.class).to(TaskEditViewImpl.class).in(Singleton.class);
+      bind(ReportsView.class).to(ReportsViewImpl.class).in(Singleton.class);
       bind(TasksView.class).to(TasksViewImpl.class).in(Singleton.class);
    }
 }

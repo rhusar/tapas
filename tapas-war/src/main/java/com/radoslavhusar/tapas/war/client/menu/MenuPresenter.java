@@ -1,4 +1,4 @@
-package com.radoslavhusar.tapas.war.client.ui;
+package com.radoslavhusar.tapas.war.client.menu;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
