@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+   
    <display-name>TAPAS</display-name>
+   
+   <!-- TaskResourceServiceServlet mapping -->
    <servlet>
       <servlet-name>TaskResourceServiceServlet</servlet-name>
       <servlet-class>com.radoslavhusar.tapas.war.server.services.TaskResourceServiceImpl</servlet-class>
@@ -9,8 +12,21 @@
       <servlet-name>TaskResourceServiceServlet</servlet-name>
       <url-pattern>/com.radoslavhusar.tapas.war.Application/res</url-pattern>
    </servlet-mapping>
+   
+   <!-- Production: Do not allow browser to cache ".nocache.js" for production upgradeability -->
+   <filter>
+      <filter-name>gwtCacheControlFilter</filter-name>
+      <filter-class>com.radoslavhusar.tapas.war.GWTCacheControlFilter</filter-class>
+   </filter>
+   <filter-mapping>
+      <filter-name>gwtCacheControlFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+   </filter-mapping>
+   
+   <!-- Development: Welcome with the redirect file -->
    <welcome-file-list>
       <welcome-file>index-gwtrun.html</welcome-file>
       <!-- <welcome-file>index.html</welcome-file> -->
    </welcome-file-list>
+   
 </web-app>
