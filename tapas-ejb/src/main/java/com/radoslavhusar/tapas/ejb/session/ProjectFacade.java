@@ -7,12 +7,14 @@ import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.stats.ProjectPhaseStats;
 import com.radoslavhusar.tapas.ejb.stats.ResourceStats;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.drools.rule.Collect;
 
 @Stateless
 @Local(ProjectFacadeLocal.class)
@@ -41,7 +43,7 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
 
    /**
     * Returns days remaining and days remaining on each project phase.
-    * <em>Needs to be done as JDBC query. Not like this.</em>
+    * <em>Some more things can be done as JDBC query. Move it there.</em>
     * 
     * @param projectId
     * @return ProjectStats
@@ -72,6 +74,9 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
 
       double projectAllocated = 0;
       double projectCompleted = 0;
+
+      // Phases must be sorted!!
+      Collections.sort(p.getPhases());
 
       // Calculate estimated times etc.
       for (ProjectPhase pp : p.getPhases()) {
@@ -121,6 +126,7 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
       return result;
    }
 
+   /* Now its also done in HQL: */
    public static double getRate(Resource resource) {
       return (double) resource.getContract() / (double) 100 * (double) resource.getResourceAllocations().get(0).getPercent() / (double) 100;
    }

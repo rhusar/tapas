@@ -42,6 +42,7 @@
          <version>${gwt.version}</version>
          <scope>runtime</scope>
       </dependency>
+      <!-- Possible workaround for using different GWT SDK (i.e. 2.3): http://mojo.codehaus.org/gwt-maven-plugin/user-guide/using-different-gwt-sdk-version.html -->
       <dependency>
          <groupId>com.google.gwt</groupId>
          <artifactId>gwt-user</artifactId>
@@ -101,6 +102,7 @@
          <groupId>net.sf.gilead</groupId>
          <artifactId>gilead4gwt</artifactId>
          <version>1.3.2</version>
+         <!-- Must exclude dependencies already provided by JEE server -->
          <exclusions>
             <exclusion>
                <groupId>org.slf4j</groupId>
@@ -224,12 +226,10 @@
 <!--               <noServer>true</noServer>-->
                <!-- for production false -->
                <draftCompile>true</draftCompile>
-<!--               <runTarget>com.javacodegeeks.war.Application/Application.html</runTarget>-->
-<!--               <runTarget>tapas.html</runTarget>-->
-               <runTarget>index-gwtrun.html</runTarget>
-<!--               <runTarget>hellomvp.html</runTarget>-->
+               <runTarget>tapas.html</runTarget>
+<!--           <runTarget>index-gwtrun.html</runTarget> -->
                <extraJvmArgs>-Xmx1g</extraJvmArgs>
-<!--               <logLevel>TRACE</logLevel>-->
+<!--           <logLevel>TRACE</logLevel>-->
                <!-- for server.xml mapping -->
                <!--
                <packageNamePerModule>

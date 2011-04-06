@@ -3,6 +3,11 @@ package com.radoslavhusar.tapas.ejb.stats;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * This one is not used in HQL Query.
+ * 
+ * @author rhusar
+ */
 public class ProjectPhaseStats implements Serializable {
 
    private Date projectedEnd;

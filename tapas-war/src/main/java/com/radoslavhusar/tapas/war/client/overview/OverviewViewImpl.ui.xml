@@ -40,6 +40,7 @@
             </g:center>
                
             <g:east size="50">
+                
                <g:HTMLPanel styleName='{style.withPadding}'>
                   <h2>Project Phases</h2>
                   <c:CellTable ui:field='phases'  styleName='{style.table}' />
@@ -49,6 +50,7 @@
                   <i>The first date change is ignored, there is a bug.</i>
                   <g:VerticalPanel ui:field="vpanel"></g:VerticalPanel>
                </g:HTMLPanel>
+        
             </g:east>
     
          </g:DockLayoutPanel>
@@ -73,11 +75,11 @@
   }
 
       .withPadding {
-      padding: 10px;
+      padding: 20px;
       }
       
             .withPaddingTitle {
-      padding: 0 0 0 10px;
+      padding: 0 0 0 20px;
       }
    </ui:style>
 

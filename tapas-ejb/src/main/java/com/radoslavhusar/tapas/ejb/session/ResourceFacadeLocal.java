@@ -33,15 +33,14 @@ public interface ResourceFacadeLocal {
 
    List<Resource> findAllNotOnProject(long projectId);
 
-   ResourcePriorityAllocationStats tallyResourceDataForProject(long resourceId, long projectId);
+   ResourcePriorityAllocationStats tallyResourceStatsForProject(long resourceId, long projectId);
 
    /**
     * Contains resource, allocated, completed
     * 
-    * @param projectId 
-    * @return  ResourceStats list
+    * @param phaseId 
+    * @return ResourceStats list
     */
    //List<ResourceStats> tallyResourcesStatsForProject(long projectId);
-
    List<ResourceStats> tallyResourcesStatsForPhase(long phaseId);
 }

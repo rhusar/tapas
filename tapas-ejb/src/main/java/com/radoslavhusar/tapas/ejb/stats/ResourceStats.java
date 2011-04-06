@@ -4,6 +4,7 @@ import com.radoslavhusar.tapas.ejb.entity.Resource;
 
 /**
  * Used in Hibernate QL, edit with caution! 
+ * Parameters need to be synced with the queries.
  */
 public class ResourceStats {
 
@@ -13,7 +14,7 @@ public class ResourceStats {
    private double rate;
 
    /**
-    * Empty constructor needed by GWT-Gilead!
+    * Empty constructor needed by GWT-Gilead! and others.
     * E.g.: http://forums.smartclient.com/showthread.php?t=4966
     */
    public ResourceStats() {
@@ -34,6 +35,19 @@ public class ResourceStats {
       this.rate = rate == null ? 0 : rate;
    }
 
+   // Derived
+   public double getRemaining() {
+      return allocated - completed;
+   }
+
+   /**
+    * @return raw number of days to complete the task (i.e. no calendar data)
+    */
+   public double getRawDaysToComplete() {
+      return getRemaining() / rate;
+   }
+
+   // Get+Set
    public double getAllocated() {
       return allocated;
    }
@@ -48,10 +62,6 @@ public class ResourceStats {
 
    public void setCompleted(double completed) {
       this.completed = completed;
-   }
-
-   public double getRemaining() {
-      return allocated - completed;
    }
 
    public Resource getResource() {

@@ -23,6 +23,7 @@ import com.radoslavhusar.tapas.war.client.projects.ProjectsPlace;
 public class Application implements EntryPoint {
 
    private Place defaultPlace = new ProjectsPlace();
+   // TODO: When upgrade to 2.3 fix http://code.google.com/p/google-web-toolkit/issues/detail?id=5501
    private SimplePanel appWidget = new SimplePanel();
    private static final AppGinjector injector = GWT.create(AppGinjector.class);
 

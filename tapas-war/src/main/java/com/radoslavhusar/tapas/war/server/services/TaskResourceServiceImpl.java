@@ -17,6 +17,8 @@ import com.radoslavhusar.tapas.ejb.session.ResourceAllocationFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TimeAllocationFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TraitFacadeLocal;
+import com.radoslavhusar.tapas.ejb.stats.ProjectStats;
+import com.radoslavhusar.tapas.ejb.stats.ResourceStats;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceService;
 import java.util.Collection;
 import java.util.HashMap;
@@ -86,18 +88,23 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    }
 
    @Override
+   public ProjectStats tallyProjectStats(long projectId) {
+      return projectBean.tallyProjectStats(projectId);
+   }
+
+   @Override
    public List<ResourceGroup> findAllGroups() {
       return groupBean.findAll();
    }
 
    @Override
-   public Map<Long, ResourcePriorityAllocationStats> fetchAllResourceDataForProject(long projectId) {
+   public Map<Long, ResourcePriorityAllocationStats> tallyResourceStatsForProject(long projectId) {
       List<Resource> list = resourceBean.findAllForProject(projectId);
       Map<Long, ResourcePriorityAllocationStats> result = new HashMap<Long, ResourcePriorityAllocationStats>();
 
       // Make it better presentable
       for (Resource res : list) {
-         result.put(res.getId(), resourceBean.tallyResourceDataForProject(res.getId(), projectId));
+         result.put(res.getId(), resourceBean.tallyResourceStatsForProject(res.getId(), projectId));
       }
 
       return result;
@@ -201,5 +208,18 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    @Override
    public List<Resource> findAllResourcesNotOnProject(long projectId) {
       return resourceBean.findAllNotOnProject(projectId);
+   }
+
+   @Override
+   public Long createProject(Project project) {
+      projectBean.create(project);
+
+      // As persisted.
+      return project.getId();
+   }
+
+   @Override
+   public List<ResourceStats> tallyResourcesStatsForPhase(long phaseId) {
+      return resourceBean.tallyResourcesStatsForPhase(phaseId);
    }
 }

@@ -8,6 +8,8 @@ import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.stats.ResourcePriorityAllocationStats;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.Trait;
+import com.radoslavhusar.tapas.ejb.stats.ProjectStats;
+import com.radoslavhusar.tapas.ejb.stats.ResourceStats;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -22,15 +24,19 @@ public interface TaskResourceService extends RemoteService {
 
    void editProject(Project project);
 
+   Long createProject(Project project);
+
+   ProjectStats tallyProjectStats(long projectId);
+
    // Trait
    List<Trait> findAllTraits();
 
    void createTrait(Trait trait);
 
    // Task
-   void editTasks(Collection<Task> tasks);
-
    List<Task> findAllTasksForProject(long projectId);
+
+   void editTasks(Collection<Task> tasks);
 
    void editTasksForProject(long projectId, Collection<Task> tasks);
 
@@ -39,10 +45,11 @@ public interface TaskResourceService extends RemoteService {
 
    List<Resource> findAllResourcesNotOnProject(long projectId);
 
-   /*Map<Long, ResourceAllocation> findAllAllocationsForProject(long projectId);*/
-   Map<Long, ResourcePriorityAllocationStats> fetchAllResourceDataForProject(long projectId);
-
    void editResourcesForProject(long projectId, Collection<Resource> resources);
+
+   List<ResourceStats> tallyResourcesStatsForPhase(long phaseId);
+
+   Map<Long, ResourcePriorityAllocationStats> tallyResourceStatsForProject(long projectId);
 
    // Group
    List<ResourceGroup> findAllGroups();

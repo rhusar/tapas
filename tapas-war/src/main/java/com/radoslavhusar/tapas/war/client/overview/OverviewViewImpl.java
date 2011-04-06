@@ -1,8 +1,10 @@
 package com.radoslavhusar.tapas.war.client.overview;
 
 import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -11,6 +13,7 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -31,9 +34,13 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
+import com.radoslavhusar.tapas.ejb.stats.ProjectPhaseStats;
+import com.radoslavhusar.tapas.ejb.stats.ProjectStats;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
 import com.radoslavhusar.tapas.war.client.ui.NullableDatePickerCell;
+import com.radoslavhusar.tapas.war.client.ui.SafeHtmlCellContent;
+import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -42,6 +49,8 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
 
    private Presenter presenter;
    private static Binder binder = GWT.create(Binder.class);
+   private final ClientState client;
+   private final TaskResourceServiceAsync service;
 
    interface Binder extends UiBinder<Widget, OverviewViewImpl> {
    }
@@ -71,9 +80,13 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
    DateTimeFormat dateFormat = DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT);
    @UiField
    VerticalPanel vpanel;
+   private ProjectStats stats;
 
    @Inject
-   public OverviewViewImpl(ClientState state) {
+   public OverviewViewImpl(ClientState client, TaskResourceServiceAsync service) {
+      this.client = client;
+      this.service = service;
+
       phases = new CellTable<ProjectPhase>();
 
       // ID
@@ -162,7 +175,58 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
             object.setEnded(value);
          }
       });
-      phases.addColumn(endDateCol, "End Date");
+      phases.addColumn(endDateCol, "Actual End");
+
+      // Estimated Date
+      Cell estimatedDateCell = new DateCell(dateFormat);
+      Column<ProjectPhase, Date> estimateCol = new Column<ProjectPhase, Date>(estimatedDateCell) {
+
+         @Override
+         public Date getValue(ProjectPhase phase) {
+            ProjectPhaseStats phaseStats = stats.getProjection().get(phase.getId());
+
+            if (phaseStats != null) {
+               return phaseStats.getProjectedEnd();
+            } else {
+               // its completed already... return nothing
+               return null;
+            }
+         }
+      };
+      // There is no updater!
+      phases.addColumn(estimateCol, "Estimated");
+      // Estimated Date
+
+      Cell ontimeCell = new SafeHtmlCell();
+      Column<ProjectPhase, SafeHtml> ontimeCol = new Column<ProjectPhase, SafeHtml>(ontimeCell) {
+
+         @Override
+         public SafeHtml getValue(ProjectPhase phase) {
+            if (phase.getEnded() == null) {
+               // Not completed yet
+               ProjectPhaseStats stat = stats.getProjection().get(phase.getId());
+
+               // Now compare DUE and TARGET time
+               if (stat.getProjectedEnd().before(phase.getTargetted())) {
+                  // Happy: its all goodies.
+                  return new SafeHtmlCellContent("<span style='color:green;'>On time.</span>");
+               } else {
+                  // its after :-(
+                  return new SafeHtmlCellContent("<span style='color:red;'>Slipping by " + stat.getSlip() + " days!</span>");
+               }
+            } else {
+               // Completed already.
+
+               if (phase.getEnded().before(phase.getTargetted()) || phase.getEnded().equals(phase.getTargetted())) {
+                  return new SafeHtmlCellContent("<span style='color:green;'>Completed on time.</span>");
+               } else {
+                  return new SafeHtmlCellContent("<span style='color:green;'>Completed with slip.</span>");
+               }
+            }
+         }
+      };
+      // There is no updater!
+      phases.addColumn(ontimeCol, "");
 
 
       // Add a selection model to handle user selection.
@@ -178,7 +242,23 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       menu.add(Application.getInjector().getMenuView());
       status.add(Application.getInjector().getStatusView());
 
-      project = Application.getInjector().getClientState().getProject();
+      service.tallyProjectStats(client.getProjectId(), new AsyncCallback<ProjectStats>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(ProjectStats result) {
+            // get the result somewhere
+            stats = result;
+
+            phases.setRowData(project.getPhases());
+         }
+      });
+
+      project = client.getProject();
       if (project == null) {
          return;
       }
@@ -226,7 +306,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
          phases.setRowCount(0);
       } else {
          Collections.sort(project.getPhases());
-         phases.setRowData(project.getPhases());
+         // moved up: phases.setRowData(project.getPhases());
       }
    }
 

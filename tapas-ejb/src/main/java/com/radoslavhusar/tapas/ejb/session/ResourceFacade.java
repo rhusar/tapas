@@ -61,7 +61,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
     * @return array of P1 Ass, P1 Done, P2 Ass, P2 Done, P3 Ass, P3 Done, PX Ass, PX Done
     */
    @Override
-   public ResourcePriorityAllocationStats tallyResourceDataForProject(long resourceId, long projectId) {
+   public ResourcePriorityAllocationStats tallyResourceStatsForProject(long resourceId, long projectId) {
       // TODO: get this to work, aggregate via Hibernate
 //       List l = getEntityManager().
 //              createQuery("select sum(a.timeAllocation) from " + Resource.class.getSimpleName() + " as o "

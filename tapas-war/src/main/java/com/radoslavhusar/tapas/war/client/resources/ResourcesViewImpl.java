@@ -626,7 +626,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             toSyncRender();
          }
       });
-      service.fetchAllResourceDataForProject(client.getProjectId(), new AsyncCallback<Map<Long, ResourcePriorityAllocationStats>>() {
+      service.tallyResourceStatsForProject(client.getProjectId(), new AsyncCallback<Map<Long, ResourcePriorityAllocationStats>>() {
 
          @Override
          public void onFailure(Throwable caught) {
