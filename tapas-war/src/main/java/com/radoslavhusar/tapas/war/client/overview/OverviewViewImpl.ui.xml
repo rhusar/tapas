@@ -25,7 +25,7 @@
                <g:HTMLPanel styleName='{style.withPadding}'>
                   <p>
                      <h2>Project Properties</h2>
-                     <strong>Today</strong>
+                     <strong>Today is</strong>
                      <g:Label ui:field='propToday'>Loading...</g:Label>
                      <br/>
                      <strong>Project Start Date</strong>
@@ -43,12 +43,19 @@
                 
                <g:HTMLPanel styleName='{style.withPadding}'>
                   <h2>Project Phases</h2>
+                  <p>Only tasks which are assigned are counted into estimations.</p>
+                  
                   <c:CellTable ui:field='phases'  styleName='{style.table}' />
                   <g:Anchor ui:field='phaseAdd'>+ New</g:Anchor> |
                   <g:Anchor ui:field='phaseRemove'>Remove</g:Anchor> |
                   <g:Anchor ui:field='phaseSave'>Save</g:Anchor>
-                  <i>The first date change is ignored, there is a bug.</i>
-                  <g:VerticalPanel ui:field="vpanel"></g:VerticalPanel>
+                  <!-- Seems to work with a workaround now <i>Known bug: dates are not re-rendered after change.</i> -->
+                  
+                  <h2>Phase Stats</h2>
+                  <g:VerticalPanel ui:field="vpanel">
+                     <g:Label>Loading...</g:Label>
+                  </g:VerticalPanel>
+                  
                </g:HTMLPanel>
         
             </g:east>

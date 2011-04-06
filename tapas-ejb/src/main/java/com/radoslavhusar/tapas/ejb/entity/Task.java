@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 @Entity
 @Table(name = "TASK")
@@ -23,6 +24,8 @@ public class Task implements Serializable {
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
    private Long id;
+   @Version
+   private long version;
    @Column
    private String unifiedId;
    @Column
@@ -50,6 +53,14 @@ public class Task implements Serializable {
 
    public void setId(Long id) {
       this.id = id;
+   }
+
+   public long getVersion() {
+      return version;
+   }
+
+   public void setVersion(long version) {
+      this.version = version;
    }
 
    public String getUnifiedId() {

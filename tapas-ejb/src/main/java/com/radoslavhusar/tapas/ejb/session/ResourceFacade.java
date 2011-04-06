@@ -138,6 +138,8 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
    /**
     * We WANT the outer join so we get their manday rate even if they have no tasks yet.
     * 
+    * This ignores the unassigned tasks.
+    * 
     * @param phaseId
     * @return 
     */

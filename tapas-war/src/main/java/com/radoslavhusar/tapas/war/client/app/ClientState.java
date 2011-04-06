@@ -10,7 +10,10 @@ import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
 import com.radoslavhusar.tapas.ejb.stats.ResourcePriorityAllocationStats;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.Trait;
+import com.radoslavhusar.tapas.ejb.stats.ProjectStats;
+import com.radoslavhusar.tapas.ejb.stats.ResourceStats;
 import com.radoslavhusar.tapas.war.client.event.DataReadyEvent;
+import com.radoslavhusar.tapas.war.client.event.DataType;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +35,8 @@ public class ClientState {
    private List<ResourceGroup> groups;
    private List<Task> tasks;
    private List<Trait> traits;
+   private List<ResourceStats> resourceStats;
+   private ProjectStats projectStats;
 
    //private volatile int toSync = 3;
    @Inject
@@ -67,7 +72,7 @@ public class ClientState {
          @Override
          public void onSuccess(Project result) {
             project = result;
-            eventBus.fireEvent(new DataReadyEvent(DataReadyEvent.DataType.PROJECT));
+            eventBus.fireEvent(new DataReadyEvent(DataType.PROJECT));
          }
       });
       service.findAllGroups(new AsyncCallback<List<ResourceGroup>>() {
@@ -80,7 +85,7 @@ public class ClientState {
          @Override
          public void onSuccess(List<ResourceGroup> result) {
             groups = result;
-            eventBus.fireEvent(new DataReadyEvent(DataReadyEvent.DataType.GROUPS));
+            eventBus.fireEvent(new DataReadyEvent(DataType.GROUPS));
          }
       });
       service.findAllTraits(new AsyncCallback<List<Trait>>() {
@@ -93,7 +98,7 @@ public class ClientState {
          @Override
          public void onSuccess(List<Trait> result) {
             traits = result;
-            eventBus.fireEvent(new DataReadyEvent(DataReadyEvent.DataType.TRAITS));
+            eventBus.fireEvent(new DataReadyEvent(DataType.TRAITS));
          }
       });
    }
@@ -141,5 +146,56 @@ public class ClientState {
 
    public void setTraits(List<Trait> traits) {
       this.traits = traits;
+   }
+
+   // Resource stats routines
+   public List<ResourceStats> getResourceStats() {
+      return resourceStats;
+   }
+
+   public void setResourceStats(List<ResourceStats> resourceStats) {
+      this.resourceStats = resourceStats;
+   }
+
+   public void prepareResourceStats(long phaseId) {
+      service.tallyResourcesStatsForPhase(phaseId, new AsyncCallback<List<ResourceStats>>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            // ...some exception handling
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(List<ResourceStats> result) {
+            resourceStats = result;
+            eventBus.fireEvent(new DataReadyEvent(DataType.RESOURCE_STATS));
+         }
+      });
+   }
+
+   // Project Stats
+   public ProjectStats getProjectStats() {
+      return projectStats;
+   }
+
+   public void setProjectStats(ProjectStats projectStats) {
+      this.projectStats = projectStats;
+   }
+
+   public void prepareProjectStats(long phaseId) {
+      service.tallyProjectStats(projectId, new AsyncCallback<ProjectStats>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(ProjectStats result) {
+            projectStats = result;
+            eventBus.fireEvent(new DataReadyEvent(DataType.PROJECT_STATS));
+         }
+      });
    }
 }

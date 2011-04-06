@@ -1,12 +1,13 @@
 package com.radoslavhusar.tapas.ejb.stats;
 
 import com.radoslavhusar.tapas.ejb.entity.Resource;
+import java.io.Serializable;
 
 /**
  * Used in Hibernate QL, edit with caution! 
  * Parameters need to be synced with the queries.
  */
-public class ResourceStats {
+public class ResourceStats implements Serializable {
 
    private Resource resource;
    private double allocated;

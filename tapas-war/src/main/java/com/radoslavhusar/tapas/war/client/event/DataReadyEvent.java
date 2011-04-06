@@ -7,11 +7,6 @@ public class DataReadyEvent extends GwtEvent<DataReadyEventHandler> {
    public static final Type<DataReadyEventHandler> TYPE = new Type<DataReadyEventHandler>();
    private DataType type;
 
-   public static enum DataType {
-
-      OVERVIEW, TASKS, RESOURCES, PROJECT, GROUPS, TRAITS
-   }
-
    public DataReadyEvent(DataType dataType) {
       this.type = dataType;
    }
