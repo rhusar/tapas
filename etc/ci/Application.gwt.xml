@@ -4,6 +4,12 @@
    <!-- Inherit the core Web Toolkit stuff. -->
    <inherits name="com.google.gwt.user.User"/>
    <inherits name="com.google.gwt.inject.Inject"/>
+   
+   <!-- Themes: inherit css based theme -->
+   <inherits name='com.google.gwt.user.theme.chrome.Chrome'/>
+   <!-- <inherits name='com.google.gwt.user.theme.standard.Standard'/> -->
+   <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/> -->
+   
    <!-- MVP -->
    <inherits name="com.google.gwt.activity.Activity"/>
    <inherits name="com.google.gwt.place.Place"/>
@@ -13,11 +19,6 @@
 
    <!-- Charts -->
    <inherits name="com.google.gwt.visualization.Visualization"/>
-     
-   <!-- inherit css based theme -->
-   <inherits name='com.google.gwt.user.theme.chrome.Chrome'/>
-      <!--   <inherits name='com.google.gwt.user.theme.standard.Standard'/>-->
-      <!--   <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
    <!-- include shadow package for entities -->
    <inherits name="com.radoslavhusar.tapas.ejb.Entity"/>
@@ -27,7 +28,7 @@
    <!--  <entry-point class="com.radoslavhusar.tapas.war.client.app.VisualizationDemo"/>-->
 
    <!-- Specify the application specific style sheet. -->
-   <!--   <stylesheet src="Application.css"/>-->
+   <!--   <stylesheet src="Application.css"/> -->
    
    <source path="client"/>
    <source path="shared"/>
