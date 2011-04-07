@@ -15,6 +15,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -38,6 +39,7 @@ import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.BarChart.Options;
 import com.google.gwt.visualization.client.visualizations.BarChart;
+import com.google.gwt.visualization.client.visualizations.PieChart;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
@@ -46,6 +48,7 @@ import com.radoslavhusar.tapas.ejb.stats.ProjectStats;
 import com.radoslavhusar.tapas.ejb.stats.ResourceStats;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
+import com.radoslavhusar.tapas.war.client.app.Constants;
 import com.radoslavhusar.tapas.war.client.event.DataReadyEvent;
 import com.radoslavhusar.tapas.war.client.event.DataReadyEventHandler;
 import com.radoslavhusar.tapas.war.client.event.DataType;
@@ -93,6 +96,12 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
    @UiField
    VerticalPanel vpanel;
    private ProjectStats stats;
+   @UiField
+   VerticalPanel piePanel;
+   @UiField
+   Label piePercent;
+   @UiField
+   Label pieDays;
 
    @Inject
    public OverviewViewImpl(ClientState client, TaskResourceServiceAsync service, EventBus bus) {
@@ -284,14 +293,33 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
                for (ProjectPhase pp : client.getProject().getPhases()) {
                   if (pp.getEnded() != null) {
                      client.prepareResourceStats(pp.getId());
-                     return;
                   }
                }
             } else {
                renderChartNow();
             }
+
+            // Pie chard
+            if (client.getProjectStats() == null) {
+               bus.addHandler(DataReadyEvent.TYPE, new DataReadyEventHandler() {
+
+                  @Override
+                  public void onDataReady(DataReadyEvent event) {
+                     if (event.getType().equals(DataType.PROJECT_STATS)) {
+                        renderPie();
+                     }
+                  }
+               });
+               client.prepareProjectStats();
+            } else {
+               renderPie();
+            }
          }
       };
+
+
+
+
 
       // Load the visualization api, passing the onLoadCallback to be called when loading is done.
       VisualizationUtils.loadVisualizationApi(chartCallback, BarChart.PACKAGE);
@@ -420,7 +448,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
    private Options getOptions() {
       Options options = Options.create();
       options.setWidth(600);
-      options.setHeight(client.getResourceStats().size()*80);
+      options.setHeight(client.getResourceStats().size() * 80);
       options.set3D(true);
       options.setTitle("Phase Progress");
       return options;
@@ -434,7 +462,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       //data.addColumn(ColumnType.STRING, "Completed");
       data.addColumn(ColumnType.NUMBER, "Allocated");
       data.addColumn(ColumnType.NUMBER, "Completed");
-      
+
 
       data.addRows(client.getResourceStats().size());
 
@@ -445,7 +473,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
          //data.setValue(0, 1, "Mountain View");
          data.setValue(i, 1, rs.getAllocated());
          data.setValue(i, 2, rs.getCompleted());
-         
+
 
          i++;
       }
@@ -479,5 +507,40 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       //pie.addSelectHandler(createSelectHandler(pie));
       vpanel.clear();
       vpanel.add(chart);
+
+
+   }
+
+   private void renderPie() {
+
+      PieChart.Options pieOpts = PieChart.Options.create();
+      pieOpts.setWidth(300);
+      pieOpts.setHeight(300);
+      pieOpts.set3D(true);
+      pieOpts.setTitle("Project Progress");
+
+      DataTable data = DataTable.create();
+
+      data.addColumn(ColumnType.STRING, "Completion");
+      data.addColumn(ColumnType.NUMBER, "Mandays");
+
+      data.addRows(2);
+      ProjectStats rs = client.getProjectStats();
+
+      //data.setValue(0, 1, "Mountain View");
+      data.setValue(0, 0, "Completed");
+      data.setValue(0, 1, rs.getCompleted());
+
+      data.setValue(1, 0, "Remaining");
+      data.setValue(1, 1, rs.getRemaining());
+
+
+      PieChart pie = new PieChart(data, pieOpts);
+      piePanel.clear();
+      piePanel.add(pie);
+      //piePanel.add(new Label(rs.toString()));
+
+      pieDays.setText(NumberFormat.getFormat(Constants.ALLOC_FORMAT).format(rs.getRemaining() / rs.getMandayRate()) + "");
+      piePercent.setText(NumberFormat.getPercentFormat().format(rs.getCompleted() / rs.getAllocated()));
    }
 }

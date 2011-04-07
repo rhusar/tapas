@@ -36,6 +36,24 @@
                      <strong>Days remaining</strong>
                      <g:Label ui:field='propDays'>Loading...</g:Label>
                   </p>
+                  
+                  <g:HorizontalPanel>
+                     <g:VerticalPanel horizontalAlignment="ALIGN_CENTER">
+                        <g:Label ui:field="piePercent"  styleName='{style.percent}' >Loading...</g:Label>
+                        <g:Label>completed</g:Label>
+                        <g:Label>&nbsp;</g:Label>
+                        <g:Label>&nbsp;</g:Label>
+                        <g:Label ui:field="pieDays" styleName='{style.percent}'>Loading...</g:Label>
+                        <g:Label>remaining raw days to completion (at optimal distribution)</g:Label>
+                     </g:VerticalPanel>
+                     <g:VerticalPanel ui:field="piePanel" width="50%">
+                        <g:Label>Loading...</g:Label>
+                     </g:VerticalPanel> 
+                     
+
+                     
+                  </g:HorizontalPanel>
+                  
                </g:HTMLPanel> 
             </g:center>
                
@@ -70,6 +88,12 @@
    </g:DockLayoutPanel>
 
    <ui:style>
+      .percent {
+      font-size: 3em;
+      color:green;
+      font-weight: bold;
+      }
+      
   .outer {
     border-left: 1px solid #999;
     border-bottom: 1px solid #999;

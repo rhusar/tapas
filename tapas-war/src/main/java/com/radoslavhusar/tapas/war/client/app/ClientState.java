@@ -183,7 +183,7 @@ public class ClientState {
       this.projectStats = projectStats;
    }
 
-   public void prepareProjectStats(long phaseId) {
+   public void prepareProjectStats() {
       service.tallyProjectStats(projectId, new AsyncCallback<ProjectStats>() {
 
          @Override

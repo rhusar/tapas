@@ -70,6 +70,6 @@ public class ProjectStats implements Serializable {
 
    @Override
    public String toString() {
-      return "ProjectStats{" + "projectId=" + projectId + ", remaining=" + getRemaining() + ", projection=" + projection + ", mandayRate=" + mandayRate + '}';
+      return "ProjectStats{" + "projectId=" + projectId + ", completed=" + completed + ", allocated=" + allocated + ", projection=" + projection + ", mandayRate=" + mandayRate + '}';
    }
 }
