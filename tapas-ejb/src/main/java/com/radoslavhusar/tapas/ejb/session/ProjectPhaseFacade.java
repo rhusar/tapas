@@ -21,4 +21,13 @@ public class ProjectPhaseFacade extends AbstractFacade<ProjectPhase> implements 
    public ProjectPhaseFacade() {
       super(ProjectPhase.class);
    }
+
+   @Override
+   public void editOrCreate(ProjectPhase entity) {
+      if (entity.getId() == null) {
+         create(entity);
+      } else {
+         edit(entity);
+      }
+   }
 }

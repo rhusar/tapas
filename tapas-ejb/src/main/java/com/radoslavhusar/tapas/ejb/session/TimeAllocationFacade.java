@@ -21,4 +21,13 @@ public class TimeAllocationFacade extends AbstractFacade<TimeAllocation> impleme
    public TimeAllocationFacade() {
       super(TimeAllocation.class);
    }
+
+   @Override
+   public void editOrCreate(TimeAllocation entity) {
+      if (entity.getId() == null) {
+         create(entity);
+      } else {
+         edit(entity);
+      }
+   }
 }

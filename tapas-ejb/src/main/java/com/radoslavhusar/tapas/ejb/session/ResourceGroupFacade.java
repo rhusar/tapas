@@ -21,4 +21,13 @@ public class ResourceGroupFacade extends AbstractFacade<ResourceGroup> implement
    public ResourceGroupFacade() {
       super(ResourceGroup.class);
    }
+
+   @Override
+   public void editOrCreate(ResourceGroup entity) {
+      if (entity.getId() == null) {
+         create(entity);
+      } else {
+         edit(entity);
+      }
+   }
 }

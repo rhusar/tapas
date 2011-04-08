@@ -23,6 +23,15 @@ public class TraitFacade extends AbstractFacade<Trait> implements TraitFacadeLoc
       super(Trait.class);
    }
 
+   @Override
+   public void editOrCreate(Trait entity) {
+      if (entity.getId() == null) {
+         create(entity);
+      } else {
+         edit(entity);
+      }
+   }
+
    /**
     * Override to fetch them sorted.
     * 

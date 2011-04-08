@@ -24,6 +24,15 @@ public class TaskFacade extends AbstractFacade<Task> implements TaskFacadeLocal 
    }
 
    @Override
+   public void editOrCreate(Task entity) {
+      if (entity.getId() == null) {
+         create(entity);
+      } else {
+         edit(entity);
+      }
+   }
+
+   @Override
    public List<Task> findAllForProject(long projectId) {
       return getEntityManager().
               createNamedQuery("tasksForProject").

@@ -21,6 +21,16 @@ public abstract class AbstractFacade<T> {
       getEntityManager().merge(entity);
    }
 
+   /**
+    * This is a workaround to be JPA implementation agnostic. In hibernate we can just
+    * use saveOrUpdate(java.lang.Object) method to do this.
+    * 
+    * See http://docs.jboss.org/hibernate/core/3.5/api/org/hibernate/Session.html#saveOrUpdate(java.lang.Object)
+    * 
+    * @param entity 
+    */
+   abstract public void editOrCreate(T entity);
+
    public void remove(T entity) {
       getEntityManager().remove(getEntityManager().merge(entity));
    }

@@ -19,5 +19,7 @@ public interface TimeAllocationFacadeLocal {
    List<TimeAllocation> findRange(int[] range);
 
    int count();
+   
    // NON-CRUD
+   // No methods yet.
 }

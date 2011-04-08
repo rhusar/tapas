@@ -30,6 +30,15 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
    }
 
    @Override
+   public void editOrCreate(Resource entity) {
+      if (entity.getId() == null) {
+         create(entity);
+      } else {
+         edit(entity);
+      }
+   }
+
+   @Override
    public List<Resource> findAllForProject(long projectId) {
       // Do an inner join - fetch only assigned to the project.
       List<Resource> result = getEntityManager().createNamedQuery("resourcesForProject").setParameter("projectid", projectId).getResultList();

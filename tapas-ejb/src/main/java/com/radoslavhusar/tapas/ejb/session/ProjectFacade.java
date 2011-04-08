@@ -41,6 +41,15 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
       super(Project.class);
    }
 
+   @Override
+   public void editOrCreate(Project entity) {
+      if (entity.getId() == null) {
+         create(entity);
+      } else {
+         edit(entity);
+      }
+   }
+
    /**
     * Returns days remaining and days remaining on each project phase.
     * <em>Some more things can be done as JDBC query. Move it there.</em>
