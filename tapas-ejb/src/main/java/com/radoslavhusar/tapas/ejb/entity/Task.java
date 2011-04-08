@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -28,10 +29,11 @@ public class Task implements Serializable {
    private long version;
    @Column
    private String unifiedId;
-   @Column
+   @Lob
+   @Column(length = 2048)
    private String name;
-   @Column
-   private String summary;
+   /*@Column
+   private String summary;*/
    @ManyToOne(fetch = FetchType.EAGER)
    private Resource resource;
    @ManyToOne(fetch = FetchType.EAGER)
@@ -95,14 +97,13 @@ public class Task implements Serializable {
       this.status = status;
    }
 
-   public String getSummary() {
-      return summary;
+   /*public String getSummary() {
+   return summary;
    }
-
+   
    public void setSummary(String summary) {
-      this.summary = summary;
-   }
-
+   this.summary = summary;
+   }*/
    @SuppressWarnings("ReturnOfCollectionOrArrayField")
    public List<TimeAllocation> getTimeAllocations() {
       return timeAllocations;
@@ -149,7 +150,8 @@ public class Task implements Serializable {
       return "Task{id=" + id
               + ",uid=" + unifiedId
               + ",name=" + name
-              + ",assignee=" + (resource == null ? null : resource.getName()) + "}";
+              + ",assignee=" + (resource == null ? "null" : resource.getName())
+              + "}";
    }
 
    public static String formatState(TaskStatus state) {
@@ -158,6 +160,9 @@ public class Task implements Serializable {
 
    /**
     * Needed for drools planner. There must be a better way, this sucks.
+    * 
+    * Time allocation and project are NOT cloned!
+    * 
     * 
     * This cant really be done by implementing interface Cloneable because GWT compiler has problem with it:
     * 
@@ -170,12 +175,15 @@ public class Task implements Serializable {
       clone.id = id;
       clone.unifiedId = unifiedId;
       clone.name = name;
-      clone.summary = summary;
+      //clone.summary = summary;
+      // Allocations are not cloned.
+      clone.project = project;
       clone.resource = resource;
       clone.resourceGroup = resourceGroup;
       clone.priority = priority;
       // Isnt there a better way to copy over Collections?
       clone.timeAllocations = new ArrayList(timeAllocations.size());
+      // Allocations are not cloned.
       clone.timeAllocations.addAll(timeAllocations);
       clone.status = status;
       return clone;
