@@ -113,7 +113,7 @@ public class ReportsViewImpl extends ResizeComposite implements ReportsView {
       Task task = new Task();
       task.setId(taskId);
       task.setName(name.getText());
-      task.setSummary(summary.getText());
+      //task.setSummary(summary.getText());
       presenter.doSubmit(task);
    }
 }

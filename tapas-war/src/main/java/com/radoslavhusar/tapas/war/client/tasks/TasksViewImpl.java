@@ -103,8 +103,8 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                ArrayList<Task> filteredlist = new ArrayList<Task>();
 
                for (Task task : this.getList()) {
-                  if ((task.getSummary() != null && task.getSummary().contains(filterBy))
-                          || (task.getName() != null && task.getName().contains(filterBy))) {
+                  if ( /*(task.getSummary() != null && task.getSummary().contains(filterBy))
+                          ||*/(task.getName() != null && task.getName().contains(filterBy))) {
                      filteredlist.add(task);
                   }
                }
@@ -521,7 +521,12 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                public String getValue(Task object) {
                   for (TimeAllocation tta : object.getTimeAllocations()) {
                      if (tta.getPhase().getId().equals(phase.getId())) {
-                        return "" + (tta.getCompleted() <= 0 ? "" : tta.getCompleted() + "/") + tta.getAllocation();
+                        if (tta.getAllocation() > 0) {
+                           return "" + (tta.getCompleted() <= 0 ? "" : tta.getCompleted() + "/") + tta.getAllocation();
+                        } else {
+                           // If its allocated to 0, then show nothing
+                           return "";
+                        }
                      }
                   }
                   return "";
@@ -531,16 +536,22 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
 
                @Override
                public void update(int index, Task object, String value) {
+                  // One or the other, it WILL be changed.
+                  changed.add(object);
 
                   if (value.isEmpty()) {
                      // delete the allocation...
                      for (TimeAllocation ta : object.getTimeAllocations()) {
                         if (ta.getPhase().getId().equals(phase.getId())) {
-                           object.getTimeAllocations().remove(ta);
+                           // Dont remove but set to 0! 
+                           //object.getTimeAllocations().remove(ta);
+                           ta.setAllocation(0);
+                           ta.setCompleted(0);
                            return;
                         }
                      }
                   }
+
                   // Is the number valid anyway?
                   double assignedTime;
                   double completedTime;
@@ -558,9 +569,6 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                      GWT.log("Could not parse input value ignoring: " + nfe.getMessage());
                      return;
                   }
-
-                  // One or the other, it WILL be changed.
-                  changed.add(object);
 
                   for (TimeAllocation ta : object.getTimeAllocations()) {
                      // TODO: needs comparing IDs which is safe, but should be done .equal but doesnt work
@@ -694,20 +702,27 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
 
    @UiHandler("saveTasks")
    public void saveSomeTasks(ClickEvent event) {
-      GWT.log("Saving " + changed.size() + " tasks: " + changed + ".");
+      presenter.doSaveTasks(changed);
 
+      /*GWT.log("Saving " + changed.size() + " tasks: " + changed + ".");
+      
       Application.getInjector().getService().editTasks(changed, new AsyncCallback<Void>() {
+      
+      @Override
+      public void onFailure(Throwable caught) {
+      GWT.log("Saving tasks failed: ", caught);
+      }
+      
+      @Override
+      public void onSuccess(Void result) {
+      GWT.log("Tasks saved!");
+      changed.clear();
+      }
+      });*/
+   }
 
-         @Override
-         public void onFailure(Throwable caught) {
-            GWT.log("Saving tasks failed: ", caught);
-         }
-
-         @Override
-         public void onSuccess(Void result) {
-            GWT.log("Tasks saved!");
-            changed.clear();
-         }
-      });
+   @Override
+   public void redrawTasksTable() {
+      tasks.redraw();
    }
 }

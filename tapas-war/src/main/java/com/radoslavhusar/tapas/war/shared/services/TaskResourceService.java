@@ -36,10 +36,16 @@ public interface TaskResourceService extends RemoteService {
    // Task
    List<Task> findAllTasksForProject(long projectId);
 
-   void editTasks(Collection<Task> tasks);
+   /**
+    * @param task to update or a new task
+    * @return updated task - so in a case of new tasks the generated ID is returned in task
+    */
+   Task editTask(Task task);
 
-   void editTasksForProject(long projectId, Collection<Task> tasks);
+   /*@Deprecated
+   void editTasks(Collection<Task> tasks);*/
 
+   /*void editTasksForProject(long projectId, Collection<Task> tasks);*/
    // Resource
    List<Resource> findAllResourcesForProject(long projectId);
 

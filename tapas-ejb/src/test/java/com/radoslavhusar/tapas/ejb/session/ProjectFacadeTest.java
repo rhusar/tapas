@@ -1,5 +1,6 @@
 package com.radoslavhusar.tapas.ejb.session;
 
+import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.stats.ProjectStats;
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -31,5 +32,17 @@ public class ProjectFacadeTest {
       ProjectStats pd = projectBean.tallyProjectStats((long) 1);
 
       System.out.println("ProjectStats are " + pd.toString());
+   }
+
+   @Test
+   public void createNewProject() {
+      System.out.println("createNewTask");
+
+      Project p = new Project();
+      p.setName("text project");
+
+      projectBean.create(p);
+      System.out.println("P's new ID is now: " + p.getId());
+      projectBean.remove(p);
    }
 }

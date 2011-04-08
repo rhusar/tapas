@@ -22,6 +22,7 @@ import com.radoslavhusar.tapas.ejb.stats.ResourceStats;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceService;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -150,6 +151,48 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    }
 
    @Override
+   public Task editTask(Task task) {
+      if (task.getId() == null) {
+         // its is new, persist it
+         taskBean.create(task);
+
+         // now persist the NEW time alloc
+         for (TimeAllocation ta : task.getTimeAllocations()) {
+            if (ta.getAllocation() > 0) {
+               // dont save if allocated to 0%
+               timeAllocBean.create(ta);
+            }
+         }
+      } else {
+         // it is not new, only merge in changes
+         // allocations changed?
+         Iterator<TimeAllocation> iterator = task.getTimeAllocations().iterator();
+         while (iterator.hasNext()) {
+            TimeAllocation ta = iterator.next();
+
+            if (ta.getAllocation() > 0) {
+               timeAllocBean.editOrCreate(ta);
+            } else {
+               // also remove from collection
+               iterator.remove();
+
+               // remove if its zero
+               timeAllocBean.remove(ta);
+            }
+         }
+
+         // We want to reuse the object, so this is not good to do:
+         // task.setTimeAllocations(null);
+
+         taskBean.edit(task);
+      }
+      // Return updated task and its references
+
+      return task;
+   }
+
+   /*@Override
+   @Deprecated
    public void editTasks(Collection<Task> tasks) {
       for (Task t : tasks) {
          if (t.getId() == null) {
@@ -178,12 +221,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
             taskBean.edit(t);
          }
       }
-   }
-
-   @Override
-   public void editTasksForProject(long projectId, Collection<Task> tasks) {
-      throw new UnsupportedOperationException("Not supported yet.");
-   }
+   }*/
 
    @Override
    public List<Task> findAllTasksForProject(long projectId) {
