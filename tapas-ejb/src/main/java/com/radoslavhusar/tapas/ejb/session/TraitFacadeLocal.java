@@ -9,6 +9,8 @@ public interface TraitFacadeLocal {
 
    void edit(Trait trait);
 
+   void editOrCreate(Trait entity);
+
    void remove(Trait trait);
 
    Trait find(Object id);

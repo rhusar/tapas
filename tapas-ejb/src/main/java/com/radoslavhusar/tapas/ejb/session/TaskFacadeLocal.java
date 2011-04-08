@@ -10,6 +10,8 @@ public interface TaskFacadeLocal {
 
    void edit(Task task);
 
+   void editOrCreate(Task entity);
+
    void remove(Task task);
 
    Task find(Object id);

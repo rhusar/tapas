@@ -11,6 +11,8 @@ public interface ProjectFacadeLocal {
 
    void edit(Project project);
 
+   void editOrCreate(Project project);
+
    void remove(Project project);
 
    Project find(Object id);

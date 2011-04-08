@@ -9,6 +9,8 @@ public interface ResourceGroupFacadeLocal {
 
    void edit(ResourceGroup resourceGroup);
 
+   void editOrCreate(ResourceGroup entity);
+
    void remove(ResourceGroup resourceGroup);
 
    ResourceGroup find(Object id);

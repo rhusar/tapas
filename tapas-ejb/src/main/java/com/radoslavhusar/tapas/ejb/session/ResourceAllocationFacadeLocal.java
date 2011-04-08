@@ -11,6 +11,8 @@ public interface ResourceAllocationFacadeLocal {
 
    void edit(ResourceAllocation resourceProjectAllocation);
 
+   void editOrCreate(ResourceAllocation entity);
+
    void remove(ResourceAllocation resourceProjectAllocation);
 
    ResourceAllocation find(Object id);

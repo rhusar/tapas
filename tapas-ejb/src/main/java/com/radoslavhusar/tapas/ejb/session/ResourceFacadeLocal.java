@@ -12,6 +12,8 @@ public interface ResourceFacadeLocal {
 
    void edit(Resource resource);
 
+   void editOrCreate(Resource entity);
+
    void remove(Resource resource);
 
    Resource find(Object id);

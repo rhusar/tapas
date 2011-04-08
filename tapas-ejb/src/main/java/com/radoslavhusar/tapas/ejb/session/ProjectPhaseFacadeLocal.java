@@ -10,6 +10,8 @@ public interface ProjectPhaseFacadeLocal {
 
    void edit(ProjectPhase projectPhase);
 
+   void editOrCreate(ProjectPhase entity);
+
    void remove(ProjectPhase projectPhase);
 
    ProjectPhase find(Object id);
@@ -19,6 +21,5 @@ public interface ProjectPhaseFacadeLocal {
    List<ProjectPhase> findRange(int[] range);
 
    int count();
-   
-   // CUSTOM
+   // CUSTOM 
 }
