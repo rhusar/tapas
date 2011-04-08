@@ -21,6 +21,19 @@ public class ResourceStats implements Serializable {
    public ResourceStats() {
    }
 
+   /** 
+    * Used for unassigned tasks.
+    * 
+    * @param allocated
+    * @param completed 
+    */
+   public ResourceStats(double allocated, double completed) {
+      this.resource = null;
+      this.rate = 0;
+      this.allocated = allocated;
+      this.completed = completed;
+   }
+
    /**
     * Cannot be simple types because of Hibernate.
     * 

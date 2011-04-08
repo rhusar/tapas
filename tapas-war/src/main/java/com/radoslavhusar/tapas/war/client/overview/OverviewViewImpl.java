@@ -469,7 +469,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       int i = 0;
       for (ResourceStats rs : client.getResourceStats()) {
 
-         data.setValue(i, 0, rs.getResource().getName());
+         data.setValue(i, 0, rs.getResource() == null ? "Unassigned" : rs.getResource().getName());
          //data.setValue(0, 1, "Mountain View");
          data.setValue(i, 1, rs.getAllocated());
          data.setValue(i, 2, rs.getCompleted());

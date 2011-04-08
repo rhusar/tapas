@@ -16,19 +16,19 @@ import javax.persistence.PersistenceContext;
 @Stateless
 @Local(ResourceFacadeLocal.class)
 public class ResourceFacade extends AbstractFacade<Resource> implements ResourceFacadeLocal {
-
+   
    @PersistenceContext
    private EntityManager em;
-
+   
    @Override
    protected EntityManager getEntityManager() {
       return em;
    }
-
+   
    public ResourceFacade() {
       super(Resource.class);
    }
-
+   
    @Override
    public void editOrCreate(Resource entity) {
       if (entity.getId() == null) {
@@ -37,7 +37,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
          edit(entity);
       }
    }
-
+   
    @Override
    public List<Resource> findAllForProject(long projectId) {
       // Do an inner join - fetch only assigned to the project.
@@ -59,7 +59,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
          // http://opensource.atlassian.com/projects/hibernate/browse/HHH-2980
          res.getTraits().size();
       }
-
+      
       return result;
    }
 
@@ -103,10 +103,10 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
             }
          }
       }
-
+      
       ResourcePriorityAllocationStats ras = new ResourcePriorityAllocationStats(resourceId, projectId, result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7]);
       System.out.println(ras.toString());
-
+      
       return ras;
    }
 
@@ -127,7 +127,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
          // http://opensource.atlassian.com/projects/hibernate/browse/HHH-2980
          res.getTraits().size();
       }
-
+      
       return result;
    }
 
@@ -154,16 +154,45 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
     */
    @Override
    public List<ResourceStats> tallyResourcesStatsForPhase(long phaseId) {
-      return em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourceStats(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
-              + "from Resource as r "
-              + "inner join r.resourceAllocations as a "
+      /*      return em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourceStats(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
+      + "from Resource as r "
+      + "inner join r.resourceAllocations as a "
+      + "inner join a.key.project as p "
+      //+ "inner join p.phases as pp "
+      + "left outer join r.tasks as t "
+      + "left outer join t.timeAllocations as ta "
+      + "where ta.phase.id = :phaseId "
+      + "group by r").
+      setParameter("phaseId", phaseId).
+      getResultList();*/
+
+      // Assigned tasks
+      List<ResourceStats> assigned = em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourceStats(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
+              + "from Task as t "
+              + "left outer join t.resource as r "
+              + "left outer join r.resourceAllocations as a "
               + "inner join a.key.project as p "
-              //+ "inner join p.phases as pp "
-              + "left outer join r.tasks as t "
               + "left outer join t.timeAllocations as ta "
               + "where ta.phase.id = :phaseId "
               + "group by r").
               setParameter("phaseId", phaseId).
               getResultList();
+
+      // Unassigned
+      List<ResourceStats> unassigned = em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourceStats(sum(ta.allocation),sum(ta.completed)) "
+              + "from Task as t "
+              + "left outer join t.timeAllocations as ta "
+              + "where ta.phase.id = :phaseId "
+              + "and t.resource = NULL "
+              + "group by ta.phase.id").
+              setParameter("phaseId", phaseId).
+              getResultList();
+      
+      if (unassigned.size() == 1) {
+         assigned.add(unassigned.get(0));
+      }
+      
+      System.out.println(assigned);
+      return assigned;
    }
 }
