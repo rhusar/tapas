@@ -130,7 +130,6 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
          @Override
          public String getValue(ProjectPhase phase) {
             return phase.getName();
-            //+ " (" + phase.getName().substring(0, 4) + ")";
          }
       };
       phaseNameCol.setFieldUpdater(new FieldUpdater<ProjectPhase, String>() {
@@ -238,7 +237,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
                PhaseStatsEntry stat = stats.getProjection().get(phase.getId());
 
                if (stat == null) {
-                  return new SafeHtmlCellContent("Internal Error.");
+                  return new SafeHtmlCellContent("Internal Error!");
                }
 
                // Now compare DUE and TARGET time
@@ -450,12 +449,12 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
    private Options getOptions(long phaseId) {
       Options options = Options.create();
       options.setWidth(600);
-      options.setHeight(23 + client.getResourceStats().get(phaseId).size() * 70);
+      options.setHeight(45 + client.getResourceStats().get(phaseId).size() * 60);
       options.set3D(true);
 
       for (ProjectPhase pp : client.getProject().getPhases()) {
          if (pp.getId().equals(phaseId)) {
-            options.setTitle(pp.getName() + " Phase Progress");
+            //options.setTitle(pp.getName() + " Phase Progress");
             break;
          }
       }
@@ -499,6 +498,11 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
 
          if (!client.getResourceStats().containsKey(pp.getId())) {
             vpanel.add(new Label("No data for " + pp.getName() + " loaded."));
+            continue;
+         }
+
+         if (client.getResourceStats().isEmpty()) {
+            vpanel.add(new Label("No allocations for " + pp.getName() + "."));
             continue;
          }
 

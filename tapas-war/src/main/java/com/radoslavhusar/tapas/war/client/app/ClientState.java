@@ -1,5 +1,6 @@
 package com.radoslavhusar.tapas.war.client.app;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -168,6 +169,7 @@ public class ClientState {
 
          @Override
          public void onSuccess(Map<Long, List<ResourcePhaseStatsEntry>> result) {
+            GWT.log("Stats arrived: " + result);
             resourcePhaseStats = result;
             eventBus.fireEvent(new DataReadyEvent(DataType.RESOURCE_STATS));
          }
@@ -194,6 +196,7 @@ public class ClientState {
 
          @Override
          public void onSuccess(ProjectStats result) {
+            GWT.log("Stats arrived: " + result);
             projectStats = result;
             eventBus.fireEvent(new DataReadyEvent(DataType.PROJECT_STATS));
          }

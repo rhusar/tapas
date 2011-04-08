@@ -90,7 +90,7 @@ public class ResourcePhaseStatsEntry implements Serializable {
       return rate;
    }
 
-   public void setRate(Double rate) {
+   public void setRate(double rate) {
       this.rate = rate;
    }
 

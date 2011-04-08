@@ -143,16 +143,29 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
    public List<ResourcePhaseStatsEntry> tallyResourcesStatsForPhase(long phaseId) {
       // Assigned tasks
       List<ResourcePhaseStatsEntry> assigned = em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
-              + "from Task as t "
-              + "left outer join t.resource as r "
-              + "left outer join r.resourceAllocations as a "
+              + "from Resource as r "
+              + "inner join r.tasks as t "
+              + "inner join t.timeAllocations as ta "
+              + "inner join ta.phase as pp "
+              + "inner join r.resourceAllocations as a "
               + "inner join a.key.project as p "
-              + "left outer join t.timeAllocations as ta "
-              + "where ta.phase.id = :phaseId "
+              + "where " //ta.phase.id = :phaseId
+              + "pp.id = :phaseId "
+              + "and ta.task = t "
+              + "and t.resource = r "
+              + "and r != null "
+              //+ "and a.key.project = p "
               + "group by r "
-              + "order by sum(ta.allocation) desc ").
+              + "order by sum(ta.allocation) desc").
               setParameter("phaseId", phaseId).
               getResultList();
+
+      //System.out.println(assigned);
+/*SELECT * 
+      FROM TASK AS t, RESOURCE AS r, TIME_ALLOCATION AS ta
+      WHERE t.RESOURCE_id = r.id
+      AND ta.task_id = t.id
+      LIMIT 0 , 30*/
 
       // Unassigned tasks
       List<ResourcePhaseStatsEntry> unassigned = em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry(sum(ta.allocation),sum(ta.completed)) "
@@ -169,7 +182,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
          assigned.add(unassigned.get(0));
       }
 
-      System.out.println(assigned);
+      System.out.println("___________" + assigned);
       return assigned;
 
       /* return em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "

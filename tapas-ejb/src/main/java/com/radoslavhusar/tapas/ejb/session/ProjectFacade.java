@@ -60,7 +60,8 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
     */
    @Override
    public ProjectStats tallyProjectStats(long projectId) {
-      ProjectStats result = new ProjectStats(projectId);
+      ProjectStats result = new ProjectStats();
+      result.setProjectId(projectId);
 
       // Get the project
       Project p = this.find(projectId);
@@ -83,12 +84,13 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
 
       Calendar nowButFuture = Calendar.getInstance();
 
-      double projectAllocated = 0;
-      double projectCompleted = 0;
+      double totalAllocated = 0;
+      double totalCompleted = 0;
 
       // Phases must be sorted!!
       Collections.sort(p.getPhases());
 
+      System.out.println("Phases: " + p.getPhases());
       // Calculate estimated times etc.
       for (ProjectPhase pp : p.getPhases()) {
 
@@ -105,11 +107,11 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
          for (ResourcePhaseStatsEntry s : rs) {
             allocated += s.getAllocated();
             completed += s.getCompleted();
-
-            // increase project counters
-            projectAllocated += allocated;
-            projectCompleted += completed;
          }
+
+         // increase project counters
+         totalAllocated += allocated;
+         totalCompleted += completed;
 
          if (pp.getEnded() != null) {
             // Just get PROJECTIONS for UNFINISHED phases.
@@ -136,10 +138,11 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
          result.getProjection().put(phaseId, new PhaseStatsEntry(allocated, completed, nowButFuture.getTime(), slip));
       }
 
-      result.setAllocated(projectAllocated);
-      result.setCompleted(projectCompleted);
+      result.setAllocated(totalAllocated);
+      result.setCompleted(totalCompleted);
 
       //result.setResources(null);
+      System.out.println(result);
       return result;
    }
 
