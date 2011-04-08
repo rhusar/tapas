@@ -7,11 +7,11 @@ import com.google.inject.Singleton;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
-import com.radoslavhusar.tapas.ejb.stats.ResourcePriorityAllocationStats;
+import com.radoslavhusar.tapas.ejb.stats.ResourceAllocationStatsEntry;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.Trait;
 import com.radoslavhusar.tapas.ejb.stats.ProjectStats;
-import com.radoslavhusar.tapas.ejb.stats.ResourceStats;
+import com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry;
 import com.radoslavhusar.tapas.war.client.event.DataReadyEvent;
 import com.radoslavhusar.tapas.war.client.event.DataType;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
@@ -31,11 +31,11 @@ public class ClientState {
    private Long projectId;
    private Project project;
    private List<Resource> resources;
-   private Map<Long, ResourcePriorityAllocationStats> resourceData;
+   private Map<Long, ResourceAllocationStatsEntry> resourceData;
    private List<ResourceGroup> groups;
    private List<Task> tasks;
    private List<Trait> traits;
-   private List<ResourceStats> resourceStats;
+   private Map<Long, List<ResourcePhaseStatsEntry>> resourcePhaseStats;
    private ProjectStats projectStats;
 
    //private volatile int toSync = 3;
@@ -115,11 +115,11 @@ public class ClientState {
       this.groups = groups;
    }
 
-   public Map<Long, ResourcePriorityAllocationStats> getResourceData() {
+   public Map<Long, ResourceAllocationStatsEntry> getResourceData() {
       return resourceData;
    }
 
-   public void setResourceData(Map<Long, ResourcePriorityAllocationStats> resourceData) {
+   public void setResourceData(Map<Long, ResourceAllocationStatsEntry> resourceData) {
       this.resourceData = resourceData;
    }
 
@@ -149,32 +149,32 @@ public class ClientState {
    }
 
    // Resource stats routines
-   public List<ResourceStats> getResourceStats() {
-      return resourceStats;
+   public Map<Long, List<ResourcePhaseStatsEntry>> getResourceStats() {
+      return resourcePhaseStats;
    }
 
-   public void setResourceStats(List<ResourceStats> resourceStats) {
-      this.resourceStats = resourceStats;
+   public void setResourceStats(Map<Long, List<ResourcePhaseStatsEntry>> resourcePhaseStats) {
+      this.resourcePhaseStats = resourcePhaseStats;
    }
 
    public void prepareResourceStats(long phaseId) {
-      service.tallyResourcesStatsForPhase(phaseId, new AsyncCallback<List<ResourceStats>>() {
+      service.tallyResourcePhaseStatsForProject(phaseId, new AsyncCallback<Map<Long, List<ResourcePhaseStatsEntry>>>() {
 
          @Override
          public void onFailure(Throwable caught) {
-            // ...some exception handling
+            // ...some exception handling needed
             throw new UnsupportedOperationException("Not supported yet.");
          }
 
          @Override
-         public void onSuccess(List<ResourceStats> result) {
-            resourceStats = result;
+         public void onSuccess(Map<Long, List<ResourcePhaseStatsEntry>> result) {
+            resourcePhaseStats = result;
             eventBus.fireEvent(new DataReadyEvent(DataType.RESOURCE_STATS));
          }
       });
    }
-
    // Project Stats
+
    public ProjectStats getProjectStats() {
       return projectStats;
    }
@@ -188,6 +188,7 @@ public class ClientState {
 
          @Override
          public void onFailure(Throwable caught) {
+            // ...some exception handling needed
             throw new UnsupportedOperationException("Not supported yet.");
          }
 

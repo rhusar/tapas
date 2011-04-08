@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Used in Hibernate QL, edit with caution! 
  * Parameters need to be synced with the queries.
  */
-public class ResourceStats implements Serializable {
+public class ResourcePhaseStatsEntry implements Serializable {
 
    private Resource resource;
    private double allocated;
@@ -18,7 +18,7 @@ public class ResourceStats implements Serializable {
     * Empty constructor needed by GWT-Gilead! and others.
     * E.g.: http://forums.smartclient.com/showthread.php?t=4966
     */
-   public ResourceStats() {
+   public ResourcePhaseStatsEntry() {
    }
 
    /** 
@@ -27,7 +27,7 @@ public class ResourceStats implements Serializable {
     * @param allocated
     * @param completed 
     */
-   public ResourceStats(double allocated, double completed) {
+   public ResourcePhaseStatsEntry(double allocated, double completed) {
       this.resource = null;
       this.rate = 0;
       this.allocated = allocated;
@@ -42,7 +42,7 @@ public class ResourceStats implements Serializable {
     * @param completed
     * @param rate 
     */
-   public ResourceStats(Resource resource, Double allocated, Double completed, Double rate) {
+   public ResourcePhaseStatsEntry(Resource resource, Double allocated, Double completed, Double rate) {
       this.resource = resource;
       this.allocated = allocated == null ? 0 : allocated;
       this.completed = completed == null ? 0 : completed;

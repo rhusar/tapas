@@ -43,9 +43,9 @@ import com.google.gwt.visualization.client.visualizations.PieChart;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
-import com.radoslavhusar.tapas.ejb.stats.ProjectPhaseStats;
+import com.radoslavhusar.tapas.ejb.stats.PhaseStatsEntry;
 import com.radoslavhusar.tapas.ejb.stats.ProjectStats;
-import com.radoslavhusar.tapas.ejb.stats.ResourceStats;
+import com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
 import com.radoslavhusar.tapas.war.client.app.Constants;
@@ -214,7 +214,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
 
          @Override
          public Date getValue(ProjectPhase phase) {
-            ProjectPhaseStats phaseStats = stats.getProjection().get(phase.getId());
+            PhaseStatsEntry phaseStats = stats.getProjection().get(phase.getId());
 
             if (phaseStats != null) {
                return phaseStats.getProjectedEnd();
@@ -235,7 +235,11 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
          public SafeHtml getValue(ProjectPhase phase) {
             if (phase.getEnded() == null) {
                // Not completed yet
-               ProjectPhaseStats stat = stats.getProjection().get(phase.getId());
+               PhaseStatsEntry stat = stats.getProjection().get(phase.getId());
+
+               if (stat == null) {
+                  return new SafeHtmlCellContent("Internal Error.");
+               }
 
                // Now compare DUE and TARGET time
                if (stat.getProjectedEnd().before(phase.getTargetted())) {
@@ -306,6 +310,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
                   @Override
                   public void onDataReady(DataReadyEvent event) {
                      if (event.getType().equals(DataType.PROJECT_STATS)) {
+                        GWT.log(client.getProjectStats().toString());
                         renderPie();
                      }
                   }
@@ -316,9 +321,6 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
             }
          }
       };
-
-
-
 
 
       // Load the visualization api, passing the onLoadCallback to be called when loading is done.
@@ -445,102 +447,99 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       });
    }
 
-   private Options getOptions() {
+   private Options getOptions(long phaseId) {
       Options options = Options.create();
       options.setWidth(600);
-      options.setHeight(client.getResourceStats().size() * 80);
+      options.setHeight(23 + client.getResourceStats().get(phaseId).size() * 70);
       options.set3D(true);
-      options.setTitle("Phase Progress");
+
+      for (ProjectPhase pp : client.getProject().getPhases()) {
+         if (pp.getId().equals(phaseId)) {
+            options.setTitle(pp.getName() + " Phase Progress");
+            break;
+         }
+      }
+
       return options;
    }
 
-   private DataTable getData() {
+   private DataTable getData(long phaseId) {
 
       DataTable data = DataTable.create();
 
       data.addColumn(ColumnType.STRING, "Resource");
-      //data.addColumn(ColumnType.STRING, "Completed");
       data.addColumn(ColumnType.NUMBER, "Allocated");
       data.addColumn(ColumnType.NUMBER, "Completed");
 
-
-      data.addRows(client.getResourceStats().size());
+      data.addRows(client.getResourceStats().get(phaseId).size());
 
       int i = 0;
-      for (ResourceStats rs : client.getResourceStats()) {
 
+      for (ResourcePhaseStatsEntry rs : client.getResourceStats().get(phaseId)) {
          data.setValue(i, 0, rs.getResource() == null ? "Unassigned" : rs.getResource().getName());
-         //data.setValue(0, 1, "Mountain View");
          data.setValue(i, 1, rs.getAllocated());
          data.setValue(i, 2, rs.getCompleted());
-
 
          i++;
       }
 
-
-      /*data.setValue(0, 0, "Work");
-      data.setValue(0, 1, "Mountain View");
-      data.setValue(0, 2, 10);*/
-
-
-      /*  data.addColumn(ColumnType.STRING, "Task");
-      data.addColumn(ColumnType.STRING, "Location");
-      data.addColumn(ColumnType.NUMBER, "Hours per Day");
-      data.addRows(3);
-      data.setValue(0, 0, "Work");
-      data.setValue(0, 1, "Mountain View");
-      data.setValue(0, 2, 10);
-      data.setValue(1, 0, "Commute");
-      data.setValue(1, 1, "Route 17");
-      data.setValue(1, 2, 4);
-      data.setValue(2, 0, "Sleep");
-      data.setValue(2, 1, "Santa Cruz");
-      data.setValue(2, 2, 10);*/
       return data;
    }
 
    private void renderChartNow() {
-      // Create a pie chart visualization.
-      BarChart chart = new BarChart(getData(), getOptions());
-
-      //pie.addSelectHandler(createSelectHandler(pie));
       vpanel.clear();
-      vpanel.add(chart);
 
+      for (ProjectPhase pp : client.getProject().getPhases()) {
+         long phaseId = pp.getId();
 
+         if (pp.getEnded() != null) {
+            // it already ended, ignore it
+            continue;
+         }
+
+         if (!client.getResourceStats().containsKey(pp.getId())) {
+            vpanel.add(new Label("No data for " + pp.getName() + " loaded."));
+            continue;
+         }
+
+         // Create a pie chart visualization.
+         BarChart chart = new BarChart(getData(phaseId), getOptions(phaseId));
+
+         vpanel.add(chart);
+      }
    }
 
    private void renderPie() {
+      // Data starts
+      ProjectStats rs = client.getProjectStats();
 
+      // text next to the pie
+      pieDays.setText(NumberFormat.getFormat(Constants.ALLOC_FORMAT).format(rs.getRemaining() / rs.getMandayRate()) + "");
+      piePercent.setText(NumberFormat.getPercentFormat().format(rs.getCompleted() / rs.getAllocated()));
+
+      // opts
       PieChart.Options pieOpts = PieChart.Options.create();
       pieOpts.setWidth(300);
       pieOpts.setHeight(300);
       pieOpts.set3D(true);
       pieOpts.setTitle("Project Progress");
 
+      // data
       DataTable data = DataTable.create();
 
       data.addColumn(ColumnType.STRING, "Completion");
       data.addColumn(ColumnType.NUMBER, "Mandays");
-
       data.addRows(2);
-      ProjectStats rs = client.getProjectStats();
 
-      //data.setValue(0, 1, "Mountain View");
       data.setValue(0, 0, "Completed");
       data.setValue(0, 1, rs.getCompleted());
 
       data.setValue(1, 0, "Remaining");
       data.setValue(1, 1, rs.getRemaining());
 
-
       PieChart pie = new PieChart(data, pieOpts);
+
       piePanel.clear();
       piePanel.add(pie);
-      //piePanel.add(new Label(rs.toString()));
-
-      pieDays.setText(NumberFormat.getFormat(Constants.ALLOC_FORMAT).format(rs.getRemaining() / rs.getMandayRate()) + "");
-      piePercent.setText(NumberFormat.getPercentFormat().format(rs.getCompleted() / rs.getAllocated()));
    }
 }

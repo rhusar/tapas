@@ -4,8 +4,8 @@ import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
 import com.radoslavhusar.tapas.ejb.stats.ProjectStats;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
-import com.radoslavhusar.tapas.ejb.stats.ProjectPhaseStats;
-import com.radoslavhusar.tapas.ejb.stats.ResourceStats;
+import com.radoslavhusar.tapas.ejb.stats.PhaseStatsEntry;
+import com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -53,6 +53,8 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
     * Returns days remaining and days remaining on each project phase.
     * <em>Some more things can be done as JDBC query. Move it there.</em>
     * 
+    * For some stupid reason GILEAD doesn't serialize 2 maps in one entity.
+    * 
     * @param projectId
     * @return ProjectStats
     */
@@ -75,8 +77,9 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
 
       // Tax it!
       mandayRate = mandayRate * ((double) 100 - (double) p.getTax()) / (double) 100;
-      //System.out.println("Current rate: " + mandayRate);
       result.setMandayRate(mandayRate);
+      //System.out.println("Current rate: " + mandayRate);
+
 
       Calendar nowButFuture = Calendar.getInstance();
 
@@ -91,29 +94,38 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
 
          long phaseId = pp.getId();
 
-         if (pp.getEnded() != null) {
-            // Just get stats for UNFINISHED phases.
-            continue;
-         }
+         // Get stats for this phase:
+         List<ResourcePhaseStatsEntry> rs = resourceBean.tallyResourcesStatsForPhase(phaseId);
+         //result.getResources().put(phaseId, rs);
 
          double allocated = 0;
          double completed = 0;
          double maxMandaysRemaining = 0;
 
-         // Get stats for this phase:
-         List<ResourceStats> rs = resourceBean.tallyResourcesStatsForPhase(phaseId);
-
-         for (ResourceStats s : rs) {
+         for (ResourcePhaseStatsEntry s : rs) {
             allocated += s.getAllocated();
             completed += s.getCompleted();
-            //System.out.println("res stats: " + s);
-            maxMandaysRemaining = Math.max(maxMandaysRemaining, (allocated - completed) / s.getRate());
-            //System.out.println("maxMandaysRemaining: " + maxMandaysRemaining);
+
+            // increase project counters
+            projectAllocated += allocated;
+            projectCompleted += completed;
+         }
+
+         if (pp.getEnded() != null) {
+            // Just get PROJECTIONS for UNFINISHED phases.
+            continue;
+         }
+
+         // Calculate predicion
+         for (ResourcePhaseStatsEntry s : rs) {
+            if (s.getResource() != null) {
+               //if (s.getRate() > 0) {
+               maxMandaysRemaining = Math.max(maxMandaysRemaining, (allocated - completed) / s.getRate());
+            }
          }
 
          // All data is gathered, create an estimate now. 
-         int mandaysRemaining = Math.round((float) Math.ceil(maxMandaysRemaining * 7 / 5));
-         //System.out.println("maxMandaysRemaining of week: " + mandaysRemaining);
+         int mandaysRemaining = Math.round((float) Math.ceil(maxMandaysRemaining * (double) 7 / (double) 5));
 
          nowButFuture.add(Calendar.DATE, mandaysRemaining);
 
@@ -121,16 +133,13 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
          int slip = (int) ((nowButFuture.getTime().getTime() - pp.getTargetted().getTime()) / (24 * 60 * 60 * 1000));
 
          // This wouldnt reflect assignment to each people :-/ Estimated date = Now + ( allocated-completed / mandayRate )
-         result.getProjection().put(phaseId, new ProjectPhaseStats(allocated, completed, nowButFuture.getTime(), slip));
-
-         // increase project counters
-         projectAllocated += allocated;
-         projectCompleted += completed;
+         result.getProjection().put(phaseId, new PhaseStatsEntry(allocated, completed, nowButFuture.getTime(), slip));
       }
 
       result.setAllocated(projectAllocated);
       result.setCompleted(projectCompleted);
 
+      //result.setResources(null);
       return result;
    }
 

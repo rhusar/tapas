@@ -2,7 +2,7 @@ package com.radoslavhusar.tapas.ejb.stats;
 
 import java.io.Serializable;
 
-public class ResourcePriorityAllocationStats implements Serializable {
+public class ResourceAllocationStatsEntry implements Serializable {
 
    private long resourceId;
    private long projectId;
@@ -19,15 +19,15 @@ public class ResourcePriorityAllocationStats implements Serializable {
     * Empty constructor needed by GWT-Gilead!
     * E.g.: http://forums.smartclient.com/showthread.php?t=4966
     */
-   public ResourcePriorityAllocationStats() {
+   public ResourceAllocationStatsEntry() {
    }
 
-   public ResourcePriorityAllocationStats(long resourceId, long projectId) {
+   public ResourceAllocationStatsEntry(long resourceId, long projectId) {
       this.resourceId = resourceId;
       this.projectId = projectId;
    }
 
-   public ResourcePriorityAllocationStats(long resourceId, long projectId, double p1Allocation, double p1Completed, double p2Allocation, double p2Completed, double p3Allocation, double p3Completed, double tbdAllocation, double tbdCompleted) {
+   public ResourceAllocationStatsEntry(long resourceId, long projectId, double p1Allocation, double p1Completed, double p2Allocation, double p2Completed, double p3Allocation, double p3Completed, double tbdAllocation, double tbdCompleted) {
       this.resourceId = resourceId;
       this.projectId = projectId;
       this.p1Allocation = p1Allocation;

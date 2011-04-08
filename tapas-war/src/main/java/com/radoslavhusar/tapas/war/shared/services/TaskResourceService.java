@@ -5,11 +5,11 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceGroup;
-import com.radoslavhusar.tapas.ejb.stats.ResourcePriorityAllocationStats;
+import com.radoslavhusar.tapas.ejb.stats.ResourceAllocationStatsEntry;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.Trait;
 import com.radoslavhusar.tapas.ejb.stats.ProjectStats;
-import com.radoslavhusar.tapas.ejb.stats.ResourceStats;
+import com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +27,8 @@ public interface TaskResourceService extends RemoteService {
    Long createProject(Project project);
 
    ProjectStats tallyProjectStats(long projectId);
+
+   Map<Long, List<ResourcePhaseStatsEntry>> tallyResourcePhaseStatsForProject(long projectId);
 
    // Trait
    List<Trait> findAllTraits();
@@ -53,9 +55,7 @@ public interface TaskResourceService extends RemoteService {
 
    void editResourcesForProject(long projectId, Collection<Resource> resources);
 
-   List<ResourceStats> tallyResourcesStatsForPhase(long phaseId);
-
-   Map<Long, ResourcePriorityAllocationStats> tallyResourceStatsForProject(long projectId);
+   Map<Long, ResourceAllocationStatsEntry> tallyResourceStatsForProject(long projectId);
 
    // Group
    List<ResourceGroup> findAllGroups();

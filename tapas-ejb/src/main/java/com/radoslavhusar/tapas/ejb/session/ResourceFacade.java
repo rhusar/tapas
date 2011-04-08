@@ -2,10 +2,10 @@ package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation;
-import com.radoslavhusar.tapas.ejb.stats.ResourcePriorityAllocationStats;
+import com.radoslavhusar.tapas.ejb.stats.ResourceAllocationStatsEntry;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
-import com.radoslavhusar.tapas.ejb.stats.ResourceStats;
+import com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Local;
@@ -16,19 +16,19 @@ import javax.persistence.PersistenceContext;
 @Stateless
 @Local(ResourceFacadeLocal.class)
 public class ResourceFacade extends AbstractFacade<Resource> implements ResourceFacadeLocal {
-   
+
    @PersistenceContext
    private EntityManager em;
-   
+
    @Override
    protected EntityManager getEntityManager() {
       return em;
    }
-   
+
    public ResourceFacade() {
       super(Resource.class);
    }
-   
+
    @Override
    public void editOrCreate(Resource entity) {
       if (entity.getId() == null) {
@@ -37,7 +37,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
          edit(entity);
       }
    }
-   
+
    @Override
    public List<Resource> findAllForProject(long projectId) {
       // Do an inner join - fetch only assigned to the project.
@@ -59,7 +59,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
          // http://opensource.atlassian.com/projects/hibernate/browse/HHH-2980
          res.getTraits().size();
       }
-      
+
       return result;
    }
 
@@ -70,7 +70,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
     * @return array of P1 Ass, P1 Done, P2 Ass, P2 Done, P3 Ass, P3 Done, PX Ass, PX Done
     */
    @Override
-   public ResourcePriorityAllocationStats tallyResourceStatsForProject(long resourceId, long projectId) {
+   public ResourceAllocationStatsEntry tallyResourceStatsForProject(long resourceId, long projectId) {
       // TODO: get this to work, aggregate via Hibernate
 //       List l = getEntityManager().
 //              createQuery("select sum(a.timeAllocation) from " + Resource.class.getSimpleName() + " as o "
@@ -103,10 +103,10 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
             }
          }
       }
-      
-      ResourcePriorityAllocationStats ras = new ResourcePriorityAllocationStats(resourceId, projectId, result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7]);
+
+      ResourceAllocationStatsEntry ras = new ResourceAllocationStatsEntry(resourceId, projectId, result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7]);
       System.out.println(ras.toString());
-      
+
       return ras;
    }
 
@@ -127,25 +127,12 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
          // http://opensource.atlassian.com/projects/hibernate/browse/HHH-2980
          res.getTraits().size();
       }
-      
+
       return result;
    }
 
-   /*@Override
-   public List<ResourceStats> tallyResourcesStatsForProject(long projectId) {
-   return em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourceStats(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
-   + "from Resource as r "
-   + "inner join r.resourceAllocations as a "
-   + "inner join a.key.project as p "
-   + "left outer join r.tasks as t "
-   + "left outer join t.timeAllocations as ta "
-   + "where p.id = :projectid "
-   + "group by r").
-   setParameter("projectid", projectId).
-   getResultList();
-   }*/
    /**
-    * We WANT the outer join so we get their manday rate even if they have no tasks yet.
+    * We WANT the outer join so we get their man day rate even if they have no tasks yet.
     * 
     * This ignores the unassigned tasks.
     * 
@@ -153,8 +140,39 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
     * @return 
     */
    @Override
-   public List<ResourceStats> tallyResourcesStatsForPhase(long phaseId) {
-      /*      return em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourceStats(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
+   public List<ResourcePhaseStatsEntry> tallyResourcesStatsForPhase(long phaseId) {
+      // Assigned tasks
+      List<ResourcePhaseStatsEntry> assigned = em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
+              + "from Task as t "
+              + "left outer join t.resource as r "
+              + "left outer join r.resourceAllocations as a "
+              + "inner join a.key.project as p "
+              + "left outer join t.timeAllocations as ta "
+              + "where ta.phase.id = :phaseId "
+              + "group by r "
+              + "order by sum(ta.allocation) desc ").
+              setParameter("phaseId", phaseId).
+              getResultList();
+
+      // Unassigned tasks
+      List<ResourcePhaseStatsEntry> unassigned = em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry(sum(ta.allocation),sum(ta.completed)) "
+              + "from Task as t "
+              + "left outer join t.timeAllocations as ta "
+              + "where ta.phase.id = :phaseId "
+              + "and t.resource = NULL "
+              + "group by ta.phase.id").
+              setParameter("phaseId", phaseId).
+              getResultList();
+
+      // Combine (if any unassigned)
+      if (unassigned.size() == 1) {
+         assigned.add(unassigned.get(0));
+      }
+
+      System.out.println(assigned);
+      return assigned;
+
+      /* return em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
       + "from Resource as r "
       + "inner join r.resourceAllocations as a "
       + "inner join a.key.project as p "
@@ -165,34 +183,18 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
       + "group by r").
       setParameter("phaseId", phaseId).
       getResultList();*/
-
-      // Assigned tasks
-      List<ResourceStats> assigned = em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourceStats(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
-              + "from Task as t "
-              + "left outer join t.resource as r "
-              + "left outer join r.resourceAllocations as a "
-              + "inner join a.key.project as p "
-              + "left outer join t.timeAllocations as ta "
-              + "where ta.phase.id = :phaseId "
-              + "group by r").
-              setParameter("phaseId", phaseId).
-              getResultList();
-
-      // Unassigned
-      List<ResourceStats> unassigned = em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourceStats(sum(ta.allocation),sum(ta.completed)) "
-              + "from Task as t "
-              + "left outer join t.timeAllocations as ta "
-              + "where ta.phase.id = :phaseId "
-              + "and t.resource = NULL "
-              + "group by ta.phase.id").
-              setParameter("phaseId", phaseId).
-              getResultList();
-      
-      if (unassigned.size() == 1) {
-         assigned.add(unassigned.get(0));
-      }
-      
-      System.out.println(assigned);
-      return assigned;
    }
+   /*@Override
+   public List<ResourceStats> tallyResourcesStatsForProject(long projectId) {
+   return em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
+   + "from Resource as r "
+   + "inner join r.resourceAllocations as a "
+   + "inner join a.key.project as p "
+   + "left outer join r.tasks as t "
+   + "left outer join t.timeAllocations as ta "
+   + "where p.id = :projectid "
+   + "group by r").
+   setParameter("projectid", projectId).
+   getResultList();
+   }*/
 }

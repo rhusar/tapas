@@ -1,8 +1,8 @@
 package com.radoslavhusar.tapas.ejb.session;
 
 import com.radoslavhusar.tapas.ejb.entity.Resource;
-import com.radoslavhusar.tapas.ejb.stats.ResourcePriorityAllocationStats;
-import com.radoslavhusar.tapas.ejb.stats.ResourceStats;
+import com.radoslavhusar.tapas.ejb.stats.ResourceAllocationStatsEntry;
+import com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry;
 import java.util.List;
 
 public interface ResourceFacadeLocal {
@@ -35,14 +35,13 @@ public interface ResourceFacadeLocal {
 
    List<Resource> findAllNotOnProject(long projectId);
 
-   ResourcePriorityAllocationStats tallyResourceStatsForProject(long resourceId, long projectId);
+   ResourceAllocationStatsEntry tallyResourceStatsForProject(long resourceId, long projectId);
 
    /**
     * Contains resource, allocated, completed
     * 
     * @param phaseId 
-    * @return ResourceStats list
+    * @return ResourcePhaseStatsEntry list
     */
-   //List<ResourceStats> tallyResourcesStatsForProject(long projectId);
-   List<ResourceStats> tallyResourcesStatsForPhase(long phaseId);
+   List<ResourcePhaseStatsEntry> tallyResourcesStatsForPhase(long phaseId);
 }

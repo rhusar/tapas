@@ -8,7 +8,7 @@ import java.util.Date;
  * 
  * @author rhusar
  */
-public class ProjectPhaseStats implements Serializable {
+public class PhaseStatsEntry implements Serializable {
 
    private Date projectedEnd;
    private int slip;
@@ -20,7 +20,7 @@ public class ProjectPhaseStats implements Serializable {
     * Empty constructor needed by GWT-Gilead!
     * For instance http://forums.smartclient.com/showthread.php?t=4966
     */
-   public ProjectPhaseStats() {
+   public PhaseStatsEntry() {
    }
 
    /**
@@ -30,7 +30,7 @@ public class ProjectPhaseStats implements Serializable {
     * @param projectedEnd
     * @param slip 
     */
-   public ProjectPhaseStats(double assigned, double completed, Date projectedEnd, int slip) {
+   public PhaseStatsEntry(double assigned, double completed, Date projectedEnd, int slip) {
       this.projectedEnd = projectedEnd;
       this.slip = slip;
       this.completed = completed;

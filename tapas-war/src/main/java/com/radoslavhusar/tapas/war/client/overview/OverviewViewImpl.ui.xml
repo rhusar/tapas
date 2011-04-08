@@ -23,63 +23,65 @@
 <!--            <g:DockLayoutPanel unit='PCT' height="100%" styleName='{style.outer}'>
 
                <g:center size='100'>-->
-               <g:HorizontalPanel height="100%" width="100%">
-                  <g:HTMLPanel styleName='{style.left}' >
-                     <p>
-                        <h2>Project Properties</h2>
-                        <strong>Today is</strong>
-                        <g:Label ui:field='propToday'>Loading...</g:Label>
-                        <br/>
-                        <strong>Project Start Date</strong>
-                        <g:Label ui:field='propStart'>Loading...</g:Label>
-                        <strong>Project Target Date</strong>
-                        <g:Label ui:field='propTarget'>Loading...</g:Label>
-                        <br/>
-                        <strong>Days remaining</strong>
-                        <g:Label ui:field='propDays'>Loading...</g:Label>
-                     </p>
+            <g:HorizontalPanel height="100%" width="100%">
+               <g:HTMLPanel styleName='{style.left}' >
+                  <p>
+                     <h2>Project Properties</h2>
+                     <strong>Today is</strong>
+                     <g:Label ui:field='propToday'>Loading...</g:Label>
+                     <br/>
+                     <strong>Project Start Date</strong>
+                     <g:Label ui:field='propStart'>Loading...</g:Label>
+                     <strong>Project Target Date</strong>
+                     <g:Label ui:field='propTarget'>Loading...</g:Label>
+                     <br/>
+                     <strong>Days remaining</strong>
+                     <g:Label ui:field='propDays'>Loading...</g:Label>
+                  </p>
                   
-                     <g:HorizontalPanel>
+                  <g:HorizontalPanel>
                         
-                        <g:VerticalPanel width="50%" horizontalAlignment="ALIGN_CENTER">
-                           <g:Label ui:field="piePercent"  styleName='{style.percent}' >Loading...</g:Label>
-                           <g:Label>completed</g:Label>
-                           <g:Label>&nbsp;</g:Label>
-                           <g:Label>&nbsp;</g:Label>
-                           <g:Label ui:field="pieDays" styleName='{style.percent}'>Loading...</g:Label>
-                           <g:Label>remaining raw days to completion (at optimal distribution)</g:Label>
-                        </g:VerticalPanel>
+                     <g:VerticalPanel width="50%" horizontalAlignment="ALIGN_CENTER">
+                        <g:Label ui:field="piePercent"  styleName='{style.percent}' >Loading...</g:Label>
+                        <g:Label>completed</g:Label>
+                        <g:Label>&nbsp;</g:Label>
+                        <g:Label>&nbsp;</g:Label>
+                        <g:Label ui:field="pieDays" styleName='{style.percent}'>Loading...</g:Label>
+                        <g:Label>remaining raw days to completion (at optimal distribution)</g:Label>
+                     </g:VerticalPanel>
                         
-                        <g:VerticalPanel width="50%" ui:field="piePanel">
-                           <g:Label>Loading...</g:Label>
-                        </g:VerticalPanel> 
+                     <g:VerticalPanel width="50%" ui:field="piePanel">
+                        <g:Label>Loading...</g:Label>
+                     </g:VerticalPanel> 
                         
-                     </g:HorizontalPanel>
+                  </g:HorizontalPanel>
                      
                      
                      <!--
                   
--->                  </g:HTMLPanel> <!--
+-->                  
+               </g:HTMLPanel> <!--
                </g:center>
                
                <g:east size="50">
                 
--->                  <g:HTMLPanel styleName='{style.left}'  >
-                     <h2>Project Phases</h2>
-                     <p>Only tasks which are assigned are counted into estimations.</p>
+-->                  
+               <g:HTMLPanel styleName='{style.left}'  >
+                  <h2>Project Phases</h2>
+                  <p>Only tasks which are assigned are counted into estimations.</p>
                   
-                     <c:CellTable ui:field='phases'  styleName='{style.table}' />
-                     <g:Anchor ui:field='phaseAdd'>+ New</g:Anchor> |
-                     <g:Anchor ui:field='phaseRemove'>Remove</g:Anchor> |
-                     <g:Anchor ui:field='phaseSave'>Save</g:Anchor>
+                  <c:CellTable ui:field='phases'  styleName='{style.table}' />
+                  <g:Anchor ui:field='phaseAdd'>+ New</g:Anchor> |
+                  <g:Anchor ui:field='phaseRemove'>Remove</g:Anchor> |
+                  <g:Anchor ui:field='phaseSave'>Save</g:Anchor>
                      <!-- Seems to work with a workaround now <i>Known bug: dates are not re-rendered after change.</i> -->
                   
-                     <h2>Phase Stats</h2>
-                     <g:VerticalPanel ui:field="vpanel">
-                        <g:Label>Loading...</g:Label>
-                     </g:VerticalPanel>
+                  <h2>Phase Stats</h2>
+                  <g:VerticalPanel ui:field="vpanel">
+                     <g:Label>Loading...</g:Label>
+                  </g:VerticalPanel>
                   
-                  </g:HTMLPanel>
+               </g:HTMLPanel>
         
 <!--               </g:east>
     

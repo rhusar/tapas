@@ -2,6 +2,7 @@ package com.radoslavhusar.tapas.ejb.stats;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ProjectStats implements Serializable {
@@ -11,7 +12,8 @@ public class ProjectStats implements Serializable {
    private double allocated;
    // Public structure actually
    // TODO: how to sort?
-   private Map<Long, ProjectPhaseStats> projection = new HashMap<Long, ProjectPhaseStats>();
+   private Map<Long, PhaseStatsEntry> projection = new HashMap<Long, PhaseStatsEntry>();
+   /* For some stupid reason GILEAD doesn't serialize 2 maps in one entity. private Map<Long, List<ResourceStats>> resources = new HashMap<Long, List<ResourceStats>>();*/
    private double mandayRate;
 
    /**
@@ -25,13 +27,19 @@ public class ProjectStats implements Serializable {
       this.projectId = projectId;
    }
 
-   public Map<Long, ProjectPhaseStats> getProjection() {
+   public Map<Long, PhaseStatsEntry> getProjection() {
       return projection;
    }
 
-   /* public void setProjectionEntry(Long phaseId, ProjectPhaseStats data) {
+   public void setProjection(Map<Long, PhaseStatsEntry> projection) {
+      this.projection = projection;
+   }
+
+   /* 
+   public void setProjectionEntry(Long phaseId, PhaseStatsEntry data) {
    projection.put(phaseId, data);
-   }*/
+   }
+    */
    public long getProjectId() {
       return projectId;
    }
@@ -68,6 +76,13 @@ public class ProjectStats implements Serializable {
       this.mandayRate = mandayRate;
    }
 
+   /*public Map<Long, List<ResourceStats>> getResources() {
+   return resources;
+   }
+   
+   public void setResources(Map<Long, List<ResourceStats>> resources) {
+   this.resources = resources;
+   }*/
    @Override
    public String toString() {
       return "ProjectStats{" + "projectId=" + projectId + ", completed=" + completed + ", allocated=" + allocated + ", projection=" + projection + ", mandayRate=" + mandayRate + '}';
