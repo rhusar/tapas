@@ -45,6 +45,7 @@ public class PlanningViewImpl extends ResizeComposite implements PlanningView {
    }
 
    // UI routines
+   @Override
    public void bind() {
       menu.add(Application.getInjector().getMenuView());
       status.add(Application.getInjector().getStatusView());

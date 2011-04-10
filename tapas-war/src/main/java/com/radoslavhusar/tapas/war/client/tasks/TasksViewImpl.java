@@ -111,17 +111,20 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
 
                display.setRowCount(filteredlist.size());
                display.setRowData(0, filteredlist);
-               GWT.log("Filtered by " + filter.getText() + ".");
+               GWT.log("Filtered tasks by " + filter.getText() + ".");
             }
          }
       };
       tasks = new CellTable<Task>(provider);
 
+      // Must be done after cell table is instantiated manuall.
       initWidget(binder.createAndBindUi(this));
-      GWT.log("New TasksViewImpl created.");
+
+      GWT.log("TasksViewImpl created.");
    }
 
    // UI routines
+   @Override
    public void bind() {
       menu.add(Application.getInjector().getMenuView());
       status.add(Application.getInjector().getStatusView());
@@ -131,8 +134,14 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       addTask.setEnabled(false);
       saveTasks.setEnabled(false);
 
-      // cleanup
-      changed.clear();
+      // cleanup - dont do this, this reflects the current state, you can come back from another view.
+      // changed.clear();
+
+      // TODO: Find a better way. Replace the table:
+      int cols = tasks.getColumnCount();
+      for (int i = 0; i < cols; i++) {
+         tasks.removeColumn(0);
+      }
 
       if (client.getProjectId() == null) {
          // no project selected, ignore that all
@@ -220,6 +229,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       }
    }
 
+   @Override
    public void unbind() {
       menu.clear();
       status.clear();

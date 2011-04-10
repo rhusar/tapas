@@ -47,7 +47,7 @@
                         <g:Label>&nbsp;</g:Label>
                         <g:Label>&nbsp;</g:Label>
                         <g:Label ui:field="pieDays" styleName='{style.percent}'>Loading...</g:Label>
-                        <g:Label>remaining raw days to completion (at optimal distribution)</g:Label>
+                        <g:Label>remaining raw days to completion (at optimal allocation)</g:Label>
                      </g:VerticalPanel>
                         
                      <g:VerticalPanel width="50%" ui:field="piePanel">

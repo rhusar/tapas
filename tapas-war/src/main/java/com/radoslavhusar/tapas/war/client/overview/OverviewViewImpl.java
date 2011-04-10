@@ -120,7 +120,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
          }
       };
 
-      phases.addColumn(idCol, "ID");
+      phases.addColumn(idCol, "DebugID");
       phases.setColumnWidth(idCol, 2, Unit.EM);
 
       // Name
@@ -213,6 +213,10 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
 
          @Override
          public Date getValue(ProjectPhase phase) {
+            /*if (stats.getProjection() == null || stats.getProjection().get(phase.getId()) == null) {
+            return null;
+            }*/
+
             PhaseStatsEntry phaseStats = stats.getProjection().get(phase.getId());
 
             if (phaseStats != null) {
@@ -246,15 +250,15 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
                   return new SafeHtmlCellContent("<span style='color:green;'>On time.</span>");
                } else {
                   // its after :-(
-                  return new SafeHtmlCellContent("<span style='color:red;'>Slipping by " + stat.getSlip() + " days!</span>");
+                  return new SafeHtmlCellContent("<span style='color:red;'>Slipping</br>by " + stat.getSlip() + " days</span>");
                }
             } else {
                // Completed already.
 
                if (phase.getEnded().before(phase.getTargetted()) || phase.getEnded().equals(phase.getTargetted())) {
-                  return new SafeHtmlCellContent("<span style='color:green;'>Completed on time.</span>");
+                  return new SafeHtmlCellContent("<span style='color:green;'>Completed</br>on time</span>");
                } else {
-                  return new SafeHtmlCellContent("<span style='color:green;'>Completed with slip.</span>");
+                  return new SafeHtmlCellContent("<span style='color:green;'>Completed</br>with slip</span>");
                }
             }
          }
@@ -269,6 +273,36 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       phases.setPageSize(Integer.MAX_VALUE - 1);
 
       initWidget(binder.createAndBindUi(this));
+
+      /** TODO: Template this **/
+      projectName.addClickHandler(new ClickHandler() {
+
+         @Override
+         public void onClick(ClickEvent event) {
+            final DecoratedPopupPanel simplePopup = new DecoratedPopupPanel(true);
+            simplePopup.setWidth("150px");
+            final TextBox box = new TextBox();
+            box.setText(projectName.getText());
+            box.addKeyUpHandler(new KeyUpHandler() {
+
+               @Override
+               public void onKeyUp(KeyUpEvent event) {
+                  if (event.getNativeKeyCode() == 13) {
+                     project.setName(box.getText());
+                     projectName.setText(box.getText());
+                     simplePopup.hide();
+                  }
+               }
+            });
+            simplePopup.setWidget(box);
+            simplePopup.show();
+            box.setFocus(true);
+            Widget source = (Widget) event.getSource();
+            int left = source.getAbsoluteLeft() + 10;
+            int top = source.getAbsoluteTop() + 10;
+            simplePopup.setPopupPosition(left, top);
+         }
+      });
    }
 
    // UI routines
@@ -309,8 +343,9 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
                   @Override
                   public void onDataReady(DataReadyEvent event) {
                      if (event.getType().equals(DataType.PROJECT_STATS)) {
-                        GWT.log(client.getProjectStats().toString());
+                        stats = client.getProjectStats();
                         renderPie();
+                        renderPhasesTable();
                      }
                   }
                });
@@ -327,26 +362,24 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
 
       project = client.getProject();
 
-      service.tallyProjectStats(client.getProjectId(), new AsyncCallback<ProjectStats>() {
-
-         @Override
-         public void onFailure(Throwable caught) {
-            throw new UnsupportedOperationException("Not supported yet.");
-         }
-
-         @Override
-         public void onSuccess(ProjectStats result) {
-            // get the result somewhere
-            stats = result;
-
-            phases.setRowData(project.getPhases());
-         }
-      });
-
       if (project == null) {
-         return;
-      }
+         bus.addHandler(DataReadyEvent.TYPE, new DataReadyEventHandler() {
 
+            @Override
+            public void onDataReady(DataReadyEvent event) {
+               if (event.getType().equals(DataType.PROJECT)) {
+                  project = client.getProject();
+                  renderProjectInfo();
+               }
+            }
+         });
+         client.prepareProject();
+      } else {
+         renderProjectInfo();
+      }
+   }
+
+   private void renderProjectInfo() {
       // Set the properties
       propToday.setText(dateFormat.format(new Date()));
       propStart.setText(dateFormat.format(project.getStartDate()));
@@ -357,40 +390,20 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
 
       // Set the phases
       projectName.setText(project.getName());
-      projectName.addClickHandler(new ClickHandler() {
 
-         @Override
-         public void onClick(ClickEvent event) {
-            final DecoratedPopupPanel simplePopup = new DecoratedPopupPanel(true);
-            simplePopup.setWidth("150px");
-            final TextBox box = new TextBox();
-            box.setText(projectName.getText());
-            box.addKeyUpHandler(new KeyUpHandler() {
+      renderPhasesTable();
+   }
 
-               @Override
-               public void onKeyUp(KeyUpEvent event) {
-                  if (event.getNativeKeyCode() == 13) {
-                     project.setName(box.getText());
-                     projectName.setText(box.getText());
-                     simplePopup.hide();
-                  }
-               }
-            });
-            simplePopup.setWidget(box);
-            simplePopup.show();
-            box.setFocus(true);
-            Widget source = (Widget) event.getSource();
-            int left = source.getAbsoluteLeft() + 10;
-            int top = source.getAbsoluteTop() + 10;
-            simplePopup.setPopupPosition(left, top);
-         }
-      });
-
-      if (project.getPhases() == null) {
-         phases.setRowCount(0);
+   /**
+    * This needs both stats data and project data to be loaded.
+    */
+   private void renderPhasesTable() {
+      if (project.getPhases() == null || project == null || client.getProjectStats() == null) {
+         // Do nothing... wait for another sync
+         // phases.setRowCount(0);
       } else {
          Collections.sort(project.getPhases());
-         // moved up: phases.setRowData(project.getPhases());
+         phases.setRowData(project.getPhases());
       }
    }
 
@@ -506,6 +519,8 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
             vpanel.add(new Label("No allocations for " + pp.getName() + "."));
             continue;
          }
+
+         vpanel.add(new Label("" + pp.getName()));
 
          // Create a pie chart visualization.
          BarChart chart = new BarChart(getData(phaseId), getOptions(phaseId));

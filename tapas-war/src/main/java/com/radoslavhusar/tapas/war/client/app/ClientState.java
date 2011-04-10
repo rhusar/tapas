@@ -62,20 +62,8 @@ public class ClientState {
       //resourceAllocations = null;
       resources = null;
 
-      // Start prefilling the cache
-      service.findProject(projectId, new AsyncCallback<Project>() {
+      this.prepareProject();
 
-         @Override
-         public void onFailure(Throwable caught) {
-            throw new UnsupportedOperationException("Not supported yet.");
-         }
-
-         @Override
-         public void onSuccess(Project result) {
-            project = result;
-            eventBus.fireEvent(new DataReadyEvent(DataType.PROJECT));
-         }
-      });
       service.findAllGroups(new AsyncCallback<List<ResourceGroup>>() {
 
          @Override
@@ -102,10 +90,6 @@ public class ClientState {
             eventBus.fireEvent(new DataReadyEvent(DataType.TRAITS));
          }
       });
-   }
-
-   public Project getProject() {
-      return project;
    }
 
    public List<ResourceGroup> getGroups() {
@@ -149,6 +133,29 @@ public class ClientState {
       this.traits = traits;
    }
 
+   // Project itself routines
+   public Project getProject() {
+      return project;
+   }
+
+   public void prepareProject() {
+      // Start prefilling the cache
+      service.findProject(projectId, new AsyncCallback<Project>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(Project result) {
+            project = result;
+            GWT.log("Project ready: " + result);
+            eventBus.fireEvent(new DataReadyEvent(DataType.PROJECT));
+         }
+      });
+   }
+
    // Resource stats routines
    public Map<Long, List<ResourcePhaseStatsEntry>> getResourceStats() {
       return resourcePhaseStats;
@@ -175,8 +182,8 @@ public class ClientState {
          }
       });
    }
-   // Project Stats
 
+   // Project Stats
    public ProjectStats getProjectStats() {
       return projectStats;
    }

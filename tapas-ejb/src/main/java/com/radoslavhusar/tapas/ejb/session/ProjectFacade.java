@@ -107,6 +107,12 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
          for (ResourcePhaseStatsEntry s : rs) {
             allocated += s.getAllocated();
             completed += s.getCompleted();
+
+            // Calculate predicion
+            if (pp.getEnded() == null && s.getResource() != null) {
+               //if (s.getRate() > 0) {
+               maxMandaysRemaining = Math.max(maxMandaysRemaining, (s.getAllocated() - s.getCompleted() ) / s.getRate());
+            }
          }
 
          // increase project counters
@@ -118,13 +124,6 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
             continue;
          }
 
-         // Calculate predicion
-         for (ResourcePhaseStatsEntry s : rs) {
-            if (s.getResource() != null) {
-               //if (s.getRate() > 0) {
-               maxMandaysRemaining = Math.max(maxMandaysRemaining, (allocated - completed) / s.getRate());
-            }
-         }
 
          // All data is gathered, create an estimate now. 
          int mandaysRemaining = Math.round((float) Math.ceil(maxMandaysRemaining * (double) 7 / (double) 5));
