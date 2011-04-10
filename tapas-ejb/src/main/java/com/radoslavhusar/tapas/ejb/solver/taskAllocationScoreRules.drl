@@ -6,8 +6,16 @@ import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalcul
 import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
-import com.radoslavhusar.tapas.ejb.entity.Task
+import com.radoslavhusar.tapas.ejb.entity.Project
+import com.radoslavhusar.tapas.ejb.entity.ProjectPhase
 import com.radoslavhusar.tapas.ejb.entity.Resource
+import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation
+import com.radoslavhusar.tapas.ejb.entity.ResourceGroup
+import com.radoslavhusar.tapas.ejb.entity.Task
+import com.radoslavhusar.tapas.ejb.entity.TaskStatus
+import com.radoslavhusar.tapas.ejb.entity.TimeAllocation
+import com.radoslavhusar.tapas.ejb.entity.Trait
+
 
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
@@ -15,56 +23,62 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 // Hard constraints
 // ############################################################################ intValue != 0 $totalUnassigned.intValue()
 
-/*rule "oneShiftPerDay"
-    when
-        $leftAssignment : Task($leftId : id, $resource : resource)
-        $rightAssignment : Task(id > $leftId, resource == $resource)
-    then
-        insertLogical(new IntConstraintOccurrence("oneShiftPerDay", ConstraintType.NEGATIVE_HARD,
-                1,
-                $leftAssignment, $rightAssignment));
-end*/
-
-rule "insertEmployeeAssignmentTotal"
+// Inserts 1 negative hard for each unassigned task.
+rule "insertAllTasksAreAssigned"
         salience 1 // Do these rules first (optional, for performance)
     when
        $task : Task(resource == null)
-    
-       /* $assignmentTotal : Number(intValue > 0) from accumulate(
-            count($task)
-        ) */
     then
-        insertLogical(new IntConstraintOccurrence("insertEmployeeAssignmentTotal",
+        insertLogical(new IntConstraintOccurrence("insertAllTasksAreAssigned",
         ConstraintType.NEGATIVE_HARD, 
-        1, $task));
+        100, $task));
 end
 
-/*
-How much is allocated compared to what the load on the project is.
-rule "insertAssignmentLoadTotal"
-        salience 1 // Do these rules first (optional, improves performance)
+
+// Inserts 10 negative hard for each task which is assigned to person without the required trait
+rule "insertRequiredTraitsAreProvided"
+        salience 1 // Do these rules first (optional, for performance)
     when
-       $resource : Resource() // Take all resources on the project
-       $task : Task(resource == $resource) // And his current tasks
-    
-       // Sum total allocation on total:
-       $assignmentTotal : Number(intValue > 0) from accumulate(
-            sum($task.allocation.Time)
-        )
-
-        // And divide by allocation on project + load
-        $final : Number() from ... {$assignmentTotal}
+		$task : Task( $trait : requiredTrait)
+		
+		$resource : Resource(traits not contains $trait) from $task.resource
+		
+		//$resource.traits not contains $trait
     then
-        insertLogical(new IntConstraintOccurrence("insertAssignmentLoadTotal",
+        insertLogical(new IntConstraintOccurrence("insertRequiredTraitsAreProvided",
         ConstraintType.NEGATIVE_HARD, 
-        1, $task));
+        1, $task, $resource));
 end
-*/
-
 
 // ############################################################################
 // Soft constraints
 // ############################################################################
+
+//How much is allocated compared to what the load on the project is.
+rule "insertAssignmentLoadTotal"
+		salience 1 // Do these rules first (optional, improves performance)
+	when
+		// Take all resources on the project
+		$resource : Resource()
+		
+		// And its current tasks
+		$task : Task(resource == $resource) 
+    
+		// Sum total allocation on total
+		$remaining : Number(intValue > 0)
+			from accumulate(
+				TimeAllocation($allocation : allocation, $completed : completed) from $task.timeAllocations,
+				sum($allocation - $completed)
+			)
+
+        // And divide by allocation on project + load - manday rate
+        //$rate : Number() from ... {$assignmentTotal}
+    then
+        insertLogical(new IntConstraintOccurrence("insertAssignmentLoadTotal",
+        ConstraintType.NEGATIVE_SOFT, 
+        $remaining, 
+        $task));
+end
 
 // ############################################################################
 // Calculate score
@@ -93,5 +107,23 @@ rule "softConstraintsBroken"
     then
         scoreCalculator.setSoftConstraintsBroken($softTotal.intValue());
 end
+
+/* Inserts maximum of total assignments  
+rule "insertResourceAllocationTotal"
+	salience 1 // Do these rules first (optional, for performance)
+	when
+		$task : Task(resource == null)
+
+		$assignmentTotal : Number(intValue > 0) 
+		from accumulate(
+			count($task)
+		)
+    then
+        insertLogical(new IntConstraintOccurrence("insertResourceAllocationTotal",
+        ConstraintType.NEGATIVE_HARD, 
+        $assignmentTotal, $task));
+end
+
+ */
 
 
