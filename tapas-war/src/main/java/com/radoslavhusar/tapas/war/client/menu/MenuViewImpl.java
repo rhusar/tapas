@@ -52,10 +52,10 @@ public class MenuViewImpl extends Composite implements MenuView {
    Button tasks;
 
    @Inject
-   public MenuViewImpl(final TaskResourceServiceAsync res, final ClientState client) {
-      GWT.log("MenuViewImpl created!");
+   public MenuViewImpl(final MenuPresenter presenter, final TaskResourceServiceAsync res, final ClientState client) {
+      GWT.log("MenuViewImpl created.");
       this.client = client;
-      this.presenter = Application.getInjector().getMenuPresenter();
+      this.presenter = presenter;
 
       initWidget(binder.createAndBindUi(this));
 

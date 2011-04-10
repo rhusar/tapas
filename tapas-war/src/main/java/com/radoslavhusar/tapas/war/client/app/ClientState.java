@@ -169,7 +169,7 @@ public class ClientState {
 
          @Override
          public void onSuccess(Map<Long, List<ResourcePhaseStatsEntry>> result) {
-            GWT.log("Stats arrived: " + result);
+            GWT.log("Resource Phase Stats ready: " + result);
             resourcePhaseStats = result;
             eventBus.fireEvent(new DataReadyEvent(DataType.RESOURCE_STATS));
          }
@@ -196,7 +196,7 @@ public class ClientState {
 
          @Override
          public void onSuccess(ProjectStats result) {
-            GWT.log("Stats arrived: " + result);
+            GWT.log("Project Stats ready: " + result);
             projectStats = result;
             eventBus.fireEvent(new DataReadyEvent(DataType.PROJECT_STATS));
          }

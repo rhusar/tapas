@@ -6,22 +6,21 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Trait;
-import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 
 public class ProjectsActivity extends AbstractActivity implements ProjectsView.Presenter {
 
-   ProjectsView view;
+   private final ProjectsView view;
    private final TaskResourceServiceAsync service;
 
    @Inject
-   public ProjectsActivity(TaskResourceServiceAsync service) {
+   public ProjectsActivity(ProjectsView view, TaskResourceServiceAsync service) {
+      this.view = view;
       this.service = service;
    }
 
    @Override
    public void start(AcceptsOneWidget panel, EventBus eventBus) {
-      view = Application.getInjector().getProjectsView();
       view.setPresenter(this);
       view.bind();
       panel.setWidget(view.asWidget());

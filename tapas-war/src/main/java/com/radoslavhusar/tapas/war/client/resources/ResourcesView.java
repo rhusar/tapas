@@ -1,9 +1,9 @@
 package com.radoslavhusar.tapas.war.client.resources;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import com.radoslavhusar.tapas.ejb.entity.Trait;
+import com.radoslavhusar.tapas.war.client.ui.Bindable;
 
-public interface ResourcesView extends IsWidget {
+public interface ResourcesView extends IsWidget, Bindable {
 
    void setPresenter(Presenter presenter);
 

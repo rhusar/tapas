@@ -7,34 +7,28 @@ import com.google.inject.Inject;
 import com.radoslavhusar.tapas.war.client.app.ClientState;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 
-public class OverviewActivity extends AbstractActivity implements OverviewView.Presenter {
+public class OverviewActivity extends AbstractActivity implements OverviewPresenter {
 
-   OverviewViewImpl view;
+   private final OverviewView view;
    private final TaskResourceServiceAsync service;
-   private final ClientState cache;
+   private final ClientState client;
 
    @Inject
-   public OverviewActivity(OverviewViewImpl view, ClientState cache, TaskResourceServiceAsync service) {
+   public OverviewActivity(OverviewView view, ClientState client, TaskResourceServiceAsync service) {
       this.view = view;
-      this.cache = cache;
+      this.client = client;
       this.service = service;
    }
 
    @Override
    public void start(AcceptsOneWidget panel, EventBus eventBus) {
-      //view = Application.getInjector().getOverviewView();
       view.setPresenter(this);
       view.bind();
       panel.setWidget(view.asWidget());
-
-      //GWT.log(Application.getInjector().getPlaceController().getWhere().getClass().getName());
-      //PlaceControllerGin pcg = Application.getInjector().getPlaceController();
-      //GWT.log("" + ((pcg.getFutureWhere().equals(Place.NOWHERE))));// instanceof OverviewPlace));
    }
 
    @Override
    public void onStop() {
-      //super.onStop();
       view.unbind();
    }
 }

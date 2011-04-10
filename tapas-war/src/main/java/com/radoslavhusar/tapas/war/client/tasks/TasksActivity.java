@@ -13,12 +13,12 @@ import java.util.Set;
 
 public class TasksActivity extends AbstractActivity implements TasksView.Presenter {
 
-   TasksViewImpl view;
+   TasksView view;
    private final ClientState client;
    private final TaskResourceServiceAsync service;
 
    @Inject
-   public TasksActivity(ClientState client, TaskResourceServiceAsync service, TasksViewImpl view) {
+   public TasksActivity(ClientState client, TaskResourceServiceAsync service, TasksView view) {
       this.client = client;
       this.service = service;
       this.view = view;

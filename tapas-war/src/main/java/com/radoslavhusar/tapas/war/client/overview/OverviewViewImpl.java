@@ -61,7 +61,7 @@ import java.util.Date;
 
 public class OverviewViewImpl extends ResizeComposite implements OverviewView {
 
-   private Presenter presenter;
+   private OverviewPresenter presenter;
    private static Binder binder = GWT.create(Binder.class);
    private final ClientState client;
    private final TaskResourceServiceAsync service;
@@ -272,10 +272,10 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
    }
 
    // UI routines
+   @Override
    public void bind() {
       menu.add(Application.getInjector().getMenuView());
       status.add(Application.getInjector().getStatusView());
-
 
       // Create a callback to be called when the visualization API has been loaded - fake runnable.
       Runnable chartCallback = new Runnable() {
@@ -394,13 +394,14 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       }
    }
 
+   @Override
    public void unbind() {
       menu.clear();
       status.clear();
    }
 
    @Override
-   public void setPresenter(Presenter presenter) {
+   public void setPresenter(OverviewPresenter presenter) {
       this.presenter = presenter;
    }
 

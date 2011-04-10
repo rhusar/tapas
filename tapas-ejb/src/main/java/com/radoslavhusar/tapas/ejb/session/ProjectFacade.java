@@ -20,9 +20,9 @@ import javax.persistence.PersistenceContext;
 public class ProjectFacade extends AbstractFacade<Project> implements ProjectFacadeLocal {
 
    @EJB
-   ResourceFacadeLocal resourceBean;
+   private ResourceFacadeLocal resourceBean;
    @EJB
-   TaskFacadeLocal tasksBean;
+   private TaskFacadeLocal tasksBean;
    /**
     * Or could be   
     * @PersistenceContext(unitName = "TapasPersistenceUnit")
@@ -69,7 +69,7 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
       // Calculate mandays data - a rate
       double mandayRate = 0;
       List<Resource> resources = resourceBean.findAllForProject(projectId);
-      System.out.println("Found " + resources.size() + " resouces on project.");
+      //System.out.println("Found " + resources.size() + " resouces on project.");
 
       for (Resource r : resources) {
          mandayRate += ProjectFacade.getRate(r);
@@ -90,7 +90,7 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
       // Phases must be sorted!!
       Collections.sort(p.getPhases());
 
-      System.out.println("Phases: " + p.getPhases());
+      //System.out.println("Phases: " + p.getPhases());
       // Calculate estimated times etc.
       for (ProjectPhase pp : p.getPhases()) {
 
@@ -142,7 +142,7 @@ public class ProjectFacade extends AbstractFacade<Project> implements ProjectFac
       result.setCompleted(totalCompleted);
 
       //result.setResources(null);
-      System.out.println(result);
+      //System.out.println(result);
       return result;
    }
 

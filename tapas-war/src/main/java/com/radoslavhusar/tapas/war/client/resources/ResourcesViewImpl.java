@@ -589,10 +589,11 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       });
 
       initWidget(binder.createAndBindUi(this));
-      GWT.log("ResourcesViewImpl is constructed!");
+      GWT.log("ResourcesViewImpl created.");
    }
 
    // UI routines
+   @Override
    public void bind() {
       menu.add(Application.getInjector().getMenuView());
       status.add(Application.getInjector().getStatusView());
@@ -677,6 +678,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       resources.redraw();
    }
 
+   @Override
    public void unbind() {
       menu.clear();
       status.clear();
