@@ -2,12 +2,9 @@ package com.radoslavhusar.tapas.ejb.solver;
 
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.Task;
+import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
 import com.radoslavhusar.tapas.ejb.session.ResourceFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskFacadeLocal;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -33,19 +30,8 @@ public class SolverFacade implements SolverFacadeLocal {
    @Override
    public Solution solveAssignments(long projectId) {
       XmlSolverConfigurer solverConfigurer = new XmlSolverConfigurer();
-      InputStream in = null;
 
-      /* FIXME: Can be removed: Get from file?
-      
-      try {
-      File file = new File("/home/rhusar/Dropbox/masthe/gilead/tapas-ejb/src/main/java/com/radoslavhusar/tapas/ejb/solver/taskAllocationSolverConfig2.xml");
-      in = new FileInputStream(file);
-      } catch (FileNotFoundException ex) {
-      }
-      
-      solverConfigurer.configure(in); */
-
-      // Get as resource
+      // Get from resource
       solverConfigurer.configure("/com/radoslavhusar/tapas/ejb/solver/taskAllocationSolverConfig.xml");
 
       Solver solver = solverConfigurer.buildSolver();
@@ -53,28 +39,42 @@ public class SolverFacade implements SolverFacadeLocal {
       // Starting solution
       List<Task> detachedTasks = tasksBean.findAllForProject(projectId);
       for (Task t : detachedTasks) {
+
+         double sum = 0;
+         for (TimeAllocation ta : t.getTimeAllocations()) {
+            sum += ta.getAllocation();
+            sum -= ta.getCompleted();
+         }
+         t.setRemaining(sum);
+
          detach(t);
       }
-      List<Resource> de = resourcesBean.findAllForProject(projectId);
-      for (Resource t : de) {
+
+      List<Resource> detachedResources = resourcesBean.findAllForProject(projectId);
+      for (Resource t : detachedResources) {
          detach(t);
       }
-      TaskAllocationSolution tas = new TaskAllocationSolution(detachedTasks, de);
+      TaskAllocationSolution tas = new TaskAllocationSolution(detachedTasks, detachedResources);
 
       solver.setStartingSolution(tas);
+
+      // This method exits when a solution is ready.
       solver.solve();
+
       return solver.getBestSolution();
    }
 
    /**
     * Needs to be detached because Drools Planner modifies the objects.
     * 
-    * http://stackoverflow.com/questions/31446/detach-an-entity-from-jpa-ejb3-persistence-context
+    * See http://stackoverflow.com/questions/31446/detach-an-entity-from-jpa-ejb3-persistence-context
     * 
     * @param entity to be detached
     */
    private void detach(Object entity) {
+      // Cast to hibernate session 
       Session session = (Session) em.getDelegate();
+      // and evict it from context
       session.evict(entity);
    }
 }

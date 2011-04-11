@@ -3,6 +3,13 @@ package com.radoslavhusar.tapas.ejb.solver;
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.solution.initializer.StartingSolutionInitializer;
 
+/**
+ * Not used.
+ * 
+ * @author rhusar
+ * @deprecated
+ */
+@Deprecated
 public class TaskAllocationSolutionInitializer implements StartingSolutionInitializer {
 
    private boolean initialized = false;
@@ -14,8 +21,6 @@ public class TaskAllocationSolutionInitializer implements StartingSolutionInitia
 
    @Override
    public void initializeSolution(LocalSearchSolverScope arg0) {
-      
-      
       this.initialized = true;
    }
 }

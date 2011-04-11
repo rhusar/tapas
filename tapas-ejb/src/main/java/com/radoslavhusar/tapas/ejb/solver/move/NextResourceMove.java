@@ -34,8 +34,20 @@ public class NextResourceMove implements Move {
    @Override
    public void doMove(WorkingMemory wm) {
       FactHandle taskHandle = wm.getFactHandle(task);
+      // Update the model
       task.setResource(resource);
+
+      // Update the memory
       wm.update(taskHandle, task);
+
+      /*FactHandle currentResHandle = wm.getFactHandle(task.getResource());
+      FactHandle futureResHandle = wm.getFactHandle(resource);
+
+      if (currentResHandle == null || task.getResource() == null) {
+      } else {
+         wm.update(currentResHandle, task.getResource());
+      }
+      wm.update(futureResHandle, resource);*/
    }
 
    @Override

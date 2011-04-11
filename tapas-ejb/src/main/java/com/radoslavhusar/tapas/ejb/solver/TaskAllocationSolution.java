@@ -11,7 +11,6 @@ import org.drools.planner.core.solution.Solution;
 
 public class TaskAllocationSolution implements Solution {
 
-   //private Score score;
    private HardAndSoftScore score;
    private final List<Task> tasks;
    private final List<Resource> resources;

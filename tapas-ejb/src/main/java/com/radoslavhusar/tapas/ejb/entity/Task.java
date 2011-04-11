@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 @Entity
@@ -187,5 +188,25 @@ public class Task implements Serializable {
       clone.timeAllocations.addAll(timeAllocations);
       clone.status = status;
       return clone;
+   }
+   @Transient
+   private double remaining;
+
+   /**
+    * For drools only!
+    * 
+    * @return 
+    */
+   public double getRemaining() {
+      return remaining;
+   }
+
+   /**
+    * For drools only!
+    * 
+    * @param remaining 
+    */
+   public void setRemaining(double remaining) {
+      this.remaining = remaining;
    }
 }

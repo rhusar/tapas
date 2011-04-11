@@ -102,6 +102,15 @@ public class Resource implements Serializable {
       this.traits = traits;
    }
 
+   /**
+    * Use with ultra caution! Convenience method for special occasions.
+    * 
+    * @return raw mandays per day
+    */
+   public double getRate() {
+      return (double) resourceAllocations.get(0).getPercent() * (double) contract / (double) 10000;
+   }
+
    @Override
    public String toString() {
       return "Resource{id=" + id
