@@ -5,6 +5,7 @@ import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
 import com.radoslavhusar.tapas.ejb.session.ResourceFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskFacadeLocal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -36,6 +37,13 @@ public class SolverFacade implements SolverFacadeLocal {
 
       Solver solver = solverConfigurer.buildSolver();
 
+
+      List<Resource> detachedResources = resourcesBean.findAllForProject(projectId);
+      for (Resource t : detachedResources) {
+         detach(t);
+         //t.setTasks(new ArrayList<Task>());
+      }
+
       // Starting solution
       List<Task> detachedTasks = tasksBean.findAllForProject(projectId);
       for (Task t : detachedTasks) {
@@ -47,13 +55,19 @@ public class SolverFacade implements SolverFacadeLocal {
          }
          t.setRemaining(sum);
 
+         t.setResource(detachedResources.get(0));
+         
          detach(t);
       }
 
-      List<Resource> detachedResources = resourcesBean.findAllForProject(projectId);
-      for (Resource t : detachedResources) {
-         detach(t);
-      }
+
+
+      /*for (Task t : detachedTasks) {
+      // Lets assign all tasks to the first guy
+      t.setResource(detachedResources.get(0));
+      detachedResources.get(0).getTasks().add(t);
+      }*/
+
       TaskAllocationSolution tas = new TaskAllocationSolution(detachedTasks, detachedResources);
 
       solver.setStartingSolution(tas);

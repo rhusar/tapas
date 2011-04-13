@@ -35,6 +35,8 @@ public class TaskAllocationSolution implements Solution {
 
    @Override
    public Solution cloneSolution() {
+      System.out.println("Cloning solution!");
+      
       List<Task> clonedTaskList = new ArrayList<Task>(tasks.size());
       for (Task task : tasks) {
          Task clone;
@@ -42,8 +44,25 @@ public class TaskAllocationSolution implements Solution {
          clonedTaskList.add(clone);
       }
 
-      TaskAllocationSolution solutionClone = new TaskAllocationSolution(clonedTaskList, resources);
+      clonedTaskList.addAll(tasks);
+      List<Resource> clonedResources = new ArrayList<Resource>(resources.size());
+      /*for (Resource res : resources) {
+      Resource clone;
+      clone = res.droolsClone();
+      clone.setTasks(new ArrayList());
+      // but let those clone reference copied tasks too
+      for (Task task : clonedTaskList) {
+      if (task.getResource().equals(res)) {
+      clone.getTasks().add(task);
+      }
+      }
+      clonedResources.add(clone);
+      }*/
+      clonedResources.addAll(resources);
+
+      TaskAllocationSolution solutionClone = new TaskAllocationSolution(clonedTaskList, clonedResources);
       solutionClone.setScore(score);
+
       return solutionClone;
    }
 

@@ -11,6 +11,9 @@ public class NextResourceMove implements Move {
    private Task task;
    private Resource resource;
 
+   /*
+    * assigns task to resource
+    */
    public NextResourceMove(Task task, Resource resource) {
       this.task = task;
       this.resource = resource;
@@ -25,6 +28,11 @@ public class NextResourceMove implements Move {
       return true;
    }
 
+   /*
+    * assign task to the resource it owned before
+    * 
+    * An undo move can be created from a move, but only before the move has been done on the current solution.
+    */
    @Override
    public Move createUndoMove(WorkingMemory wm) {
       Move undoMove = new NextResourceMove(task, task.getResource());
@@ -33,21 +41,45 @@ public class NextResourceMove implements Move {
 
    @Override
    public void doMove(WorkingMemory wm) {
+
+      // Update WM that the task assignement changed
+      FactHandle currentResHandle = wm.getFactHandle(task.getResource());
+      FactHandle futureResHandle = wm.getFactHandle(resource);
+
+      // Always update:
+      //task.getResource().getTasks().remove(task);
+      //resource.getTasks().add(task);
+
+      wm.update(currentResHandle, task.getResource());
+      wm.update(futureResHandle, resource);
+
+      // Task
+
       FactHandle taskHandle = wm.getFactHandle(task);
       // Update the model
+
       task.setResource(resource);
 
       // Update the memory
       wm.update(taskHandle, task);
 
-      /*FactHandle currentResHandle = wm.getFactHandle(task.getResource());
-      FactHandle futureResHandle = wm.getFactHandle(resource);
 
+
+      /* // Allowing null resources
       if (currentResHandle == null || task.getResource() == null) {
+      // Nothing to update
       } else {
-         wm.update(currentResHandle, task.getResource());
+      task.getResource().getTasks().remove(task);
+      wm.update(currentResHandle, task.getResource());
       }
-      wm.update(futureResHandle, resource);*/
+      
+      if (futureResHandle == null || resource == null) {
+      // Nothing to update
+      } else {
+      resource.getTasks().add(task);
+      wm.update(futureResHandle, resource);
+      }
+       */
    }
 
    @Override
@@ -78,6 +110,8 @@ public class NextResourceMove implements Move {
 
    @Override
    public String toString() {
-      return task.getId() + " => " + resource.getId();
+      return task == null ? "null-task" : (task.getId() == null ? "null-id" : task.getId().toString())
+              + " => "
+              + resource == null ? "null-resource" : (resource.getId() == null ? "null-id" : resource.getId().toString());
    }
 }

@@ -1,6 +1,7 @@
 package com.radoslavhusar.tapas.ejb.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
@@ -111,10 +112,49 @@ public class Resource implements Serializable {
       return (double) resourceAllocations.get(0).getPercent() * (double) contract / (double) 10000;
    }
 
+   // Could be removed.
+   @Deprecated
+   public Resource droolsClone() {
+      Resource clone = new Resource();
+      clone.id = id;
+      clone.group = group;
+      clone.name = name;
+      clone.resourceAllocations = resourceAllocations;
+      clone.traits = traits;
+      clone.contract = contract;
+      clone.tasks = new ArrayList();
+      clone.tasks.addAll(tasks);
+      return clone;
+   }
+
    @Override
    public String toString() {
       return "Resource{id=" + id
               + ",name=" + name
               + ",contract=" + contract + "}";
+   }
+
+   // Could be probably removed.
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      final Resource other = (Resource) obj;
+      if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+         return false;
+      }
+      return true;
+   }
+
+   // Could be probably removed.
+   @Override
+   public int hashCode() {
+      int hash = 7;
+      hash = 29 * hash + (this.id != null ? this.id.hashCode() : 0);
+      return hash;
    }
 }

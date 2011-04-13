@@ -10,6 +10,7 @@ import org.drools.planner.core.score.constraint.DoubleConstraintOccurrence;
  * @author <a href="mailto:me@radoslavhusar.com">Radoslav Husar</a>
  * @version 2011
  */
+@Deprecated
 public class OneTaskResourceRemainingLogical extends DoubleConstraintOccurrence implements Serializable {
 
    public Resource resource;

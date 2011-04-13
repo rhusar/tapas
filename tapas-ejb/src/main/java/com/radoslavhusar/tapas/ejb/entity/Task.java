@@ -209,4 +209,30 @@ public class Task implements Serializable {
    public void setRemaining(double remaining) {
       this.remaining = remaining;
    }
+
+   // Could be probably removed.
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      final Task other = (Task) obj;
+      if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+         return false;
+      }
+      return true;
+   }
+
+   // Could be probably removed.
+   @Override
+   public int hashCode() {
+      int hash = 3;
+      hash = 97 * hash + (this.id != null ? this.id.hashCode() : 0);
+      return hash;
+   }
+   
+   
 }

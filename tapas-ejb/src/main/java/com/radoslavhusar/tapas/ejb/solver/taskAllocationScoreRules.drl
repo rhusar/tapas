@@ -1,6 +1,6 @@
 package com.radoslavhusar.tapas.ejb.solver;
 
-dialect "java"
+//dialect "java"
 
 import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalculator;
 import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
@@ -20,12 +20,16 @@ import com.radoslavhusar.tapas.ejb.solver.OneTaskResourceRemainingLogical;
 
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
+declare Metainfo
+    days: double
+end 
+
 // ############################################################################
 // Hard constraints
 // ############################################################################
 
 // Inserts 1 negative hard for each unassigned task.
-rule "insertAllTasksAreAssigned"
+/*rule "insertAllTasksAreAssigned"
         salience 1 // Do these rules first (optional, for performance)
     when
        $task : Task(resource == null)
@@ -48,7 +52,7 @@ rule "insertRequiredTraitsAreProvided"
         insertLogical(new IntConstraintOccurrence("insertRequiredTraitsAreProvided",
         ConstraintType.NEGATIVE_HARD, 
         1, $task, $resource));
-end
+end*/
 
 // TODO: Group
 
@@ -161,19 +165,27 @@ rule "insertAssignmentLoadTotal"
 		$remaining : Number()
 			from accumulate(
 				$task : Task(resource == $resource),
-				sum($task.getRemaining())	
+				sum($task.getRemaining())
 			)
 			
+			//$taskX : Task(resource == $resource)
+			
 		//$task : Task(resource == $resource)
+		//$task : Task() from $resource.getTasks()
     then
     //System.out.println("inserting "+$remaining.doubleValue()+" for "+$resource );
     
         insertLogical(new DoubleConstraintOccurrence("insertAssignmentLoadTotal",
         ConstraintType.NEGATIVE_SOFT, 
-        Math.ceil((double) $remaining.doubleValue()/(double) $resource.getRate()), 
-        $resource));
+        Math.ceil((double) $remaining.doubleValue()/(double) $resource.getRate()) 
+        ));
+        
+        /*
+        insertLogical(
+            new Metainfo((double) Math.ceil((double) $remaining.doubleValue()/(double) $resource.getRate()))
+        );*/
+    	
 end
-
 
 // ############################################################################
 // Calculate score
@@ -200,6 +212,12 @@ rule "softConstraintsBroken"
             // MUST BE SUM?! sum($weight)
             max($weight)
         )
+        /*
+         $softMax : Number () 
+             from accumulate(
+                Metainfo($days : days),
+                sum($days)
+             )*/
         
 		$softTotal : Number() from accumulate(
             IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
