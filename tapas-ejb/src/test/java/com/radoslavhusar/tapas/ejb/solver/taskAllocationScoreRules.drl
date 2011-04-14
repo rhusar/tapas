@@ -1,0 +1,249 @@
+package com.radoslavhusar.tapas.ejb.solver;
+
+//dialect "java"
+
+import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalculator;
+import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
+import org.drools.planner.core.score.constraint.DoubleConstraintOccurrence;
+import org.drools.planner.core.score.constraint.ConstraintType;
+
+import com.radoslavhusar.tapas.ejb.entity.Project
+import com.radoslavhusar.tapas.ejb.entity.ProjectPhase
+import com.radoslavhusar.tapas.ejb.entity.Resource
+import com.radoslavhusar.tapas.ejb.entity.ResourceAllocation
+import com.radoslavhusar.tapas.ejb.entity.ResourceGroup
+import com.radoslavhusar.tapas.ejb.entity.Task
+import com.radoslavhusar.tapas.ejb.entity.TaskStatus
+import com.radoslavhusar.tapas.ejb.entity.TimeAllocation
+import com.radoslavhusar.tapas.ejb.entity.Trait
+//import com.radoslavhusar.tapas.ejb.solver.OneTaskResourceRemainingLogical;
+
+global HardAndSoftConstraintScoreCalculator scoreCalculator;
+
+/*declare Metainfo
+    days: double
+end */
+
+// ############################################################################
+// Hard constraints
+// ############################################################################
+
+// Inserts 1 negative hard for each unassigned task.
+rule "insertAllTasksAreAssigned"
+        salience 1 // Do these rules first (optional, for performance)
+    when
+       $task : Task(resource == null)
+    then
+        insertLogical(new IntConstraintOccurrence("insertAllTasksAreAssigned",
+        ConstraintType.NEGATIVE_HARD, 
+        100, $task));
+end
+
+
+// Inserts 10 negative hard for each task which is assigned to person without the required trait
+rule "insertRequiredTraitsAreProvided"
+        salience 1 // Do these rules first (optional, for performance)
+    when
+		$task : Task( $trait : requiredTrait)
+		
+		$resource : Resource(traits not contains $trait) from $task.resource
+		
+    then
+        insertLogical(new IntConstraintOccurrence("insertRequiredTraitsAreProvided",
+        ConstraintType.NEGATIVE_HARD, 
+        1, $task, $resource));
+end
+
+// TODO: Group
+
+// ############################################################################
+// Soft constraints
+// ############################################################################
+
+//How much is allocated compared to what the load on the project is.
+/*
+rule "insertAssignmentLoadTotal"
+		salience 1 // Do these rules first (optional, improves performance)
+	when
+		// Take all resources on the project
+		$resource : Resource()
+		
+		// And its current tasks
+		$task : Task(resource == $resource) 
+    
+		// Sum total allocation on total
+		$remaining : Number(doubleValue > 0)
+			from accumulate(
+				TimeAllocation($allocation : allocation, $completed : completed) from $task.timeAllocations,
+				sum($allocation - $completed)				
+			) 
+    then
+    System.out.println("inserting "+$remaining.doubleValue()+" for "+$resource );
+    
+        insertLogical(new DoubleConstraintOccurrence("insertAssignmentLoadTotal",
+        ConstraintType.NEGATIVE_SOFT, 
+        $remaining.doubleValue(), 
+        $task, $resource));
+end
+
+*/
+/*
+// work ok but... not aggregated on all tasks
+rule "insertAssignmentLoadTotal"
+		salience 1 // Do these rules first (optional, improves performance)
+	when
+		// Take all resources on the project
+		$resource : Resource()
+	$task : Task(resource == $resource)
+		// Sum total allocation on total 
+		//$remaining : Number()
+			//from accumulate(
+				//$task : Task(resource == $resource),  
+				//count($task.getRemaining())	
+			//) 
+    then
+    //System.out.println("inserting "+$remaining.doubleValue()+" for "+$resource );
+    
+        insertLogical(new DoubleConstraintOccurrence("insertAssignmentLoadTotal",
+        ConstraintType.NEGATIVE_SOFT, 
+        Math.ceil((double) $task.getRemaining()/(double) $resource.getRate()), 
+        $resource, $task));
+end*/
+
+// FINAL:
+
+/*
+java.lang.IllegalStateException: The presumedScore (0hard/-8soft) is corrupted because it is not the realScore  (0hard/-4soft).
+  Score rule (asfasfasdfsadfasdf) has score total (40.0).
+  Score rule (insertAssignmentLoadTotal) has score total (4.0).
+
+
+rule "insertAssignmentLoadTotal"
+		salience 1 // Do these rules first (optional, improves performance)
+	when
+		$resource : Resource()
+	
+		$task : Task(resource == $resource)
+    then
+        insertLogical(new OneTaskResourceRemainingLogical(
+        "insertAssignmentLoadTotal",
+        ConstraintType.POSITIVE,
+        $resource,
+        $task.getRemaining(), // Replace with aggregation
+        $resource, $task));        
+end
+
+rule "asfasfasdfsadfasdf"
+		salience -1 // Do the other rules first (optional, for performance)
+	when
+		$resource : Resource()
+		
+		$task : Task(resource == $resource)
+				
+		$rem : Number(doubleValue > 0)
+			from accumulate(
+				$fact : OneTaskResourceRemainingLogical(resource == $resource),  
+				sum($fact.weight)
+			) 
+    then
+        
+        insertLogical(new DoubleConstraintOccurrence("asfasfasdfsadfasdf",
+        ConstraintType.NEGATIVE_SOFT, 
+        Math.ceil((double) $rem.doubleValue() / (double) $resource.getRate()), 
+        $resource, $task));
+end*/
+
+// Realization one rule must generate the whole thing 
+// work ok but... not aggregated on all tasks
+rule "insertAssignmentLoadTotal"
+		salience 1 // Do these rules first (optional, improves performance)
+	when
+		// Take all resources on the project
+		$resource : Resource()
+
+		// Sum total allocation on total  
+		$remaining : Number()
+			from accumulate(
+				$task : Task(resource == $resource),
+				sum($task.getDroolsAllocated() - $task.getDroolsCompleted())
+			)
+			
+			//$taskX : Task(resource == $resource)
+			
+		//$task : Task(resource == $resource)
+		//$task : Task() from $resource.getTasks()
+    then
+    //System.out.println("inserting "+$remaining.doubleValue()+" for "+$resource );
+    
+        insertLogical(new DoubleConstraintOccurrence("insertAssignmentLoadTotal",
+        ConstraintType.NEGATIVE_SOFT, 
+        Math.ceil((double) $remaining.doubleValue()/(double) $resource.getRate()) 
+        ));
+        
+        /*
+        insertLogical(
+            new Metainfo((double) Math.ceil((double) $remaining.doubleValue()/(double) $resource.getRate()))
+        );*/
+    	
+end
+
+// ############################################################################
+// Calculate score
+// ############################################################################
+
+// Accumulate hard constraints
+rule "hardConstraintsBroken"
+        salience -1 // Do the other rules first (optional, for performance)
+    when
+        $hardTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
+            sum($weight)
+        )
+    then
+        scoreCalculator.setHardConstraintsBroken($hardTotal.intValue());
+end
+
+// Accumulate soft constraints
+rule "softConstraintsBroken"
+        salience -1 // Do the other rules first (optional, for performance)
+    when
+        $softMax : Number() from accumulate(
+            DoubleConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+            // MUST BE SUM?! sum($weight)
+            max($weight)
+        )
+        /*
+         $softMax : Number () 
+             from accumulate(
+                Metainfo($days : days),
+                sum($days)
+             )*/
+        
+		$softTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+            sum($weight) // or minus ?
+        )
+    then
+        scoreCalculator.setSoftConstraintsBroken($softTotal.intValue() + $softMax.intValue());
+end
+
+
+/* Inserts maximum of total assignments  
+rule "insertResourceAllocationTotal"
+	salience 1 // Do these rules first (optional, for performance)
+	when
+		$task : Task(resource == null)
+
+		$assignmentTotal : Number(intValue > 0) 
+		from accumulate(
+			count($task)
+		)
+    then
+        insertLogical(new IntConstraintOccurrence("insertResourceAllocationTotal",
+        ConstraintType.NEGATIVE_HARD, 
+        $assignmentTotal, $task));
+end
+
+ */
+
+

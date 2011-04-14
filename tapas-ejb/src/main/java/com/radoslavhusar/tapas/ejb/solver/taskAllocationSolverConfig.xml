@@ -2,6 +2,8 @@
 <localSearchSolver>
    <scoreDrl>/com/radoslavhusar/tapas/ejb/solver/taskAllocationScoreRules.drl</scoreDrl>
    
+   <!-- Switch to simple score if you want to have priorities for unassigned tasks vs other 
+   constraints. You also need to change the DRL file and classes though (however, not recommended). -->
    <scoreDefinition>
       <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
    </scoreDefinition>
@@ -12,7 +14,7 @@
    -->
    
    <termination>
-      <maximumUnimprovedStepCount>50</maximumUnimprovedStepCount>
+      <maximumUnimprovedStepCount>100</maximumUnimprovedStepCount>
       <maximumMinutesSpend>1</maximumMinutesSpend> 
       
       <!-- Meaning there are no contraints broken so a perfect solution must exist. -->
