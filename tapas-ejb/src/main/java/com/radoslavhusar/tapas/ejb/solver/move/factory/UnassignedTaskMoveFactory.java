@@ -10,16 +10,29 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
 
-public class TaskAllocationMoveFactory extends CachedMoveFactory {
+/**
+ * This Move Factory generates only moves for UNASSIGNED tasks (i.e. resource/assignee is not set).
+ * 
+ * @author <a href="http://www.radoslavhusar.com/">Radoslav Husar</a>
+ */
+public class UnassignedTaskMoveFactory extends CachedMoveFactory {
 
    @Override
    public List<Move> createCachedMoveList(Solution solution) {
       List<Move> moveList = new ArrayList<Move>();
 
       TaskAllocationSolution tas = (TaskAllocationSolution) solution;
-      for (Task t : tas.getTasks()) {
+      
+      for (Task task : tas.getTasks()) {
+         
+         // Is task already assigned?
+         if (task.getResource() != null) {
+            // So don't add moves.
+            continue;
+         }
+         
          for (Resource r : tas.getResources()) {
-            Move move = new NextResourceMove(t, r);
+            Move move = new NextResourceMove(task, r);
             moveList.add(move);
          }
       }

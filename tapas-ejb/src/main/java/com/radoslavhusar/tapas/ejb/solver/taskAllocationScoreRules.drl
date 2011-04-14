@@ -16,20 +16,20 @@ import com.radoslavhusar.tapas.ejb.entity.Task
 import com.radoslavhusar.tapas.ejb.entity.TaskStatus
 import com.radoslavhusar.tapas.ejb.entity.TimeAllocation
 import com.radoslavhusar.tapas.ejb.entity.Trait
-import com.radoslavhusar.tapas.ejb.solver.OneTaskResourceRemainingLogical;
+//import com.radoslavhusar.tapas.ejb.solver.OneTaskResourceRemainingLogical;
 
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
-declare Metainfo
+/*declare Metainfo
     days: double
-end 
+end */
 
 // ############################################################################
 // Hard constraints
 // ############################################################################
 
 // Inserts 1 negative hard for each unassigned task.
-/*rule "insertAllTasksAreAssigned"
+rule "insertAllTasksAreAssigned"
         salience 1 // Do these rules first (optional, for performance)
     when
        $task : Task(resource == null)
@@ -52,7 +52,7 @@ rule "insertRequiredTraitsAreProvided"
         insertLogical(new IntConstraintOccurrence("insertRequiredTraitsAreProvided",
         ConstraintType.NEGATIVE_HARD, 
         1, $task, $resource));
-end*/
+end
 
 // TODO: Group
 
@@ -165,7 +165,7 @@ rule "insertAssignmentLoadTotal"
 		$remaining : Number()
 			from accumulate(
 				$task : Task(resource == $resource),
-				sum($task.getRemaining())
+				sum($task.getDroolsAllocated() - $task.getDroolsCompleted())
 			)
 			
 			//$taskX : Task(resource == $resource)

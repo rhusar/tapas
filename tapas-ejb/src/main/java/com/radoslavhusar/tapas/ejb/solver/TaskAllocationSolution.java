@@ -28,15 +28,18 @@ public class TaskAllocationSolution implements Solution {
    @Override
    public Collection<? extends Object> getFacts() {
       List facts = new ArrayList(tasks.size() + resources.size());
+      
       facts.addAll(tasks);
       facts.addAll(resources);
+
       return facts;
    }
 
    @Override
    public Solution cloneSolution() {
       System.out.println("Cloning solution!");
-      
+
+      // Clone the tasks. We are actively changing them (ie setResource() method).
       List<Task> clonedTaskList = new ArrayList<Task>(tasks.size());
       for (Task task : tasks) {
          Task clone;
@@ -44,23 +47,11 @@ public class TaskAllocationSolution implements Solution {
          clonedTaskList.add(clone);
       }
 
-      clonedTaskList.addAll(tasks);
-      List<Resource> clonedResources = new ArrayList<Resource>(resources.size());
-      /*for (Resource res : resources) {
-      Resource clone;
-      clone = res.droolsClone();
-      clone.setTasks(new ArrayList());
-      // but let those clone reference copied tasks too
-      for (Task task : clonedTaskList) {
-      if (task.getResource().equals(res)) {
-      clone.getTasks().add(task);
-      }
-      }
-      clonedResources.add(clone);
-      }*/
-      clonedResources.addAll(resources);
+      // Just the list is cloned. Should not be necessary either.
+      List<Resource> clonedResourcesList = new ArrayList<Resource>(resources.size());
+      clonedResourcesList.addAll(resources);
 
-      TaskAllocationSolution solutionClone = new TaskAllocationSolution(clonedTaskList, clonedResources);
+      TaskAllocationSolution solutionClone = new TaskAllocationSolution(clonedTaskList, clonedResourcesList);
       solutionClone.setScore(score);
 
       return solutionClone;

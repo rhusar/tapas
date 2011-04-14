@@ -24,6 +24,7 @@ public class TimeAllocation implements Serializable {
    @ManyToOne(fetch = FetchType.EAGER, optional = false)
    private ProjectPhase phase;
    @Column
+   // TODO: rename to ALLOCATED
    private double allocation;
    @Column
    private double completed;

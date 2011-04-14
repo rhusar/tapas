@@ -5,7 +5,6 @@ import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
 import com.radoslavhusar.tapas.ejb.session.ResourceFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskFacadeLocal;
-import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -34,7 +33,10 @@ public class SolverFacade implements SolverFacadeLocal {
 
       // Get from resource
       solverConfigurer.configure("/com/radoslavhusar/tapas/ejb/solver/taskAllocationSolverConfig.xml");
-
+      
+      // Get config
+      //((LocalSearchSolverConfig) solverConfigurer.getConfig()).getSelectorConfig().setMoveFactoryClass(null);
+      
       Solver solver = solverConfigurer.buildSolver();
 
 
@@ -48,29 +50,25 @@ public class SolverFacade implements SolverFacadeLocal {
       List<Task> detachedTasks = tasksBean.findAllForProject(projectId);
       for (Task t : detachedTasks) {
 
-         double sum = 0;
+         double allocated = 0;
+         double completed = 0;
          for (TimeAllocation ta : t.getTimeAllocations()) {
-            sum += ta.getAllocation();
-            sum -= ta.getCompleted();
+            allocated += ta.getAllocation();
+            completed -= ta.getCompleted();
          }
-         t.setRemaining(sum);
+         t.setDroolsAllocated(allocated);
+         t.setDroolsCompleted(completed);
 
-         t.setResource(detachedResources.get(0));
+         // Debug, avoid NPE problems:
+         // t.setResource(detachedResources.get(0));
          
          detach(t);
       }
 
-
-
-      /*for (Task t : detachedTasks) {
-      // Lets assign all tasks to the first guy
-      t.setResource(detachedResources.get(0));
-      detachedResources.get(0).getTasks().add(t);
-      }*/
-
       TaskAllocationSolution tas = new TaskAllocationSolution(detachedTasks, detachedResources);
 
       solver.setStartingSolution(tas);
+
 
       // This method exits when a solution is ready.
       solver.solve();

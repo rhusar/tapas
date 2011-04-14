@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <localSearchSolver>
    <scoreDrl>/com/radoslavhusar/tapas/ejb/solver/taskAllocationScoreRules.drl</scoreDrl>
-   <!--<scoreDrl>/home/rhusar/Dropbox/masthe/gilead/tapas-ejb/src/main/java/com/radoslavhusar/tapas/ejb/solver/taskAllocationScoreRules2.drl</scoreDrl>-->
-   <!--<scoreDrl>file:/home/rhusar/Dropbox/masthe/gilead/tapas-ejb/src/main/java/com/radoslavhusar/tapas/ejb/solver/taskAllocationScoreRules.drl</scoreDrl>-->
    
    <scoreDefinition>
       <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
    </scoreDefinition>
    
+   <!-- We dont really need an initializer, the initial state is retrived from the current state -->
    <!--   
    <startingSolutionInitializerClass>com.radoslavhusar.tapas.ejb.solver.TaskAllocationSolutionInitializer</startingSolutionInitializerClass>
    -->
    
    <termination>
-      <!-- Meaning there are no contraints broken so a perfect solution must exist -->
-      <!--      <scoreAttained>0</scoreAttained>-->
-      <maximumUnimprovedStepCount>30</maximumUnimprovedStepCount>
-      <!--      <scoreAttained>0hard/-5000soft</scoreAttained>   -->
-      <!--      <maximumMinutesSpend>1</maximumMinutesSpend>-->
+      <maximumUnimprovedStepCount>50</maximumUnimprovedStepCount>
+      <maximumMinutesSpend>1</maximumMinutesSpend> 
+      
+      <!-- Meaning there are no contraints broken so a perfect solution must exist. -->
+      <!-- <scoreAttained>0</scoreAttained> -->
+      <!-- <scoreAttained>0hard/-5000soft</scoreAttained> -->
    </termination>
    
    <selector>
-      <moveFactoryClass>com.radoslavhusar.tapas.ejb.solver.move.factory.TaskAllocationMoveFactory</moveFactoryClass>
+      <moveFactoryClass>com.radoslavhusar.tapas.ejb.solver.move.factory.UnstartedOrUnassignedTaskMoveFactory</moveFactoryClass>
+      <!-- 
+      <moveFactoryClass>com.radoslavhusar.tapas.ejb.solver.move.factory.AllTaskMoveFactory</moveFactoryClass> 
+      <moveFactoryClass>com.radoslavhusar.tapas.ejb.solver.move.factory.UnassignedTaskMoveFactory</moveFactoryClass>
+      <moveFactoryClass>com.radoslavhusar.tapas.ejb.solver.move.factory.UnstartedTaskMoveFactory</moveFactoryClass> 
+      -->
    </selector>
    
    <acceptor>
