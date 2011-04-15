@@ -104,7 +104,7 @@ public class Resource implements Serializable {
    }
 
    /**
-    * Use with ultra caution! Convenience method for special occasions.
+    * Use with ultra caution! Convenience method for Drools Planner occasions.
     * 
     * @return raw mandays per day
     */

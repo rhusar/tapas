@@ -195,16 +195,16 @@ public class Task implements Serializable {
       return droolsAllocated;
    }
 
-   public void setDroolsAllocated(double droolsAllocated) {
-      this.droolsAllocated = droolsAllocated;
+   public void setDroolsAllocated(Double droolsAllocated) {
+      this.droolsAllocated = droolsAllocated == null ? 0 : droolsAllocated;
    }
 
    public double getDroolsCompleted() {
       return droolsCompleted;
    }
 
-   public void setDroolsCompleted(double droolsCompleted) {
-      this.droolsCompleted = droolsCompleted;
+   public void setDroolsCompleted(Double droolsCompleted) {
+      this.droolsCompleted = droolsCompleted == null ? 0 : droolsCompleted;
    }
 
    /*

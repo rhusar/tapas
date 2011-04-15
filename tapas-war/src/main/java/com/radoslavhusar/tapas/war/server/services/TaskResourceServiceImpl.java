@@ -158,7 +158,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
 
          // now persist the NEW time alloc
          for (TimeAllocation ta : task.getTimeAllocations()) {
-            if (ta.getAllocation() > 0) {
+            if (ta.getAllocated() > 0) {
                // dont save if allocated to 0%
                timeAllocBean.create(ta);
             }
@@ -170,7 +170,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
          while (iterator.hasNext()) {
             TimeAllocation ta = iterator.next();
 
-            if (ta.getAllocation() > 0) {
+            if (ta.getAllocated() > 0) {
                timeAllocBean.editOrCreate(ta);
             } else {
                // also remove from collection
@@ -200,7 +200,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    taskBean.create(t);
    // now persist the NEW time alloc
    for (TimeAllocation ta : t.getTimeAllocations()) {
-   if (ta.getAllocation() > 0) {
+   if (ta.getAllocated() > 0) {
    // dont save if allocated to 0%
    timeAllocBean.create(ta);
    }
@@ -209,7 +209,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    // it is not new, only merge changes
    // allocations changed?
    for (TimeAllocation ta : t.getTimeAllocations()) {
-   if (ta.getAllocation() > 0) {
+   if (ta.getAllocated() > 0) {
    timeAllocBean.edit(ta);
    } else {
    // remove if its zero

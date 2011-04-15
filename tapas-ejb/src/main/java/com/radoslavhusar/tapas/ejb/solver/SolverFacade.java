@@ -53,7 +53,7 @@ public class SolverFacade implements SolverFacadeLocal {
          double allocated = 0;
          double completed = 0;
          for (TimeAllocation ta : t.getTimeAllocations()) {
-            allocated += ta.getAllocation();
+            allocated += ta.getAllocated();
             completed -= ta.getCompleted();
          }
          t.setDroolsAllocated(allocated);

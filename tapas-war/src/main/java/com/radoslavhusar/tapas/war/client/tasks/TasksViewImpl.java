@@ -531,8 +531,8 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                public String getValue(Task object) {
                   for (TimeAllocation tta : object.getTimeAllocations()) {
                      if (tta.getPhase().getId().equals(phase.getId())) {
-                        if (tta.getAllocation() > 0) {
-                           return "" + (tta.getCompleted() <= 0 ? "" : tta.getCompleted() + "/") + tta.getAllocation();
+                        if (tta.getAllocated() > 0) {
+                           return "" + (tta.getCompleted() <= 0 ? "" : tta.getCompleted() + "/") + tta.getAllocated();
                         } else {
                            // If its allocated to 0, then show nothing
                            return "";
@@ -555,7 +555,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                         if (ta.getPhase().getId().equals(phase.getId())) {
                            // Dont remove but set to 0! 
                            //object.getTimeAllocations().remove(ta);
-                           ta.setAllocation(0);
+                           ta.setAllocated(0);
                            ta.setCompleted(0);
                            return;
                         }
@@ -583,7 +583,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                   for (TimeAllocation ta : object.getTimeAllocations()) {
                      // TODO: needs comparing IDs which is safe, but should be done .equal but doesnt work
                      if (ta.getPhase().getId().equals(phase.getId())) {
-                        ta.setAllocation(assignedTime);
+                        ta.setAllocated(assignedTime);
                         if (completedTime != -1) {
                            ta.setCompleted(completedTime);
                         }
@@ -597,7 +597,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
                   TimeAllocation ta = new TimeAllocation();
                   ta.setTask(object);
                   ta.setPhase(phase);
-                  ta.setAllocation(assignedTime);
+                  ta.setAllocated(assignedTime);
                   if (completedTime != -1) {
                      ta.setCompleted(completedTime);
                   }
@@ -623,7 +623,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
             double total = 0;
 
             for (TimeAllocation tta : task.getTimeAllocations()) {
-               total += tta.getAllocation();
+               total += tta.getAllocated();
             }
 
             return total;
@@ -641,7 +641,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
             double total = 0;
 
             for (TimeAllocation tta : task.getTimeAllocations()) {
-               total += tta.getAllocation();
+               total += tta.getAllocated();
                total -= tta.getCompleted();
             }
 

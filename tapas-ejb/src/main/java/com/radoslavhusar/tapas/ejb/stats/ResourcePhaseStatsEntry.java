@@ -27,11 +27,11 @@ public class ResourcePhaseStatsEntry implements Serializable {
     * @param allocated
     * @param completed 
     */
-   public ResourcePhaseStatsEntry(double allocated, double completed) {
+   public ResourcePhaseStatsEntry(Double allocated, Double completed) {
       this.resource = null;
       this.rate = 0;
-      this.allocated = allocated;
-      this.completed = completed;
+      this.allocated = allocated == null ? 0 : allocated;
+      this.completed = completed == null ? 0 : completed;
    }
 
    /**

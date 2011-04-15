@@ -94,10 +94,10 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
          if (t.getProject().getId() == projectId) {
             for (TimeAllocation tta : t.getTimeAllocations()) {
                if (t.getPriority() != null && t.getPriority() >= 1 && t.getPriority() <= 3) {
-                  result[(t.getPriority() - 1) * 2] += tta.getAllocation();
+                  result[(t.getPriority() - 1) * 2] += tta.getAllocated();
                   result[(t.getPriority() - 1) * 2 + 1] += tta.getCompleted();
                } else {
-                  result[6] += tta.getAllocation();
+                  result[6] += tta.getAllocated();
                   result[7] += tta.getCompleted();
                }
             }
@@ -142,7 +142,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
    @Override
    public List<ResourcePhaseStatsEntry> tallyResourcesStatsForPhase(long phaseId) {
       // Assigned tasks
-      List<ResourcePhaseStatsEntry> assigned = em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
+      List<ResourcePhaseStatsEntry> assigned = em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry(r,sum(ta.allocated),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
               + "from Resource as r "
               + "inner join r.tasks as t "
               + "inner join t.timeAllocations as ta "
@@ -156,7 +156,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
               + "and r != null "
               //+ "and a.key.project = p "
               + "group by r "
-              + "order by sum(ta.allocation) desc").
+              + "order by sum(ta.allocated) desc").
               setParameter("phaseId", phaseId).
               getResultList();
 
@@ -168,7 +168,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
       LIMIT 0 , 30*/
 
       // Unassigned tasks
-      List<ResourcePhaseStatsEntry> unassigned = em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry(sum(ta.allocation),sum(ta.completed)) "
+      List<ResourcePhaseStatsEntry> unassigned = em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry(sum(ta.allocated),sum(ta.completed)) "
               + "from Task as t "
               + "left outer join t.timeAllocations as ta "
               + "where ta.phase.id = :phaseId "
@@ -185,7 +185,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
       System.out.println("___________" + assigned);
       return assigned;
 
-      /* return em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
+      /* return em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry(r,sum(ta.allocated),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
       + "from Resource as r "
       + "inner join r.resourceAllocations as a "
       + "inner join a.key.project as p "
@@ -199,7 +199,7 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
    }
    /*@Override
    public List<ResourceStats> tallyResourcesStatsForProject(long projectId) {
-   return em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry(r,sum(ta.allocation),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
+   return em.createQuery("select new com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry(r,sum(ta.allocated),sum(ta.completed),1.0*((100-p.tax)/100*r.contract/100*a.percent/100)) "
    + "from Resource as r "
    + "inner join r.resourceAllocations as a "
    + "inner join a.key.project as p "

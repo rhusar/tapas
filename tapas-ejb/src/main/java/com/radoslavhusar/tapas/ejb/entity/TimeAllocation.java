@@ -25,7 +25,7 @@ public class TimeAllocation implements Serializable {
    private ProjectPhase phase;
    @Column
    // TODO: rename to ALLOCATED
-   private double allocation;
+   private double allocated;
    @Column
    private double completed;
    @Column
@@ -47,12 +47,12 @@ public class TimeAllocation implements Serializable {
       this.id = id;
    }
 
-   public double getAllocation() {
-      return allocation;
+   public double getAllocated() {
+      return allocated;
    }
 
-   public void setAllocation(double allocation) {
-      this.allocation = allocation;
+   public void setAllocated(double allocated) {
+      this.allocated = allocated;
    }
 
    public double getCompleted() {
@@ -90,7 +90,7 @@ public class TimeAllocation implements Serializable {
    @Override
    public String toString() {
       return "TimeAllocation{id=" + id
-              + ",allocation=" + allocation
+              + ",allocated=" + allocated
               + ",completed=" + completed
               + ",task=" + (task == null ? "null" : task.getId())
               + ",phase=" + (phase == null ? "null" : phase.getId())
