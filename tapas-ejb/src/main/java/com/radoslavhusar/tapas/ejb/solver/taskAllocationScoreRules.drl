@@ -1,5 +1,6 @@
 package com.radoslavhusar.tapas.ejb.solver;
 
+// Sample code if you need to change dialect from MVEL.
 //dialect "java"
 
 import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalculator;
@@ -19,7 +20,9 @@ import com.radoslavhusar.tapas.ejb.entity.Trait
 
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
-// Sample MetaFact if you want to add rules to generate them:
+// Sample MetaFact if you want to add rules to generate them,
+// and insert them as logical, for instance:
+//
 //declare SampleMetaFact
 //    days: double
 //end
@@ -28,9 +31,9 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 // Hard constraints
 // ############################################################################
 
-// Inserts 2 negative hard for each unassigned task.
+// Inserts 3 negative hard for each unassigned task.
 rule "Insert All Tasks Are Assigned"
-        salience 1 // Do these rules first (optional, for performance)
+        salience 2 // Do these rules first (optional, for performance)
     when
        $task : Task(resource == null)
        
@@ -39,12 +42,13 @@ rule "Insert All Tasks Are Assigned"
         ConstraintType.NEGATIVE_HARD, 
         3, // its better that the task is done by somebody who doesnt have the trait than by noone
         $task));
+        
 end
 
 
 // Inserts 1 negative hard for each task which is assigned to person without the required trait
 rule "Insert Required Traits Are Provided"
-        salience 1 // Do these rules first (optional, for performance)
+        salience 2 // Do these rules first (optional, for performance)
     when
 		$task : Task($trait : requiredTrait)
 		
@@ -55,22 +59,24 @@ rule "Insert Required Traits Are Provided"
         ConstraintType.NEGATIVE_HARD, 
         1, 
         $task, $resource));
+        
 end
 
 // Insert 1 negative for each task that is assigned to the person who is not on the 
 // team which this task belong to. If the resource is not on any team it is not broken.
-rule "Insert Task Is Assigned To Resource From Specified Team"
-        salience 1 // Do these rules first (optional, for performance)
+rule "Insert Task Assigned To Resource From Team"
+        salience 2 // Do these rules first (optional, for performance)
     when
 		$task : Task($resourceGroup : resourceGroup, resourceGroup != null)
-		//$resourceGroup != null
+
 		$resource : Resource(group != $resourceGroup) from $task.resource
 		
     then
-        insertLogical(new IntConstraintOccurrence("Insert Task Is Assigned To Resource From Specified Team",
+        insertLogical(new IntConstraintOccurrence("Insert Task Assigned To Resource From Team",
         ConstraintType.NEGATIVE_HARD, 
         1, 
         $task, $resource));
+        
 end
 
 
@@ -79,24 +85,24 @@ end
 // ############################################################################
 
 // Realization one rule must generate the whole thing 
-rule "Insert Remaining Load Total"
+rule "Insert Remaining Days"
 		salience 1 // Do these rules first (optional, improves performance)
 	when
 		// Take all resources on the project
 		$resource : Resource()
 
 		// Sum total allocation on total  
-		$remaining : Number()
-			from accumulate(
-				$task : Task(resource == $resource),
-				sum($task.getDroolsAllocated() - $task.getDroolsCompleted())
-			)
+		$remaining : Number() from accumulate(
+			$task : Task(resource == $resource),
+			sum($task.getDroolsAllocated() - $task.getDroolsCompleted())
+		)
 
     then
-        insertLogical(new DoubleConstraintOccurrence("Insert Remaining Load Total",
+		insertLogical(new DoubleConstraintOccurrence("Insert Remaining Days",
         ConstraintType.NEGATIVE_SOFT, 
         Math.ceil((double) $remaining.doubleValue()/(double) $resource.getRate()) 
         ));
+        
 end
 
 // ############################################################################
@@ -114,14 +120,16 @@ rule "Sum Hard Constraints Broken"
         
     then
         scoreCalculator.setHardConstraintsBroken($hardTotal.intValue());
+        
 end
 
 // Accumulate soft constraints
-rule "Sum Soft Constraints Broken"
+rule "Sum and Max Soft Constraints Broken"
         salience -1 // Do these last (optional, for performance)
     when
+    	// We just want the maximum - thats is the time the project is going to be finished completely.
         $softMax : Number() from accumulate(
-            DoubleConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+			DoubleConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
             max($weight)
         )
         
@@ -129,7 +137,9 @@ rule "Sum Soft Constraints Broken"
             IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
             sum($weight)
         )
+        
     then
         scoreCalculator.setSoftConstraintsBroken($softTotal.intValue() + $softMax.intValue());
+        
 end
 
