@@ -1,5 +1,6 @@
 package com.radoslavhusar.tapas.war.client.app;
 
+import com.radoslavhusar.tapas.war.client.state.ClientState;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
@@ -20,13 +21,13 @@ import com.radoslavhusar.tapas.war.client.resources.ResourcesView;
 import com.radoslavhusar.tapas.war.client.tasks.TasksView;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 
-@GinModules(GinClientModule.class)
+@GinModules(AppGinModule.class)
 public interface AppGinjector extends Ginjector {
 
    // Shared basic components
    EventBus getEventBus();
 
-   PlaceControllerGin getPlaceController();
+   AppPlaceController getPlaceController();
 
    ClientState getClientState();
 

@@ -42,7 +42,7 @@ import com.radoslavhusar.tapas.ejb.stats.ResourceAllocationStatsEntry;
 import com.radoslavhusar.tapas.ejb.entity.ResourceAllocationPK;
 import com.radoslavhusar.tapas.ejb.entity.Trait;
 import com.radoslavhusar.tapas.war.client.app.Application;
-import com.radoslavhusar.tapas.war.client.app.ClientState;
+import com.radoslavhusar.tapas.war.client.state.ClientState;
 import com.radoslavhusar.tapas.war.client.app.Constants;
 import com.radoslavhusar.tapas.war.client.ui.DynamicSelectionCell;
 import com.radoslavhusar.tapas.war.client.ui.SizeableEditTextCell;

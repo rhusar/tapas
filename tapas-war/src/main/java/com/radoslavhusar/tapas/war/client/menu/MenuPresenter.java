@@ -5,8 +5,8 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Project;
-import com.radoslavhusar.tapas.war.client.app.ClientState;
-import com.radoslavhusar.tapas.war.client.app.PlaceControllerGin;
+import com.radoslavhusar.tapas.war.client.state.ClientState;
+import com.radoslavhusar.tapas.war.client.app.AppPlaceController;
 import com.radoslavhusar.tapas.war.client.overview.OverviewPlace;
 
 public class MenuPresenter implements MenuView.Presenter {
@@ -15,7 +15,7 @@ public class MenuPresenter implements MenuView.Presenter {
    private PlaceController placeControl;
 
    @Inject
-   public MenuPresenter(ClientState client, PlaceControllerGin placeControl) {
+   public MenuPresenter(ClientState client, AppPlaceController placeControl) {
       GWT.log("MenuPresenter created.");
 
       this.client = client;

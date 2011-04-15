@@ -1,4 +1,4 @@
-package com.radoslavhusar.tapas.war.client.event;
+package com.radoslavhusar.tapas.war.client.state.event;
 
 /**
  *

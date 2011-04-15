@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.war.client.app.Application;
-import com.radoslavhusar.tapas.war.client.app.ClientState;
+import com.radoslavhusar.tapas.war.client.state.ClientState;
 import com.radoslavhusar.tapas.war.client.overview.OverviewPlace;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.Collections;

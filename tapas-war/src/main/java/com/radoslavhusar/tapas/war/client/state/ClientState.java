@@ -1,4 +1,4 @@
-package com.radoslavhusar.tapas.war.client.app;
+package com.radoslavhusar.tapas.war.client.state;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -13,8 +13,8 @@ import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.Trait;
 import com.radoslavhusar.tapas.ejb.stats.ProjectStats;
 import com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry;
-import com.radoslavhusar.tapas.war.client.event.DataReadyEvent;
-import com.radoslavhusar.tapas.war.client.event.DataType;
+import com.radoslavhusar.tapas.war.client.state.event.DataReadyEvent;
+import com.radoslavhusar.tapas.war.client.state.event.DataType;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.List;
 import java.util.Map;

@@ -7,7 +7,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Task;
-import com.radoslavhusar.tapas.war.client.app.ClientState;
+import com.radoslavhusar.tapas.war.client.state.ClientState;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.Set;
 

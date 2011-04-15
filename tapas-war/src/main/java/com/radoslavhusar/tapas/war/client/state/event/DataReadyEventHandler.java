@@ -1,4 +1,4 @@
-package com.radoslavhusar.tapas.war.client.event;
+package com.radoslavhusar.tapas.war.client.state.event;
 
 import com.google.gwt.event.shared.EventHandler;
 

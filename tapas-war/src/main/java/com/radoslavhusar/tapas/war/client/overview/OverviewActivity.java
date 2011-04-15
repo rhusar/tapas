@@ -4,7 +4,7 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
-import com.radoslavhusar.tapas.war.client.app.ClientState;
+import com.radoslavhusar.tapas.war.client.state.ClientState;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 
 public class OverviewActivity extends AbstractActivity implements OverviewPresenter {

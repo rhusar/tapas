@@ -1,5 +1,6 @@
 package com.radoslavhusar.tapas.war.client.app;
 
+import com.radoslavhusar.tapas.war.client.state.ClientState;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.inject.client.AbstractGinModule;
@@ -23,7 +24,7 @@ import com.radoslavhusar.tapas.war.client.planning.PlanningViewImpl;
 import com.radoslavhusar.tapas.war.client.resources.ResourcesView;
 import com.radoslavhusar.tapas.war.client.resources.ResourcesViewImpl;
 
-public class GinClientModule extends AbstractGinModule {
+public class AppGinModule extends AbstractGinModule {
 
    @Override
    protected void configure() {
