@@ -89,12 +89,12 @@ public class SolverFacadeLocalTest {
       //http://javahowto.blogspot.com/2007/11/simple-ejb-3-on-jboss-application.html
 
       Project p = projectBean.findAll().get(0);
-      TaskAllocationSolution tas = (TaskAllocationSolution) solverBean.solveAssignments(p.getId());
+      /*TaskAllocationSolution tas = (TaskAllocationSolution) solverBean.solveAssignments(p.getId());
 
 
       for (Task t : tas.getTasks()) {
          System.out.println((t.getId() == null ? "null" : t.getId()) + " => "
                  + (t.getResource() == null ? "null" : t.getResource().getId()));
-      }
+      }*/
    }
 }

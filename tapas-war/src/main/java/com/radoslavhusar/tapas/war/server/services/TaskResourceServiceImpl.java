@@ -17,8 +17,10 @@ import com.radoslavhusar.tapas.ejb.session.ResourceAllocationFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TimeAllocationFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TraitFacadeLocal;
+import com.radoslavhusar.tapas.ejb.solver.SolverFacadeLocal;
 import com.radoslavhusar.tapas.ejb.stats.ProjectStats;
 import com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry;
+import com.radoslavhusar.tapas.ejb.stats.TaskAllocationPlanMeta;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceService;
 import java.util.Collection;
 import java.util.HashMap;
@@ -56,6 +58,8 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    private ResourceGroupFacadeLocal groupBean;
    @EJB
    private TraitFacadeLocal traitBean;
+   @EJB
+   private SolverFacadeLocal solverBean;
 
    public TaskResourceServiceImpl() {
       EntityManagerFactory emf = null;
@@ -272,5 +276,10 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
       }
 
       return prs;
+   }
+
+   @Override
+   public TaskAllocationPlanMeta predictAllocation(long projectId) {
+      return solverBean.solveAssignments(projectId);
    }
 }

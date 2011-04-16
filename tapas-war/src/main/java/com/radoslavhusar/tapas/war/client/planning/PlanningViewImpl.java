@@ -4,16 +4,20 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.radoslavhusar.tapas.ejb.entity.Project;
-import com.radoslavhusar.tapas.ejb.entity.ProjectPhase;
+import com.radoslavhusar.tapas.ejb.entity.Resource;
+import com.radoslavhusar.tapas.ejb.entity.Task;
+import com.radoslavhusar.tapas.ejb.stats.TaskAllocationPlanMeta;
 import com.radoslavhusar.tapas.war.client.app.Application;
 import com.radoslavhusar.tapas.war.client.state.ClientState;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
+import java.util.List;
 
 public class PlanningViewImpl extends ResizeComposite implements PlanningView {
 
@@ -30,7 +34,7 @@ public class PlanningViewImpl extends ResizeComposite implements PlanningView {
    SimplePanel status;
    @UiField
    VerticalPanel content;
-   private Project project;
+   private TaskAllocationPlanMeta plan;
 
    @Inject
    public PlanningViewImpl(ClientState client, TaskResourceServiceAsync service) {
@@ -38,10 +42,11 @@ public class PlanningViewImpl extends ResizeComposite implements PlanningView {
       this.service = service;
 
       initWidget(binder.createAndBindUi(this));
+
       content.setSpacing(5);
 
       // TODO: make this View a singleton, the calculations are quite complex on the server side.
-      GWT.log("New PlanningViewImpl created.");
+      GWT.log("PlanningViewImpl created.");
    }
 
    // UI routines
@@ -50,78 +55,61 @@ public class PlanningViewImpl extends ResizeComposite implements PlanningView {
       menu.add(Application.getInjector().getMenuView());
       status.add(Application.getInjector().getStatusView());
 
-      //content.add(new heading("a"));
-      //content.add(new HTML("<h1>Loading..</h1>"));
-      /*HorizontalPanel horizon = new HorizontalPanel();
-      horizon.setWidth("100%");
-      content.add(horizon);
-      VerticalPanel left = new VerticalPanel();
-      left.setWidth("50%");
-      left.add(new HTML("<h1>Loading..XXXXXXXXXXXXXXX</h1>"));
-      horizon.add(left);
-      VerticalPanel right = new VerticalPanel();
-      horizon.add(right);
-      right.setWidth("50%");
-      right.add(new HTML("<h1>Loading..</h1>"));*/
+      content.clear();
+      //CheckBox cb = new CheckBox("");
 
-      // Call the services
-      if (client.getProject() == null) {
-         // TODO: This is done now in the ClientState as well.
-         service.findProject(client.getProjectId(), new AsyncCallback<Project>() {
+      content.add(new Label("Generating plan..."));
 
-            @Override
-            public void onFailure(Throwable caught) {
-               throw new UnsupportedOperationException("Not supported yet.");
-            }
+      service.findAllTasksForProject(client.getProjectId(), new AsyncCallback<List<Task>>() {
 
-            @Override
-            public void onSuccess(Project result) {
-               project = result;
-               toSyncRender();
-            }
-         });
-      } else {
-         toSyncRender();
-      }
-      /*
-      if (client.getProject() == null) {
-      service.(client.getProjectId(), new AsyncCallback<Project>() {
-      
-      @Override
-      public void onFailure(Throwable caught) {
-      throw new UnsupportedOperationException("Not supported yet.");
-      }
-      
-      @Override
-      public void onSuccess(Project result) {
-      project = result;
-      toSyncRender();
-      }
+         @Override
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(List<Task> result) {
+            client.setTasks(result);
+
+            service.findAllResourcesForProject(client.getProjectId(), new AsyncCallback<List<Resource>>() {
+
+               @Override
+               public void onFailure(Throwable caught) {
+                  throw new UnsupportedOperationException("Not supported yet.");
+               }
+
+               @Override
+               public void onSuccess(List<Resource> result) {
+                  client.setResources(result);
+
+                  service.predictAllocation(client.getProjectId(), new AsyncCallback<TaskAllocationPlanMeta>() {
+
+                     @Override
+                     public void onFailure(Throwable caught) {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                     }
+
+                     @Override
+                     public void onSuccess(TaskAllocationPlanMeta result) {
+                        plan = result;
+                        render();
+                     }
+                  });
+               }
+            });
+         }
       });
-      } else {
-      toSyncRender();
-      }*/
-
-
-
-   }
-   private int toSync;
-
-   private void toSyncRender() {
-      toSync--;
-
-      if (toSync == 0) {
-         render();
-      }
    }
 
-   public void render() {
+   private void render() {
       content.clear();
 
-      for (ProjectPhase pp : client.getProject().getPhases()) {
+      for (Task t : client.getTasks()) {
+         content.add(new Label(t.toString() + " assign to: " + plan.getTaskToResource().get(t.getId()).toString()));
       }
    }
 
+   @Override
    public void unbind() {
       menu.clear();
       status.clear();

@@ -10,6 +10,7 @@ import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.Trait;
 import com.radoslavhusar.tapas.ejb.stats.ProjectStats;
 import com.radoslavhusar.tapas.ejb.stats.ResourcePhaseStatsEntry;
+import com.radoslavhusar.tapas.ejb.stats.TaskAllocationPlanMeta;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -59,4 +60,7 @@ public interface TaskResourceService extends RemoteService {
 
    // Group
    List<ResourceGroup> findAllGroups();
+
+   // Planning
+   TaskAllocationPlanMeta predictAllocation(long projectId);
 }

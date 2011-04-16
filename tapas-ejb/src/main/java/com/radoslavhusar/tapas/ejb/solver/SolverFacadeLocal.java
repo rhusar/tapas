@@ -1,8 +1,8 @@
 package com.radoslavhusar.tapas.ejb.solver;
 
-import org.drools.planner.core.solution.Solution;
+import com.radoslavhusar.tapas.ejb.stats.TaskAllocationPlanMeta;
 
 public interface SolverFacadeLocal {
 
-   Solution solveAssignments(long projectId);
+   TaskAllocationPlanMeta solveAssignments(long projectId);
 }
