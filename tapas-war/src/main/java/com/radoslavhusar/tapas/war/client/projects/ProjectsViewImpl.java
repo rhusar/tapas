@@ -48,8 +48,8 @@ public class ProjectsViewImpl extends ResizeComposite implements ProjectsView {
    VerticalPanel projectsPanel;
    @UiField
    Anchor manageTraits;
-   @UiField
-   Anchor manageExternal;
+   /*@UiField
+   Anchor manageExternal;*/
 
    @Inject
    public ProjectsViewImpl(ClientState client, TaskResourceServiceAsync service) {
@@ -97,8 +97,8 @@ public class ProjectsViewImpl extends ResizeComposite implements ProjectsView {
                });
                fp.add(link);
                fp.add(new InlineLabel(
-                       (p.getPhases().isEmpty() ? "" : " in " + p.getPhases().get(0).getName())
-                       + "" + (p.getTargetDate() == null ? "" : " due " + p.getTargetDate())));
+                       //(p.getPhases().isEmpty() ? "" : " in " + p.getPhases().get(0).getName()) +
+                       "" + (p.getTargetDate() == null ? "" : " due " + p.getTargetDate())));
                projectsPanel.add(fp);
             }
          }

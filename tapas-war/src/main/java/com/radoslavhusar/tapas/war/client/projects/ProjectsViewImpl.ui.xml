@@ -30,8 +30,10 @@
                <g:Anchor ui:field='newProject'>Start a new project &gt;</g:Anchor>
                
                <h2>Global Settings</h2>
+               <!--
                <g:Anchor ui:field='manageExternal'>Manage External Systems &gt;</g:Anchor>
                <br/>
+               -->
                <g:Anchor ui:field='manageTraits'>Manage Resource Traits &gt;</g:Anchor>
                
             </g:HTMLPanel>

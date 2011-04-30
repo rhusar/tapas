@@ -329,8 +329,9 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
                      }
                   }
                });
+               /*
                Collections.sort(client.getProject().getPhases());
-               /*for (ProjectPhase pp : client.getProject().getPhases()) {
+               for (ProjectPhase pp : client.getProject().getPhases()) {
                   if (pp.getEnded() != null) {
                      client.prepareResourceStats(pp.getId());
                   }
