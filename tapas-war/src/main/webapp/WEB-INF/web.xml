@@ -25,8 +25,8 @@
    
    <!-- Development: Welcome with the redirect file -->
    <welcome-file-list>
-      <welcome-file>index-gwtrun.html</welcome-file>
-      <!-- <welcome-file>index.html</welcome-file> -->
+<!--      <welcome-file>index-gwtrun.html</welcome-file>-->
+       <welcome-file>index.html</welcome-file> 
    </welcome-file-list>
    
 </web-app>

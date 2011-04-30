@@ -9,14 +9,14 @@
          <div class='{style.logo}'/>
 
          <div class="{style.statusDiv}">
-            <br />
+<!--            <br />
             <div>
-               <b>rhusar@redhat.com</b>
+               <b>rhusar@jboss.com</b>
             </div>
 
             <div class='{style.linksDiv}'>
                <g:Anchor href='javascript:;' ui:field='signOutLink'>Sign Out</g:Anchor>
-            </div>
+            </div>-->
          </div>
       </div>
 
@@ -28,8 +28,8 @@
             <g:Button ui:field="overview">Overview</g:Button>
             <g:Button ui:field="tasks">Tasks</g:Button>
             <g:Button ui:field="resources">Resources</g:Button>
-            <g:Button ui:field="planning">Planning</g:Button>
-            <g:Button>Reports</g:Button>
+            <g:Button ui:field="planning">Automatic Planning</g:Button>
+            <!-- <g:Button>Reports</g:Button> -->
             <!-- <g:Button>Export</g:Button> -->
          </div>
 

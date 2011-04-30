@@ -11,7 +11,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -26,6 +25,7 @@ import com.radoslavhusar.tapas.war.client.state.ClientState;
 import com.radoslavhusar.tapas.war.client.overview.OverviewPlace;
 import com.radoslavhusar.tapas.war.shared.services.TaskResourceServiceAsync;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class ProjectsViewImpl extends ResizeComposite implements ProjectsView {
@@ -118,59 +118,23 @@ public class ProjectsViewImpl extends ResizeComposite implements ProjectsView {
 
    @UiHandler("newProject")
    public void doNewProject(ClickEvent event) {
-      /*
-      // Create a dialog box and set the caption text
-      final DialogBox dialogBox = new DialogBox();
-      //dialogBox.ensureDebugId("cwDialogBox");
-      dialogBox.setText("Start a new project...");
-      
-      // Create a table to layout the content
-      VerticalPanel dialogContents = new VerticalPanel();
-      dialogContents.setSpacing(4);
-      dialogBox.setWidget(dialogContents);
-      
-      // Add some text to the top of the dialog
-      HTML details = new HTML("Name a new project:");
-      dialogContents.add(details);
-      //dialogContents.setCellHorizontalAlignment(details, HasHorizontalAlignment.ALIGN_CENTER);
-      
-      // Add an image to the dialog
-      //Image image = new Image(Showcase.images.jimmy());
-      //dialogContents.add(image);
-      //dialogContents.setCellHorizontalAlignment(        image, HasHorizontalAlignment.ALIGN_CENTER);
-      
-      // Add a close button at the bottom of the dialog
-      Button closeButton = new Button("Close", new ClickHandler() {
-      
-      @Override
-      public void onClick(ClickEvent event) {
-      dialogBox.hide();
-      }
+      Project np = new Project();
+      np.setName("New project");
+      np.setStartDate(new Date());
+      np.setTargetDate(new Date());
+      service.createProject(np, new AsyncCallback<Long>() {
+
+         @Override
+         public void onFailure(Throwable caught) {
+            throw new UnsupportedOperationException("Not supported yet.");
+         }
+
+         @Override
+         public void onSuccess(Long result) {
+            OverviewPlace place = new OverviewPlace(result);
+            Application.getInjector().getPlaceController().goTo(place);
+         }
       });
-      dialogContents.add(closeButton);
-      
-      Button createButton = new Button("Close", new ClickHandler() {
-      
-      @Override
-      public void onClick(ClickEvent event) {
-      Application.getInjector().getPlaceController().goTo(null);
-      }
-      });
-      dialogContents.add(createButton);
-      
-      dialogContents.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
-      
-      
-      // Return the dialog box
-      
-      dialogBox.setGlassEnabled(true);
-      dialogBox.setAnimationEnabled(true);
-      
-      
-      // onclick
-      dialogBox.center();
-      dialogBox.show();
-       */
    }
 
    @UiHandler("manageTraits")

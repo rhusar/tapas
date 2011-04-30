@@ -254,6 +254,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       // Columns definitions
 
 
+      /*
       // ID (readonly)
       TextColumn<Task> idCol = new TextColumn<Task>() {
 
@@ -264,6 +265,7 @@ public class TasksViewImpl extends ResizeComposite implements TasksView {
       };
       tasks.addColumn(idCol, "ID");
       tasks.setColumnWidth(idCol, 2, Unit.EM);
+      */
 
 
       // Unified ID

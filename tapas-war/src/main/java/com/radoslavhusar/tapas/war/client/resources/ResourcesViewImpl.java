@@ -103,6 +103,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       // Setup CellTable
       resources.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 
+      /*
       // ID
       TextColumn<Resource> idCol = new TextColumn<Resource>() {
 
@@ -111,6 +112,7 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
             return resource.getId() == null ? Constants.UNSAVED_ID : resource.getId().toString();
          }
       };
+      */
       /* 
       FIXME: http://code.google.com/webtoolkit/doc/latest/DevGuideUiCellTable.html
       
@@ -125,9 +127,11 @@ public class ResourcesViewImpl extends ResizeComposite implements ResourcesView 
       });
       resources.addColumnSortHandler(idColSortHandler);
        */
+      /*
       resources.addColumn(idCol, "ID");
       resources.setColumnWidth(idCol, 2, Unit.EM);
-
+      */
+      
       // Name
       Cell nameCell = new EditTextCell();
       Column<Resource, String> nameCol = new Column<Resource, String>(nameCell) {

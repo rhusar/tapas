@@ -56,35 +56,9 @@ public class Application implements EntryPoint {
 
       Window.enableScrolling(false);
       Window.setMargin("0px");
-      Window.setTitle("TAPAS | Task-Resource Allocation Platform");
+      Window.setTitle("TAPAS | Task-Resource Allocation System");
 
       RootLayoutPanel.get().add(appWidget);
-
-      /*
-      // handlers
-      eventBus.addHandler(TaskEditEvent.TYPE, new TaskEditEventHandler() {
-      
-      @Override
-      public void onEditTask(TaskEditEvent event) {
-      System.out.println(this.getClass().getName() + "is handling " + event);
-      }
-      });
-      
-      
-      injector.getService().getCount(new AsyncCallback<Integer>() {
-      
-      @Override
-      public void onFailure(Throwable caught) {
-      //            throw new UnsupportedOperationException("Not supported yet.");
-      Window.alert("Request failed :-( ");
-      }
-      
-      @Override
-      public void onSuccess(Integer result) {
-      //            System.out.println("IT WORKED!!! " + result);
-      Window.alert("IT WORKED!!! " + result);
-      }
-      });*/
 
       // Goes to place represented on URL or default place
       historyHandler.handleCurrentHistory();

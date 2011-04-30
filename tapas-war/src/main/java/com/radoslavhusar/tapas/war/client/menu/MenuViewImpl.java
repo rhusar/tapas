@@ -113,10 +113,12 @@ public class MenuViewImpl extends Composite implements MenuView {
       });
    }
 
+   /*
    @UiHandler("signOutLink")
    void onSelectMeAnchorClick(ClickEvent event) {
       presenter.doAbout();
    }
+   */
 
    @UiHandler("projects")
    void navigateProjects(ClickEvent event) {

@@ -165,8 +165,8 @@ public class ClientState {
       this.resourcePhaseStats = resourcePhaseStats;
    }
 
-   public void prepareResourceStats(long phaseId) {
-      service.tallyResourcePhaseStatsForProject(phaseId, new AsyncCallback<Map<Long, List<ResourcePhaseStatsEntry>>>() {
+   public void prepareResourceStats(long projectId) {
+      service.tallyResourcePhaseStatsForProject(projectId, new AsyncCallback<Map<Long, List<ResourcePhaseStatsEntry>>>() {
 
          @Override
          public void onFailure(Throwable caught) {

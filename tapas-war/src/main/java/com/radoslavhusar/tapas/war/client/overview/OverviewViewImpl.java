@@ -7,11 +7,12 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
@@ -22,7 +23,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.datepicker.client.DatePicker;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
 import com.google.gwt.visualization.client.DataTable;
@@ -81,14 +82,14 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
    Anchor phaseAdd;
    @UiField
    Anchor phaseSave;
-   @UiField
-   Anchor phaseRemove;
+   /*@UiField
+   Anchor phaseRemove;*/
    @UiField
    Label propToday;
    @UiField
-   Label propStart;
+   DatePicker propStart;
    @UiField
-   Label propTarget;
+   DatePicker propTarget;
    @UiField
    Label propDays;
    Project project;
@@ -112,16 +113,18 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       phases = new CellTable<ProjectPhase>();
 
       // ID
+      /*
       TextColumn<ProjectPhase> idCol = new TextColumn<ProjectPhase>() {
-
-         @Override
-         public String getValue(ProjectPhase phase) {
-            return phase.getId() == null ? "" : phase.getId().toString();
-         }
+      
+      @Override
+      public String getValue(ProjectPhase phase) {
+      return phase.getId() == null ? "" : phase.getId().toString();
+      }
       };
-
+      
       phases.addColumn(idCol, "DebugID");
       phases.setColumnWidth(idCol, 2, Unit.EM);
+       */
 
       // Name
       Cell nameCell = new EditTextCell();
@@ -327,11 +330,12 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
                   }
                });
                Collections.sort(client.getProject().getPhases());
-               for (ProjectPhase pp : client.getProject().getPhases()) {
+               /*for (ProjectPhase pp : client.getProject().getPhases()) {
                   if (pp.getEnded() != null) {
                      client.prepareResourceStats(pp.getId());
                   }
-               }
+               }*/
+               client.prepareResourceStats(client.getProjectId());
             } else {
                renderChartNow();
             }
@@ -382,11 +386,27 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
    private void renderProjectInfo() {
       // Set the properties
       propToday.setText(dateFormat.format(new Date()));
-      propStart.setText(dateFormat.format(project.getStartDate()));
-      propTarget.setText(dateFormat.format(project.getTargetDate()));
+      //propStart.setText(dateFormat.format(project.getStartDate()));
+      //propTarget.setText(dateFormat.format(project.getTargetDate()));
+      propStart.setValue(project.getStartDate());
+      propStart.addValueChangeHandler(new ValueChangeHandler<Date>() {
+
+         @Override
+         public void onValueChange(ValueChangeEvent<Date> event) {
+            project.setStartDate(event.getValue());
+         }
+      });
+      propTarget.setValue(project.getTargetDate());
+      propTarget.addValueChangeHandler(new ValueChangeHandler<Date>() {
+
+         @Override
+         public void onValueChange(ValueChangeEvent<Date> event) {
+            project.setTargetDate(event.getValue());
+         }
+      });
       double days = Math.round(project.getTargetDate().getTime() - (new Date()).getTime());
       days /= 86400000;
-      propDays.setText("" + days);
+      propDays.setText("" + NumberFormat.getDecimalFormat().format(days));
 
       // Set the phases
       projectName.setText(project.getName());
@@ -418,7 +438,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       this.presenter = presenter;
    }
 
-   @UiHandler("phaseRemove")
+   /*@UiHandler("phaseRemove")
    public void removePhase(ClickEvent event) {
       ProjectPhase deletePhase = ((SingleSelectionModel<ProjectPhase>) phases.getSelectionModel()).getSelectedObject();
       if (deletePhase.getId() == 0) {
@@ -428,7 +448,7 @@ public class OverviewViewImpl extends ResizeComposite implements OverviewView {
       } else {
          Window.alert("Do you want to remove '" + deletePhase.getName() + "' phase? Not supported yet.");
       }
-   }
+   }*/
 
    @UiHandler("phaseAdd")
    public void phaseAddClick(ClickEvent event) {

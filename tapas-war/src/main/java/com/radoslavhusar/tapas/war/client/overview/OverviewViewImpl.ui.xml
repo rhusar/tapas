@@ -2,7 +2,9 @@
 <ui:UiBinder
   xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:g='urn:import:com.google.gwt.user.client.ui'
-  xmlns:c='urn:import:com.google.gwt.user.cellview.client' >
+  xmlns:c='urn:import:com.google.gwt.user.cellview.client'
+  xmlns:dp="urn:import:com.google.gwt.user.datepicker.client" 
+  >
 
    <g:DockLayoutPanel unit='EM' height="100%" styleName='{style.outer}'>
 
@@ -31,9 +33,11 @@
                      <g:Label ui:field='propToday'>Loading...</g:Label>
                      <br/>
                      <strong>Project Start Date</strong>
-                     <g:Label ui:field='propStart'>Loading...</g:Label>
+                     <dp:DatePicker ui:field="propStart" /> 
+                     <!-- <g:Label ui:field='propStart'>Loading...</g:Label>-->
                      <strong>Project Target Date</strong>
-                     <g:Label ui:field='propTarget'>Loading...</g:Label>
+                     <!--  <g:Label ui:field='propTarget'>Loading...</g:Label>-->
+                     <dp:DatePicker ui:field="propTarget" /> 
                      <br/>
                      <strong>Days remaining</strong>
                      <g:Label ui:field='propDays'>Loading...</g:Label>
@@ -67,13 +71,14 @@
                 
 -->                  
                <g:HTMLPanel styleName='{style.left}'  >
+                  <g:Anchor ui:field='phaseAdd'>+ New Phase</g:Anchor> |
+                  <!-- <g:Anchor ui:field='phaseRemove'>Remove</g:Anchor> | -->
+                  <g:Anchor ui:field='phaseSave'>Save Project</g:Anchor>
+                  <br />
                   <h2>Project Phases</h2>
                   <p>Only tasks which are assigned are counted into estimations.</p>
                   
                   <c:CellTable ui:field='phases'  styleName='{style.table}' />
-                  <g:Anchor ui:field='phaseAdd'>+ New</g:Anchor> |
-                  <g:Anchor ui:field='phaseRemove'>Remove</g:Anchor> |
-                  <g:Anchor ui:field='phaseSave'>Save</g:Anchor>
                      <!-- Seems to work with a workaround now <i>Known bug: dates are not re-rendered after change.</i> -->
                   
                   <h2>Phase Stats</h2>

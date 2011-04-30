@@ -268,7 +268,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
    @Override
    public Map<Long, List<ResourcePhaseStatsEntry>> tallyResourcePhaseStatsForProject(long projectId) {
       Project p = projectBean.find(projectId);
-
+      System.out.println(p);
       Map<Long, List<ResourcePhaseStatsEntry>> prs = new HashMap<Long, List<ResourcePhaseStatsEntry>>();
 
       for (ProjectPhase pp : p.getPhases()) {
