@@ -156,7 +156,15 @@ public class ResourceFacade extends AbstractFacade<Resource> implements Resource
               + "and r != null "
               //+ "and a.key.project = p "
               + "group by r "
-              + "order by sum(ta.allocated) desc").
+              + "order by sum(ta.allocated) desc"
+              /* Also, ORDER BY does not work in hsqldb when the order-by field is not a String.
+
+Unfortunately, this results in the Not in aggregate function or group by clause error message, which suggests a grouping problem, hence the confusion...
+
+See: http://markmail.org/message/42vmifme4opz4jgl
+               * 
+               */
+              ).
               setParameter("phaseId", phaseId).
               getResultList();
 
