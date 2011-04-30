@@ -5,7 +5,12 @@ import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.entity.TimeAllocation;
 import com.radoslavhusar.tapas.ejb.session.ResourceFacadeLocal;
 import com.radoslavhusar.tapas.ejb.session.TaskFacadeLocal;
+import com.radoslavhusar.tapas.ejb.solver.move.factory.AllTaskMoveFactory;
+import com.radoslavhusar.tapas.ejb.solver.move.factory.UnassignedTaskMoveFactory;
+import com.radoslavhusar.tapas.ejb.solver.move.factory.UnstartedOrUnassignedTaskMoveFactory;
+import com.radoslavhusar.tapas.ejb.solver.move.factory.UnstartedTaskMoveFactory;
 import com.radoslavhusar.tapas.ejb.stats.TaskAllocationPlanMeta;
+import com.radoslavhusar.tapas.ejb.stats.TaskAllocationPlanOptions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +20,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.drools.planner.config.XmlSolverConfigurer;
+import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
 import org.drools.planner.core.Solver;
 import org.hibernate.Session;
 
@@ -31,13 +37,48 @@ public class SolverFacade implements SolverFacadeLocal {
 
    @Override
    public TaskAllocationPlanMeta solveAssignments(long projectId) {
+      TaskAllocationPlanOptions options = new TaskAllocationPlanOptions(true, true);
+
+      return solveAssignments(projectId, options);
+   }
+
+   /**
+    * Needs to be detached because Drools Planner modifies the objects.
+    * 
+    * See http://stackoverflow.com/questions/31446/detach-an-entity-from-jpa-ejb3-persistence-context
+    * 
+    * @param entity to be detached
+    */
+   private void detach(Object entity) {
+      // Cast to hibernate session 
+      Session session = (Session) em.getDelegate();
+      // and evict it.
+      session.evict(entity);
+   }
+
+   @Override
+   public TaskAllocationPlanMeta solveAssignments(long projectId, TaskAllocationPlanOptions options) {
+
       XmlSolverConfigurer solverConfigurer = new XmlSolverConfigurer();
 
       // Get from resource
       solverConfigurer.configure("/com/radoslavhusar/tapas/ejb/solver/taskAllocationSolverConfig.xml");
 
       // Get config
-      //((LocalSearchSolverConfig) solverConfigurer.getConfig()).getSelectorConfig().setMoveFactoryClass(null);
+      Class moveFactoryClazz;
+
+      if (options.isUnassigned() && options.isUnstarted()) {
+         moveFactoryClazz = UnstartedOrUnassignedTaskMoveFactory.class;
+      } else if (options.isUnassigned() && !options.isUnstarted()) {
+         moveFactoryClazz = UnassignedTaskMoveFactory.class;
+      } else if (!options.isUnassigned() && options.isUnstarted()) {
+         moveFactoryClazz = UnstartedTaskMoveFactory.class;
+      } else {
+         moveFactoryClazz = AllTaskMoveFactory.class;
+      }
+
+      // Replace the MoveFactory
+      ((LocalSearchSolverConfig) solverConfigurer.getConfig()).getSelectorConfig().setMoveFactoryClass(moveFactoryClazz);
 
       Solver solver = solverConfigurer.buildSolver();
 
@@ -85,19 +126,5 @@ public class SolverFacade implements SolverFacadeLocal {
 
       TaskAllocationPlanMeta meta = new TaskAllocationPlanMeta(projectId, taskToResource);
       return meta;
-   }
-
-   /**
-    * Needs to be detached because Drools Planner modifies the objects.
-    * 
-    * See http://stackoverflow.com/questions/31446/detach-an-entity-from-jpa-ejb3-persistence-context
-    * 
-    * @param entity to be detached
-    */
-   private void detach(Object entity) {
-      // Cast to hibernate session 
-      Session session = (Session) em.getDelegate();
-      // and evict it from context
-      session.evict(entity);
    }
 }

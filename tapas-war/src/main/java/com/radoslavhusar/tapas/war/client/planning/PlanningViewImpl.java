@@ -1,16 +1,19 @@
 package com.radoslavhusar.tapas.war.client.planning;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import com.radoslavhusar.tapas.ejb.entity.Project;
 import com.radoslavhusar.tapas.ejb.entity.Resource;
 import com.radoslavhusar.tapas.ejb.entity.Task;
 import com.radoslavhusar.tapas.ejb.stats.TaskAllocationPlanMeta;
@@ -56,22 +59,23 @@ public class PlanningViewImpl extends ResizeComposite implements PlanningView {
       status.add(Application.getInjector().getStatusView());
 
       content.clear();
-      //CheckBox cb = new CheckBox("");
+      content.add(new Label("Which tasks to plan?"));
 
-      content.add(new Label("Generating plan..."));
+      CheckBox assignedCB = new CheckBox("Unassigned Tasks");
+      content.add(assignedCB);
+      CheckBox startedCB = new CheckBox("Unstarted Tasks");
+      content.add(startedCB);
+      Button button = new Button("Propose plan");
+      content.add(button);
 
-      service.findAllTasksForProject(client.getProjectId(), new AsyncCallback<List<Task>>() {
+      button.addClickHandler(new ClickHandler() {
 
          @Override
-         public void onFailure(Throwable caught) {
-            throw new UnsupportedOperationException("Not supported yet.");
-         }
+         public void onClick(ClickEvent event) {
 
-         @Override
-         public void onSuccess(List<Task> result) {
-            client.setTasks(result);
+            content.add(new Label("Generating plan..."));
 
-            service.findAllResourcesForProject(client.getProjectId(), new AsyncCallback<List<Resource>>() {
+            service.findAllTasksForProject(client.getProjectId(), new AsyncCallback<List<Task>>() {
 
                @Override
                public void onFailure(Throwable caught) {
@@ -79,10 +83,10 @@ public class PlanningViewImpl extends ResizeComposite implements PlanningView {
                }
 
                @Override
-               public void onSuccess(List<Resource> result) {
-                  client.setResources(result);
+               public void onSuccess(List<Task> result) {
+                  client.setTasks(result);
 
-                  service.predictAllocation(client.getProjectId(), new AsyncCallback<TaskAllocationPlanMeta>() {
+                  service.findAllResourcesForProject(client.getProjectId(), new AsyncCallback<List<Resource>>() {
 
                      @Override
                      public void onFailure(Throwable caught) {
@@ -90,22 +94,36 @@ public class PlanningViewImpl extends ResizeComposite implements PlanningView {
                      }
 
                      @Override
-                     public void onSuccess(TaskAllocationPlanMeta result) {
-                        plan = result;
-                        render();
+                     public void onSuccess(List<Resource> result) {
+                        client.setResources(result);
+
+                        service.predictAllocation(client.getProjectId(), new AsyncCallback<TaskAllocationPlanMeta>() {
+
+                           @Override
+                           public void onFailure(Throwable caught) {
+                              throw new UnsupportedOperationException("Not supported yet.");
+                           }
+
+                           @Override
+                           public void onSuccess(TaskAllocationPlanMeta result) {
+                              plan = result;
+                              render();
+                           }
+                        });
                      }
                   });
                }
             });
          }
       });
+
    }
 
    private void render() {
       content.clear();
 
       for (Task t : client.getTasks()) {
-         content.add(new Label(t.toString() + " assign to: " + plan.getTaskToResource().get(t.getId()).toString()));
+         content.add(new Label(t.getName().toString() + " assign to: " + plan.getTaskToResource().get(t.getId()).toString()));
       }
    }
 
