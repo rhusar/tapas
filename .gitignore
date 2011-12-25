@@ -1,0 +1,14 @@
+# Maven
+target/
+
+# GWT
+tapas-war/war/
+
+# Eclipse IDE
+.settings/
+.project
+.classpath
+
+# Editors
+*.*~
+
