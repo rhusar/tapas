@@ -33,7 +33,7 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import net.sf.gilead.configuration.ConfigurationHelper;
 import net.sf.gilead.gwt.PersistentRemoteService;
-import net.sf.gilead.core.hibernate.jboss.HibernateJBossUtil;
+import net.sf.gilead.core.hibernate.jpa.HibernateJpaUtil;
 import org.jboss.logging.Logger;
 
 public class TaskResourceServiceImpl extends PersistentRemoteService implements TaskResourceService {
@@ -70,7 +70,7 @@ public class TaskResourceServiceImpl extends PersistentRemoteService implements 
          log.error("Problem getting ManagerFactory for GILEAD: " + ex);
       }
 
-      HibernateJBossUtil gileadHibernateUtil = new HibernateJBossUtil(emf);
+      HibernateJpaUtil gileadHibernateUtil = new HibernateJpaUtil(emf);
       setBeanManager(ConfigurationHelper.initStatefulBeanManager(gileadHibernateUtil));
    }
 
