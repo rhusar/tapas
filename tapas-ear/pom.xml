@@ -30,11 +30,17 @@
    </dependencies>
 
    <build>
+      <finalName>tapas</finalName>
       <plugins>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-ear-plugin</artifactId>
             <configuration>
+               <!-- Tell Maven we are using Java EE 6 -->
+               <!-- <version>6</version> -->
+
+               <!-- Tell maven to package in ear/lib for AS7 -->
+               <defaultLibBundleDir>lib</defaultLibBundleDir>
                <generateApplicationXml>true</generateApplicationXml>
                <modules>
                   <webModule>
@@ -51,6 +57,7 @@
          </plugin>
       </plugins>
    </build>
+
     <!-- check style added by netbeans
     <reporting>
         <plugins>
