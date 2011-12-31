@@ -5,13 +5,13 @@
    <parent>
       <artifactId>tapas-parent</artifactId>
       <groupId>com.radoslavhusar.tapas</groupId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.2-SNAPSHOT</version>
    </parent>
 
    <groupId>com.radoslavhusar.tapas</groupId>
    <artifactId>tapas-war</artifactId>
    <packaging>war</packaging>
-   <version>0.0.1-SNAPSHOT</version>
+   <version>0.0.2-SNAPSHOT</version>
    <name>${project.artifactId} ${project.version}</name>
 
    <properties>
@@ -31,7 +31,7 @@
          <groupId>com.radoslavhusar.tapas</groupId>
          <artifactId>tapas-ejb</artifactId>
          <type>ejb</type>
-         <version>0.0.1-SNAPSHOT</version>
+         <version>0.0.2-SNAPSHOT</version>
          <scope>provided</scope>
       </dependency>
 

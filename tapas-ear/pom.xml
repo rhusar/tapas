@@ -5,13 +5,13 @@
    <parent>
       <artifactId>tapas-parent</artifactId>
       <groupId>com.radoslavhusar.tapas</groupId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.2-SNAPSHOT</version>
    </parent>
 
    <groupId>com.radoslavhusar.tapas</groupId>
    <artifactId>tapas-ear</artifactId>
    <packaging>ear</packaging>
-   <version>0.0.1-SNAPSHOT</version>
+   <version>0.0.2-SNAPSHOT</version>
    <name>${project.artifactId} ${project.version}</name>
    
    <dependencies>
@@ -19,13 +19,13 @@
          <groupId>com.radoslavhusar.tapas</groupId>
          <artifactId>tapas-ejb</artifactId>
          <type>ejb</type>
-         <version>0.0.1-SNAPSHOT</version>
+         <version>0.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>com.radoslavhusar.tapas</groupId>
          <artifactId>tapas-war</artifactId>
          <type>war</type>
-         <version>0.0.1-SNAPSHOT</version>
+         <version>0.0.2-SNAPSHOT</version>
       </dependency>
    </dependencies>
 
@@ -70,5 +70,5 @@
             </plugin>
         </plugins>
     </reporting>-->
-   <properties></properties>
+   <properties />
 </project>
